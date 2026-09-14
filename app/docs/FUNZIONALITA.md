@@ -5,7 +5,7 @@
 > Le fonti sono i file in `docs/features/`, scritti dall'agente
 > `doc-funzionale`.
 >
-> Ultima generazione: 2026-09-14T10:39:41.313Z
+> Ultima generazione: 2026-09-14T13:21:49.141Z
 
 **Come si legge il tempo verbale.** Ciò che è scritto al **futuro** è previsto
 e non ancora verificato; ciò che è al **presente** è stato confermato leggendo

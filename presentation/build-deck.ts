@@ -5,10 +5,14 @@
  * Genera UNA presentazione autocontenuta: presentation/deck.html
  * CSS inline, zero richieste di rete, marchio Accenture su ogni slide.
  *
- * Due sezioni:
- *   PARTE 1 — Il prodotto: che cos'è Plainly e che cosa fa
- *   PARTE 2 — La squadra: gli agenti che l'hanno costruito, e come hanno
- *             lavorato fra loro
+ * Due sezioni, entrambe sul prodotto:
+ *   PARTE 1 — L'app: che cos'è Plainly e a che cosa serve
+ *   PARTE 2 — Le funzionalità: che cosa fa, e che cosa è ancora previsto
+ *
+ * REGOLA CHE VALE PIÙ DI TUTTE: il deck non afferma cose che non esistono.
+ * Una slide che descrive qualcosa di non ancora costruito porta il marcatore
+ * `previsto`, visibile a schermo. Una cifra senza evidenza mostra un
+ * placeholder con il comando che la produrrebbe, non un numero plausibile.
  *
  * I limiti di densità sono ESEGUIBILI: ogni slide dichiara un archetipo e ne
  * rispetta il budget di parole. Se uno è superato **il deck non si genera**.
@@ -92,6 +96,16 @@ function leggiSquadra(): { persona: string; ruolo: string }[] {
 
 const SQUADRA = leggiSquadra();
 
+/** Quante skill esistono davvero: contate, non affermate. */
+const N_SKILL = existsSync(join(RADICE, '.claude', 'skills'))
+  ? readdirSync(join(RADICE, '.claude', 'skills')).filter((d) =>
+      existsSync(join(RADICE, '.claude', 'skills', d, 'SKILL.md')),
+    ).length
+  : 0;
+
+/** Le schermate prima/dopo esistono? Se no, la slide lo dice. */
+const SCHERMATE = Boolean(shot('02-before.png') && shot('03-after.png'));
+
 /* ================================================================== */
 /* Il modello: cinque archetipi, un'idea per slide                     */
 /* ================================================================== */
@@ -119,14 +133,16 @@ interface Slide {
   etichette?: string[];
   elenco?: string[];
   consegnaDemo?: string;
+  /** Descrive qualcosa che NON è ancora costruito: va marcato a schermo. */
+  previsto?: boolean;
   /** La squadra, letta dai file degli agenti: non conta nel budget parole. */
   squadra?: boolean;
   manca?: { cosa: string; comando: string };
 }
 
 const PARTI: Record<1 | 2, string> = {
-  1: 'Il prodotto',
-  2: 'La squadra',
+  1: 'L\'app',
+  2: 'Le funzionalità',
 };
 
 /* ================================================================== */
@@ -134,168 +150,94 @@ const PARTI: Record<1 | 2, string> = {
 /* ================================================================== */
 
 const slides: Slide[] = [
-  /* ===================== PARTE 1 — IL PRODOTTO ===================== */
+  /* ===================== PARTE 1 — L'APP =========================== */
   {
     parte: 1,
     apreParte: true,
     archetipo: 'AFFERMAZIONE',
     occhiello: 'Plainly',
-    titolo: 'Il totale lo paghi, il perché no',
-    frase: 'Una bolletta si subisce.',
+    titolo: 'Ti spiega il documento che hai in mano',
+    frase: 'Riga per riga.',
   },
   {
     parte: 1,
     archetipo: 'CONFRONTO',
-    titolo: 'Questo arriva a casa ogni tre mesi',
-    prima: {
-      intestazione: 'Quello che ricevi',
-      immagine: shot('02-before.png'),
-      testo: persona?.documento ?? 'Sette voci.',
-    },
-    dopo: {
-      intestazione: 'Quello che capisci',
-      testo: persona?.puntoDiBlocco ?? 'Il totale, e basta.',
-    },
+    titolo: 'Quello che arriva, e quello che resta',
+    prima: { intestazione: 'Il documento', testo: 'Sette voci, un totale.' },
+    dopo: { intestazione: 'Quello che capisci', testo: 'Il totale, e basta.' },
   },
   {
     parte: 1,
-    archetipo: 'NUMERO',
-    titolo: 'Una voce su sette resta inspiegata',
-    cifra: '1/7',
-    traduzione: 'Il tasso c\'è, la base di calcolo no.',
-    fonte: 'fixtures/estratto-conto',
+    archetipo: 'AFFERMAZIONE',
+    titolo: 'Spiega e calcola. Non consiglia',
+    frase: 'È un vincolo, non uno stile.',
+  },
+
+  /* ===================== PARTE 2 — LE FUNZIONALITÀ ================= */
+  {
+    parte: 2,
+    apreParte: true,
+    archetipo: 'AFFERMAZIONE',
+    occhiello: 'Le funzionalità',
+    titolo: 'Una domanda vera per ogni pagina',
+    frase: 'Mai un termine solo.',
   },
   {
-    parte: 1,
-    archetipo: 'SCHEMA',
-    titolo: 'Tre aree, domande vere come titoli',
-    etichette: ['costo della vita', 'lavoro', 'futuro'],
-  },
-  {
-    parte: 1,
+    parte: 2,
     archetipo: 'CONFRONTO',
     titolo: 'La stessa bolletta, riga per riga',
     prima: { intestazione: 'Prima', immagine: shot('02-before.png'), testo: 'Un totale.' },
     dopo: { intestazione: 'Dopo', immagine: shot('03-after.png'), testo: 'Da dove viene.' },
+    manca: SCHERMATE
+      ? undefined
+      : { cosa: 'le schermate prima e dopo', comando: 'npm run capture' },
   },
   {
-    parte: 1,
+    parte: 2,
     archetipo: 'NUMERO',
     titolo: 'Il canone pesa più di quanto sembri',
-    cifra: capability?.cifra ?? '27,51%',
-    traduzione: capability?.traduzione ?? 'Dieci euro e mezzo su trentotto.',
-    fonte: capability?.agente ?? 'core-engine',
-    manca: capability ? undefined : { cosa: 'la capability', comando: 'evidence/capability.json' },
+    cifra: capability?.cifra ?? '—',
+    traduzione: capability?.traduzione ?? 'Il peso di una voce sul totale.',
+    fonte: 'evidence/capability.json',
+    manca: capability
+      ? undefined
+      : { cosa: 'il calcolo reale', comando: 'il core non calcola ancora' },
   },
   {
-    parte: 1,
+    parte: 2,
+    previsto: true,
+    archetipo: 'SCHEMA',
+    titolo: 'Tre aree, e le domande che le aprono',
+    etichette: ['costo della vita', 'lavoro', 'futuro'],
+  },
+  {
+    parte: 2,
+    previsto: true,
+    archetipo: 'SCHEMA',
+    titolo: 'Guide ai documenti che ricevi davvero',
+    etichette: ['busta paga', 'bolletta', '730'],
+  },
+  {
+    parte: 2,
+    previsto: true,
+    archetipo: 'SCHEMA',
+    titolo: 'Quattro simulatori, formule vere',
+    etichette: ['inflazione', 'busta paga', 'emergenza', 'mutuo'],
+  },
+  {
+    parte: 2,
+    previsto: true,
     archetipo: 'SCHEMA',
     titolo: 'Ogni numero ha fonte e scadenza',
     etichette: ['ISTAT', 'INPS', 'Agenzia Entrate', 'Banca d\'Italia', 'EMMI'],
   },
   {
-    parte: 1,
-    archetipo: 'NUMERO',
-    titolo: 'Chi legge capisce di più, e lo misuriamo',
-    cifra: comprensione?.deltaPunteggio != null ? `+${comprensione.deltaPunteggio}` : '—',
-    traduzione: 'Stesse domande, prima e dopo.',
-    fonte: 'evidence/comprehension.json',
-    manca: comprensione ? undefined : { cosa: 'la misura', comando: 'evidence/comprehension.json' },
-  },
-  {
-    parte: 1,
+    parte: 2,
     archetipo: 'CONFRONTO',
     titolo: 'Quello che non fa',
     prima: { intestazione: 'Spiega e calcola' },
     dopo: { intestazione: 'Non consiglia' },
     elenco: ['Non legge documenti', 'Non consiglia prodotti', 'Campione ridotto'],
-  },
-
-  /* ===================== PARTE 2 — LA SQUADRA ====================== */
-  {
-    parte: 2,
-    apreParte: true,
-    archetipo: 'AFFERMAZIONE',
-    occhiello: 'La squadra',
-    titolo: 'Non l\'abbiamo scritta noi due',
-    frase: 'Ecco chi ci ha lavorato.',
-  },
-  {
-    parte: 2,
-    archetipo: 'SCHEMA',
-    titolo: 'Una cartella a testa, e nessuno sconfina',
-    squadra: true,
-    etichette: [],
-  },
-  {
-    parte: 2,
-    archetipo: 'NUMERO',
-    titolo: 'Il conflitto si scopre due ore dopo',
-    cifra: '2h',
-    traduzione: 'Il secondo sovrascrive il primo.',
-    fonte: 'agents/README.md',
-  },
-  {
-    parte: 2,
-    archetipo: 'SCHEMA',
-    titolo: 'Come lavorano insieme',
-    etichette: ['spec', 'implementa', 'verifica', 'commit', 'promuovi'],
-  },
-  {
-    parte: 2,
-    archetipo: 'CONFRONTO',
-    titolo: 'Dafne e Teo scrivono prima del codice',
-    prima: { intestazione: 'Fase 1', testo: 'Al futuro, dalla specifica.' },
-    dopo: { intestazione: 'Fase 2', testo: 'Al presente, verificato.' },
-  },
-  {
-    parte: 2,
-    archetipo: 'NUMERO',
-    titolo: 'Le skill sono i verbi che digiti',
-    cifra: '14',
-    traduzione: 'Una skill si digita, un agente lavora.',
-    fonte: '.claude/skills/',
-  },
-  {
-    parte: 2,
-    archetipo: 'CONSEGNA',
-    titolo: 'Guardate il portatile',
-    consegnaDemo: 'Greta blocca la build',
-  },
-  {
-    parte: 2,
-    archetipo: 'NUMERO',
-    titolo: 'Tre divieti in una riga di testo',
-    cifra: '3',
-    traduzione: 'Consigliare, scegliere, comparare: bloccati al salvataggio.',
-    fonte: 'tests/lessico-ui.test.ts',
-  },
-  {
-    parte: 2,
-    archetipo: 'CONFRONTO',
-    titolo: 'Prima a mano, poi Pia',
-    prima: { intestazione: 'Conferma umana', testo: 'A ogni passaggio.' },
-    dopo: { intestazione: 'Orchestrato', testo: 'Quando smetteva di dire qualcosa.' },
-  },
-  {
-    parte: 2,
-    archetipo: 'NUMERO',
-    titolo: 'Il lavoro è tracciato, non raccontato',
-    cifra: nCommit !== null ? String(nCommit) : '—',
-    traduzione: 'Commit mappati sulla cartella, quindi sull\'agente.',
-    fonte: 'evidence/process.json',
-    manca: nCommit !== null ? undefined : { cosa: 'la traccia', comando: 'npm run agents:trace' },
-  },
-  {
-    parte: 2,
-    archetipo: 'NUMERO',
-    titolo: 'Dopo il freeze i contratti non si toccano',
-    cifra: evoluzione?.tagPresente ? String(evoluzione.contrattiModificatiDopoFreeze) : '—',
-    traduzione: 'Ore di pressione, nessuna interfaccia rinegoziata.',
-    fonte: 'evidence/evolution.json',
-    manca: evoluzione?.tagPresente
-      ? undefined
-      : { cosa: 'la prova di evoluzione', comando: 'npm run evolution:proof' },
   },
 ];
 
@@ -506,16 +448,35 @@ const CSS = `
 html,body{margin:0;height:100%;background:var(--fondo);color:var(--testo);
 font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
 font-size:22px;line-height:1.5;overflow:hidden}
-.slide{display:none;height:100vh;width:100vw;padding:9vh 8vw 13vh;
-flex-direction:column;justify-content:center}
-.slide.attiva{display:flex}
+.slide{display:none;height:100vh;width:100vw;padding:14vh 7vw 14vh;position:relative}
+.slide.attiva{display:flex;flex-direction:column;justify-content:center}
+/* Le slide di contenuto usano DUE COLONNE: titolo a sinistra, contenuto a
+   destra. A colonna singola metà schermo resta nera e la slide sembra non
+   finita — che a cinque metri si legge come sciatteria, non come rigore. */
+.slide.due-colonne.attiva{display:grid;grid-template-columns:1fr 1fr;
+align-items:center;column-gap:5vw;align-content:center}
+.slide.due-colonne .testa{align-self:center}
+.slide.due-colonne h1{margin-bottom:0;max-width:none}
+.corpo{min-width:0}
+/* Le slide che aprono una parte hanno una massa di colore: senza, a cinque
+   metri sono indistinguibili da tutte le altre e il cambio di sezione non
+   si vede. Il chevron grande è il marchio, non una decorazione. */
+.slide.apre::after{content:'>';position:absolute;right:4vw;bottom:6vh;
+font-size:46vh;font-weight:800;line-height:.8;color:var(--purple);
+opacity:.16;pointer-events:none;z-index:0}
+.slide.apre::before{content:'';position:absolute;left:0;top:0;bottom:0;
+width:1.2vw;background:linear-gradient(180deg,var(--purple),var(--rose))}
+.slide.apre h1{font-size:clamp(3rem,7vw,6rem)}
+.slide.apre .frase{font-size:clamp(1.7rem,3.2vw,2.6rem);color:var(--purple-light)}
+.slide > *{position:relative;z-index:1}
 #marchio{position:fixed;top:5vh;left:8vw;display:flex;align-items:baseline;gap:.6rem;z-index:5}
 #chevron{color:var(--purple);font-size:2rem;font-weight:800;line-height:1}
 #marchio span{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:#fff}
-.occhiello{text-transform:uppercase;letter-spacing:.28em;font-size:.82rem;
-font-weight:700;color:var(--purple-light);margin:0 0 1.6rem}
-h1{font-size:clamp(2.4rem,5.4vw,4.6rem);letter-spacing:-.03em;line-height:1.05;
-margin:0 0 2rem;max-width:18ch}
+.occhiello{text-transform:uppercase;letter-spacing:.28em;font-size:.9rem;
+font-weight:700;color:var(--purple-light);margin:0 0 1.2rem;
+padding-bottom:.9rem;border-bottom:2px solid var(--purple);display:inline-block}
+h1{font-size:clamp(2.6rem,5.6vw,4.8rem);letter-spacing:-.03em;line-height:1.03;
+margin:0 0 1.8rem;max-width:17ch;text-wrap:balance}
 h3{font-size:1.05rem;text-transform:uppercase;letter-spacing:.16em;
 color:var(--purple-light);margin:0 0 1rem}
 .frase{font-size:clamp(1.4rem,2.6vw,2.1rem);margin:0;max-width:26ch}
@@ -541,6 +502,12 @@ border-left:4px solid var(--purple);border-radius:12px;padding:.9rem 1.3rem;
 display:flex;flex-direction:column;gap:.15rem}
 .membro .nome{font-size:1.5rem;font-weight:800;letter-spacing:-.02em}
 .membro .ruolo{font-size:.95rem;color:var(--purple-light)}
+/* Marcatore di ciò che non è ancora costruito: rosa, come tutto
+   ciò che è escluso o limitato. Deve vedersi a cinque metri. */
+.previsto{display:inline-block;vertical-align:middle;margin-left:1rem;
+background:var(--rose);color:var(--ink);font-size:.9rem;font-weight:800;
+text-transform:uppercase;letter-spacing:.16em;padding:.3em .8em;border-radius:6px;
+line-height:1}
 .consegna{font-size:clamp(1.6rem,3vw,2.4rem);color:var(--purple-light);margin:0}
 .elenco{list-style:none;padding:0;margin:2.5rem 0 0;font-size:1.2rem}
 .elenco li{margin-bottom:.7rem}
@@ -569,6 +536,9 @@ document.addEventListener('keydown',e=>{
  else if(e.key==='Home')m(0); else if(e.key==='End')m(s.length-1);
  else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}});
 document.addEventListener('click',()=>m(i+1));
+// Senza questo, aprire il deck su #5 dopo essere stati su #1 non fa niente:
+// il documento non si ricarica e la slide resta quella di prima.
+window.addEventListener('hashchange',()=>m(parseInt(location.hash.slice(1)||'1',10)-1));
 m(parseInt(location.hash.slice(1)||'1',10)-1);
 `;
 
@@ -581,10 +551,12 @@ const html = `<!doctype html>
 <div id="marchio"><span id="chevron">&gt;</span><span>Accenture</span></div>
 ${slides
   .map(
-    (s) => `<section class="slide" data-parte="${esc(PARTI[s.parte])}">
-  ${s.occhiello ? `<p class="occhiello">${esc(s.occhiello)}</p>` : ''}
-  <h1>${esc(s.titolo)}</h1>
-  ${corpo(s)}
+    (s) => `<section class="slide${s.apreParte ? ' apre' : ' due-colonne'}" data-parte="${esc(PARTI[s.parte])}">
+  <div class="testa">
+    ${s.occhiello ? `<p class="occhiello">${esc(s.occhiello)}</p>` : ''}
+    <h1>${esc(s.titolo)}${s.previsto ? '<span class="previsto">previsto</span>' : ''}</h1>
+  </div>
+  <div class="corpo">${corpo(s)}</div>
 </section>`,
   )
   .join('\n')}

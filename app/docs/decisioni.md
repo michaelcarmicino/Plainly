@@ -51,7 +51,7 @@ identico ovunque, anche offline, anche sul portatile che proietta.
 
 ### D05 · Tutto il testo utente in un registro unico
 
-**Scelta.** `app/src/ui/stringheUtente.ts` contiene ogni parola che l'utente
+**Scelta.** `app/src/ui/testi.ts` contiene ogni parola che l'utente
 legge. I componenti non contengono testo letterale e stampano via `<Testo>`.
 
 **Perché.** Dà al guardrail **un punto unico da scandire**. Testo sparso in

@@ -1,7 +1,7 @@
 {
-  "generatoIl": "2026-09-14T13:09:53.743Z",
+  "generatoIl": "2026-09-14T13:32:32.164Z",
   "durataPrevista": 600,
-  "totaleStimato": 606,
+  "totaleStimato": 330,
   "squadra": [
     {
       "persona": "Cora",
@@ -43,43 +43,43 @@
   "slide": [
     {
       "n": 1,
-      "parte": "Il prodotto",
+      "parte": "L'app",
       "archetipo": "AFFERMAZIONE",
-      "titolo": "Il totale lo paghi, il perché no",
+      "titolo": "Ti spiega il documento che hai in mano",
       "parole": 12,
       "secondi": 23,
       "consegnaDemo": null
     },
     {
       "n": 2,
-      "parte": "Il prodotto",
+      "parte": "L'app",
       "archetipo": "CONFRONTO",
-      "titolo": "Questo arriva a casa ogni tre mesi",
-      "parole": 19,
-      "secondi": 39,
+      "titolo": "Quello che arriva, e quello che resta",
+      "parole": 20,
+      "secondi": 40,
       "consegnaDemo": null
     },
     {
       "n": 3,
-      "parte": "Il prodotto",
-      "archetipo": "NUMERO",
-      "titolo": "Una voce su sette resta inspiegata",
-      "parole": 15,
-      "secondi": 30,
+      "parte": "L'app",
+      "archetipo": "AFFERMAZIONE",
+      "titolo": "Spiega e calcola. Non consiglia",
+      "parole": 11,
+      "secondi": 22,
       "consegnaDemo": null
     },
     {
       "n": 4,
-      "parte": "Il prodotto",
-      "archetipo": "SCHEMA",
-      "titolo": "Tre aree, domande vere come titoli",
-      "parole": 11,
-      "secondi": 30,
+      "parte": "Le funzionalità",
+      "archetipo": "AFFERMAZIONE",
+      "titolo": "Una domanda vera per ogni pagina",
+      "parole": 12,
+      "secondi": 23,
       "consegnaDemo": null
     },
     {
       "n": 5,
-      "parte": "Il prodotto",
+      "parte": "Le funzionalità",
       "archetipo": "CONFRONTO",
       "titolo": "La stessa bolletta, riga per riga",
       "parole": 13,
@@ -88,16 +88,43 @@
     },
     {
       "n": 6,
-      "parte": "Il prodotto",
+      "parte": "Le funzionalità",
       "archetipo": "NUMERO",
       "titolo": "Il canone pesa più di quanto sembri",
-      "parole": 14,
-      "secondi": 29,
+      "parole": 15,
+      "secondi": 30,
       "consegnaDemo": null
     },
     {
       "n": 7,
-      "parte": "Il prodotto",
+      "parte": "Le funzionalità",
+      "archetipo": "SCHEMA",
+      "titolo": "Tre aree, e le domande che le aprono",
+      "parole": 13,
+      "secondi": 32,
+      "consegnaDemo": null
+    },
+    {
+      "n": 8,
+      "parte": "Le funzionalità",
+      "archetipo": "SCHEMA",
+      "titolo": "Guide ai documenti che ricevi davvero",
+      "parole": 10,
+      "secondi": 29,
+      "consegnaDemo": null
+    },
+    {
+      "n": 9,
+      "parte": "Le funzionalità",
+      "archetipo": "SCHEMA",
+      "titolo": "Quattro simulatori, formule vere",
+      "parole": 9,
+      "secondi": 28,
+      "consegnaDemo": null
+    },
+    {
+      "n": 10,
+      "parte": "Le funzionalità",
       "archetipo": "SCHEMA",
       "titolo": "Ogni numero ha fonte e scadenza",
       "parole": 13,
@@ -105,120 +132,12 @@
       "consegnaDemo": null
     },
     {
-      "n": 8,
-      "parte": "Il prodotto",
-      "archetipo": "NUMERO",
-      "titolo": "Chi legge capisce di più, e lo misuriamo",
-      "parole": 14,
-      "secondi": 29,
-      "consegnaDemo": null
-    },
-    {
-      "n": 9,
-      "parte": "Il prodotto",
+      "n": 11,
+      "parte": "Le funzionalità",
       "archetipo": "CONFRONTO",
       "titolo": "Quello che non fa",
       "parole": 17,
       "secondi": 37,
-      "consegnaDemo": null
-    },
-    {
-      "n": 10,
-      "parte": "La squadra",
-      "archetipo": "AFFERMAZIONE",
-      "titolo": "Non l'abbiamo scritta noi due",
-      "parole": 12,
-      "secondi": 23,
-      "consegnaDemo": null
-    },
-    {
-      "n": 11,
-      "parte": "La squadra",
-      "archetipo": "SCHEMA",
-      "titolo": "Una cartella a testa, e nessuno sconfina",
-      "parole": 7,
-      "secondi": 40,
-      "consegnaDemo": null
-    },
-    {
-      "n": 12,
-      "parte": "La squadra",
-      "archetipo": "NUMERO",
-      "titolo": "Il conflitto si scopre due ore dopo",
-      "parole": 13,
-      "secondi": 28,
-      "consegnaDemo": null
-    },
-    {
-      "n": 13,
-      "parte": "La squadra",
-      "archetipo": "SCHEMA",
-      "titolo": "Come lavorano insieme",
-      "parole": 8,
-      "secondi": 27,
-      "consegnaDemo": null
-    },
-    {
-      "n": 14,
-      "parte": "La squadra",
-      "archetipo": "CONFRONTO",
-      "titolo": "Dafne e Teo scrivono prima del codice",
-      "parole": 18,
-      "secondi": 38,
-      "consegnaDemo": null
-    },
-    {
-      "n": 15,
-      "parte": "La squadra",
-      "archetipo": "NUMERO",
-      "titolo": "Le skill sono i verbi che digiti",
-      "parole": 15,
-      "secondi": 30,
-      "consegnaDemo": null
-    },
-    {
-      "n": 16,
-      "parte": "La squadra",
-      "archetipo": "CONSEGNA",
-      "titolo": "Guardate il portatile",
-      "parole": 7,
-      "secondi": 14,
-      "consegnaDemo": "Greta blocca la build"
-    },
-    {
-      "n": 17,
-      "parte": "La squadra",
-      "archetipo": "NUMERO",
-      "titolo": "Tre divieti in una riga di testo",
-      "parole": 14,
-      "secondi": 29,
-      "consegnaDemo": null
-    },
-    {
-      "n": 18,
-      "parte": "La squadra",
-      "archetipo": "CONFRONTO",
-      "titolo": "Prima a mano, poi Pia",
-      "parole": 16,
-      "secondi": 36,
-      "consegnaDemo": null
-    },
-    {
-      "n": 19,
-      "parte": "La squadra",
-      "archetipo": "NUMERO",
-      "titolo": "Il lavoro è tracciato, non raccontato",
-      "parole": 13,
-      "secondi": 28,
-      "consegnaDemo": null
-    },
-    {
-      "n": 20,
-      "parte": "La squadra",
-      "archetipo": "NUMERO",
-      "titolo": "Dopo il freeze i contratti non si toccano",
-      "parole": 15,
-      "secondi": 30,
       "consegnaDemo": null
     }
   ]

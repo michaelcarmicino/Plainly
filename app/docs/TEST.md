@@ -3,7 +3,7 @@
 > **File generato.** Si rigenera con `npm run test:referto`. Le fonti sono i
 > file in `docs/test/`, scritti dall'agente `tester`.
 >
-> Ultima generazione: 2026-09-14T11:22:37.835Z
+> Ultima generazione: 2026-09-14T13:21:59.102Z
 
 ## Quadro d'insieme
 

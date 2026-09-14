@@ -174,7 +174,8 @@ idee, e va spezzata invece che compressa.
 ## Definition of done
 
 - [ ] `npm --prefix app run deck` genera `presentation/deck.html`
-- [ ] `npm --prefix app run deck:short` genera la versione a 8 slide
+- [ ] `npm --prefix app run deck -- --durata 300` verifica il ritmo su una
+      durata più corta e propone quali slide unire
 - [ ] il file si apre da `file://` con la rete disattivata e naviga con le frecce
 - [ ] leggibile proiettato: corpo grande, contrasto 4.5:1, palette dell'evento
 - [ ] nessuna slide contiene un numero che non provenga da `evidence/`

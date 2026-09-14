@@ -36,7 +36,7 @@ prodotto perde una capability (l'utente non carica il suo documento); non
 perde nulla della tesi che deve dimostrare.
 
 Questo limite è **dichiarato**, non nascosto: compare nella UI
-(`limiteNoParsing` in `app/src/ui/stringheUtente.ts`), nella sezione «Vincoli
+(`limiteNoParsing` in `app/src/ui/testi.ts`), nella sezione «Vincoli
 e limiti» del README e nella slide 9 del deck.
 
 ## Responsabilità (se venisse attivato)
