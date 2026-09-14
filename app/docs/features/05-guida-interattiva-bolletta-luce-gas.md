@@ -158,6 +158,28 @@ sull'etichetta** e quindi è un dato del documento.
 carta (`78,76 €`, `160 kWh`), come già fa
 `estratto-conto-trimestrale.input.json`.
 
+> **Blocco da sciogliere, non un dettaglio: le proporzioni della fixture.**
+> Gli importi di un facsimile non sono un dato «vivo» — sono i numeri di un
+> documento dichiarato, non un'affermazione sul mondo — ma **il numero che la
+> persona porta via sì**: «quasi metà della bolletta non è energia» è vero
+> solo se le proporzioni della fixture assomigliano a quelle di una bolletta
+> reale. Se le sbagliamo, la schermata è aritmeticamente corretta e
+> **fattualmente fuorviante**, che è il difetto peggiore fra i due.
+>
+> Serve che una persona verifichi, su una bolletta domestica vera e anonima o
+> sui dati pubblicati da ARERA, **due cose sole**: che la spesa per la materia
+> energia stia intorno alla metà del totale, e che l'IVA sull'uso domestico
+> sia al **10%** — l'aliquota su cui è costruita `voce-05`. Va dichiarato il
+> periodo di riferimento, come chiede la sezione 7 del documento d'origine.
+>
+> **L'architettura è studiata perché questo blocco non fermi
+> l'implementazione**: il core riceve il documento come *parametro* e non
+> conosce nessuna costante, quindi codice e test si scrivono e passano subito
+> sui numeri qui dichiarati. Se le proporzioni vanno corrette, cambiano la
+> fixture e i valori attesi nei commenti del test — non una riga di logica.
+> Ferma però la demo con numeri veri: finché non è verificato, i `78,76 €` di
+> questa fixture sono un facsimile plausibile, non una bolletta misurata.
+>
 > **`oneri di sistema` finisce in `altro`, e questa è una scelta dichiarata.**
 > `CategoriaVoce` non ha un valore che descriva gli oneri di sistema. Metterli
 > in `imposta` sarebbe comodo e **sarebbe falso**: non sono imposte, sono
