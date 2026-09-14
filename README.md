@@ -38,8 +38,7 @@ oppure `npm run prepara`.
 
 ## Parte 1 — La squadra di agenti che ha costruito l'app
 
-*Presentazione: [`presentation/slide-squadra.html`](presentation/slide-squadra.html)
-· [`presentation/deck-metodo.html`](presentation/deck-metodo.html)*
+*Presentazione: [`presentation/deck.html`](presentation/deck.html), parte 2*
 
 ### Il rischio non è il codice
 
@@ -131,7 +130,7 @@ sull'agente che la possiede. Non è scritto a mano.
 
 ## Parte 2 — Le funzionalità di prodotto
 
-*Presentazione: [`presentation/deck-prodotto.html`](presentation/deck-prodotto.html)
+*Presentazione: [`presentation/deck.html`](presentation/deck.html), parte 1
 · specifiche vive in [`app/docs/FUNZIONALITA.md`](app/docs/FUNZIONALITA.md)*
 
 ### Tre aree, e domande vere come titoli

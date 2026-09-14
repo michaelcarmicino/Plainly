@@ -38,7 +38,7 @@ dell'interfaccia.
 ## Vincoli specifici
 
 - **Nessun testo letterale nei componenti.** Ogni parola che l'utente legge
-  sta in `app/src/ui/stringheUtente.ts`. Serve a dare al guardrail un punto
+  sta in `app/src/ui/testi.ts`. Serve a dare al guardrail un punto
   unico da scandire: un testo sparso in venti file non è controllabile.
 - **Ogni testo passa da `<Testo>`**, che applica il guardrail anche a runtime.
 - **Offline totale**: font di sistema, nessun `@import`, nessun `<link>` a

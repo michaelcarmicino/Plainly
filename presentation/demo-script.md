@@ -1,6 +1,6 @@
 # Copione della demo — due voci
 
-> Agente proprietario: [`08-demo-director`](../agents/08-demo-director.md).
+> Agente proprietario: [`08-demo-director`](../.claude/agents/08-demo-director.md).
 > Scheletro a T+0:15. Si compila dopo il feature freeze (T+2:45): un copione
 > scritto su un prodotto che sta ancora cambiando va riscritto.
 
@@ -64,7 +64,8 @@ valuta l'uso di Claude Code per costruire software, non solo il prodotto.
 
 ## Timing — versione corta (5 minuti = 300 s)
 
-Deck generato con `npm --prefix app run deck:short` (slide 7 e 8 unite, 8 slide).
+Si tagliano le slide che il generatore segnala come più brevi dello stesso
+tipo: le propone da solo quando il totale sfora la durata prevista.
 
 | # | Voce | Sec |
 | --- | --- | --- |
@@ -86,7 +87,7 @@ Deck generato con `npm --prefix app run deck:short` (slide 7 e 8 unite, 8 slide)
 Scritto qui perché nessuno cerchi un terminale mentre parla.
 
 1. Browser a schermo intero su `presentation/deck.html` (tasto `f`)
-2. Editor aperto su `app/src/ui/stringheUtente.ts`, cursore già sulla riga giusta
+2. Editor aperto su `app/src/ui/testi.ts`, cursore già sulla riga giusta
 3. Terminale in `app/`, con `npm test` già digitato ma **non** inviato
 4. Seconda scheda del browser sull'app in `npm run dev`
 5. **Wi-Fi spento**: è parte della dimostrazione, non un incidente
@@ -99,7 +100,7 @@ Scritto qui perché nessuno cerchi un terminale mentre parla.
 
 1. «Il vincolo è: il prodotto spiega e calcola, non consiglia. Scritto in un
    documento è una speranza. Vediamo cos'è qui.»
-2. Incolla in `stringheUtente.ts`:
+2. Incolla in `testi.ts`:
    `demoRotta: 'Ti consigliamo di scegliere il conto migliore.',`
 3. Salva. **L'hook `PostToolUse` parte da solo** e segnala le tre violazioni.
 4. `npm test` → rosso, con il termine, il motivo e la riformulazione ammessa.

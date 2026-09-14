@@ -3,7 +3,7 @@
 > **File generato.** Si rigenera con `npm run pm:piano`. Le fonti sono i
 > file in `docs/backlog/`.
 >
-> Ultima generazione: 2026-09-14T11:50:14.556Z
+> Ultima generazione: 2026-09-14T13:22:09.035Z
 
 ## Stato
 

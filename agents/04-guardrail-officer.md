@@ -97,7 +97,7 @@ valore atteso calcolato a mano, massimo 150 righe per file) sono in
 
 ## Come romperla in demo
 
-In `app/src/ui/stringheUtente.ts` aggiungere:
+In `app/src/ui/testi.ts` aggiungere:
 
 ```ts
 demoRotta: 'Ti consigliamo di scegliere il conto migliore.',
