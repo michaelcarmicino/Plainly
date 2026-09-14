@@ -47,7 +47,7 @@ infrastruttura, non cartelle di progetto (`app/docs/decisioni.md`, D01).
 | --- | --- | --- |
 | Lancia Claude Code da | la **root** del repository | **`cd app && claude`** |
 | Tocca | `app/types/`, `agents/`, `.claude/`, guardrail, fixture, script | solo `app/src/`, `app/tests/`, `app/docs/features/` |
-| Vede | tutti e 9 gli agenti, la skill `/nuovo-agente` | 4 agenti di costruzione, 4 skill |
+| Vede | tutti gli agenti (00–10), la skill `/nuovo-agente` | 4 agenti di costruzione + doc-funzionale + pm · 10 skill (4 principali + 6 di supporto) |
 | Non deve | — | toccare contratti, agenti, hook, skill |
 
 **Il product developer non ha bisogno di sapere quanti agenti esistono né come
@@ -92,6 +92,7 @@ da due agenti che scrivono lo stesso file — e falliscono in silenzio.
 
 ```bash
 echo "congelati a T+1:40" > .contracts-frozen
+git add .contracts-frozen && git commit -m "chore(architect): congela i contratti"
 ```
 
 Da quel momento un hook `PreToolUse` **blocca** ogni scrittura sotto

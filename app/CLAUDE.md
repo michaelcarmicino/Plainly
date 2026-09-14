@@ -129,7 +129,7 @@ nessuno vede finché qualcuno non confronta con il documento di carta.
 
 ## Che cosa è caricato da questa radice
 
-**Quattro skill** — sono i verbi che digiti tu. Nessuna parte da sola.
+**Quattro skill principali** — il ciclo completo. Nessuna parte da sola. Sei skill di supporto (/avvia, /guarda, /diagnosi, /annulla, /prepara, /promuovi) sono descritte in [`COME-LAVORARE.md`](COME-LAVORARE.md) — leggilo quando qualcosa si rompe.
 
 | Skill | A cosa serve |
 | --- | --- |
