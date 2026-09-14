@@ -10,3 +10,7 @@ playwright-report/
 # annullano l'esclusione globale solo per questo repository.
 !.claude/
 !app/.claude/
+
+# Stato interno di Claude Code, non configurazione di progetto: sono
+# repository git annidati e non vanno versionati qui.
+.claude/worktrees/
