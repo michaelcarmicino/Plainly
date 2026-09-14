@@ -1,11 +1,11 @@
 /**
  * UI — agente ui-builder. Possiede app/src/ui/ in esclusiva.
- * Non contiene testo letterale: ogni stringa passa da stringheUtente.ts,
+ * Non contiene testo letterale: ogni stringa passa da testi.ts,
  * così il guardrail ha un punto unico da controllare.
  * Nessuna chiamata di rete, nessun font remoto.
  */
 
-import { t } from './stringheUtente.ts';
+import { t } from './testi.ts';
 import { Testo } from './Testo.tsx';
 
 function Sezione({

@@ -2,14 +2,14 @@
  * IL TEST CHE ROMPE LA BUILD (slide 6 della presentazione).
  *
  * Scandisce TUTTE le stringhe rivolte all'utente:
- *   1. il registro app/src/ui/stringheUtente.ts
+ *   1. il registro app/src/ui/testi.ts
  *   2. le etichette e le spiegazioni nelle fixture (finiscono a schermo)
  *   3. i letterali di testo dentro app/src/ui/*.tsx (testo fuori registro)
  *   4. gli identificatori del codice sorgente
  * e FALLISCE se trova anche una sola formulazione prescrittiva.
  *
  * COME FARLO FALLIRE DI PROPOSITO, DAL VIVO:
- *   aggiungere in app/src/ui/stringheUtente.ts una riga come
+ *   aggiungere in app/src/ui/testi.ts una riga come
  *     demoRotta: 'Ti consigliamo di scegliere il conto migliore.',
  *   poi `npm test`. L'hook PostToolUse lo esegue già da solo dopo l'Edit.
  */
@@ -24,7 +24,7 @@ import {
   formattaViolazioni,
   RADICI_VIETATE_NEGLI_IDENTIFICATORI,
 } from '../src/guardrails/index.ts';
-import { STRINGHE_UTENTE } from '../src/ui/stringheUtente.ts';
+import { STRINGHE_UTENTE } from '../src/ui/testi.ts';
 
 const APP = fileURLToPath(new URL('..', import.meta.url));
 

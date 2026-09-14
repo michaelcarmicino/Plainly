@@ -6,7 +6,7 @@
  */
 
 import { verificaTestoUtente } from '../guardrails/index.ts';
-import { t, type ChiaveStringaUtente } from './stringheUtente.ts';
+import { t, type ChiaveStringaUtente } from './testi.ts';
 
 export function Testo({ chiave }: { chiave: ChiaveStringaUtente }) {
   const testo = t(chiave);

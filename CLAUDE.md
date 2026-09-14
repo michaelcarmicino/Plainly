@@ -1,99 +1,131 @@
-# Conti Chiari — regole di progetto
+# Conti Chiari — governo del progetto
 
-Valgono per **ogni** agente e ogni skill. Non sono preferenze di stile: sono
-i vincoli dell'hackathon, e alcune sono rese eseguibili da hook e test.
+Questo file contiene **solo le regole di governo**: vincoli, ruoli, proprietà
+delle directory, scadenze, comandi.
+
+**Come si scrive il codice sta in [`app/CLAUDE.md`](app/CLAUDE.md)** e nelle
+regole caricate da `app/.claude/rules/`. Non duplicare qui quelle regole.
+
+Chi sono gli agenti e perché la decomposizione è questa:
+[`agents/README.md`](agents/README.md).
+
+---
 
 ## I tre vincoli non negoziabili
 
 ### 1. Offline a runtime
 
 Il prodotto **non chiama LLM né API esterne**. Claude Code è lo strumento con
-cui costruiamo, non una dipendenza di ciò che costruiamo.
-
-A fine giornata l'app deve girare con il **Wi-Fi spento**: nessun `fetch`
-verso l'esterno, nessuna chiave, nessun CDN, nessun font remoto. Font di
-sistema o incorporati. La build è statica e si apre da `file://`
-(`base: './'` in `vite.config.ts`).
+cui costruiamo, non una dipendenza di ciò che costruiamo. A fine giornata
+l'app deve girare con il **Wi-Fi spento**: nessun fetch, nessuna chiave,
+nessun CDN, nessun font remoto.
 
 ### 2. Spiega e calcola, non consiglia
 
-Vietato produrre raccomandazioni di investimento, consulenza personalizzata o
-indicazioni su cosa comprare, vendere o scegliere.
+Vietate raccomandazioni di investimento, consulenza personalizzata, indicazioni
+su cosa comprare, vendere o scegliere. **Nessuna semplificazione può alterare
+il significato dell'informazione originale.**
 
-**Nessuna semplificazione può alterare il significato dell'informazione
-originale.** In particolare `etichettaOriginale` non si riscrive mai.
+Vale anche nei nomi: niente `suggerisci`, `consiglia`, `migliore`,
+`raccomanda` in nessun identificatore.
 
-Vale anche nei **nomi**: niente `suggerisci`, `consiglia`, `migliore`,
-`raccomanda` in nessun identificatore, da nessuna parte nel codice.
-
-Questa regola è eseguibile: `app/src/guardrails/verificaTestoUtente.ts`,
-`app/tests/lessico-ui.test.ts`, hook `PostToolUse`. Se il testo che stai
-scrivendo non passa, la riformulazione ammessa è accanto al termine vietato
-in `app/src/guardrails/lessico.ts`.
+Il vincolo è **eseguibile**: `app/src/guardrails/`, `app/tests/lessico-ui.test.ts`,
+hook `PostToolUse` su entrambe le radici.
 
 ### 3. Struttura di consegna
 
-Esattamente quattro elementi **valutati** nella root: `app/`, `agents/`,
-`presentation/`, `README.md`. Mai nuove cartelle di progetto nella root: le
-note di lavoro vanno in `app/docs/`.
-(`CLAUDE.md`, `.claude/` e i `.gitignore` sono infrastruttura di Claude Code,
-non cartelle di progetto — vedi `app/docs/decisioni.md`.)
+Quattro elementi valutati nella root: `app/`, `agents/`, `presentation/`,
+`README.md`. **Mai nuove cartelle di progetto nella root**: le note di lavoro
+vanno in `app/docs/`. `CLAUDE.md`, `.claude/` e i `.gitignore` sono
+infrastruttura, non cartelle di progetto (`app/docs/decisioni.md`, D01).
 
-## Dipendenze consentite
+---
 
-`vite`, `react`, `react-dom`, `typescript`, `vitest`, `@playwright/test`
-(più `@vitejs/plugin-react` e i `@types` necessari). **Nient'altro.**
-Ogni dipendenza in più è un rischio di integrazione in più.
+## I due ruoli, e le due radici Claude Code
 
-## Il team non è simmetrico
+| | Architetto | Product developer |
+| --- | --- | --- |
+| Lancia Claude Code da | la **root** del repository | **`cd app && claude`** |
+| Tocca | `app/types/`, `agents/`, `.claude/`, guardrail, fixture, script | solo `app/src/`, `app/tests/`, `app/docs/features/` |
+| Vede | tutti e 9 gli agenti, la skill `/nuovo-agente` | 4 agenti di costruzione, 4 skill |
+| Non deve | — | toccare contratti, agenti, hook, skill |
 
-- **L'architetto** tocca contratti (`app/types/`), agenti (`agents/`), hook e
-  skill (`.claude/`), guardrail.
-- **Il product developer** non tocca niente di tutto questo. Interagisce con
-  il progetto **solo attraverso le skill** e non ha bisogno di sapere quanti
-  agenti esistono né come si chiamano: **il routing verso l'agente giusto lo
-  fa la skill**.
+**Il product developer non ha bisogno di sapere quanti agenti esistono né come
+si chiamano: il routing verso l'agente giusto lo fa la skill.**
 
-Modello mentale: **una skill è il verbo che l'umano digita, un subagent è il
-lavoratore con contesto isolato e una directory in esclusiva.**
+Modello: **una skill è il verbo che l'umano digita, un subagent è il lavoratore
+con contesto isolato e una directory in esclusiva.**
 
-Percorso standard del product developer:
-`/spec` → `/implementa` → `/verifica` → `/evidenza` → commit.
+Le skill e i subagent si risolvono sulla **radice della sessione**, non sul
+repository: per questo la configurazione è duplicata in `app/.claude/`. Questo
+`CLAUDE.md` viene letto comunque da entrambe le radici, risalendo l'albero,
+quindi i vincoli di governo arrivano a tutti e due.
 
-## Un agente, una directory
+---
 
-Ogni agente possiede una directory **in esclusiva** e non scrive fuori.
-Se il lavoro richiede di uscire dal perimetro: **fermarsi e segnalarlo**, non
-aggirare. La mappa è in `agents/README.md`, la versione leggibile a macchina
-in `app/scripts/mappa-agenti.mjs`.
+## Proprietà delle directory
+
+Un agente possiede una directory **in esclusiva** e non scrive fuori. Se il
+lavoro richiede di uscire dal perimetro: **fermarsi e segnalarlo**, non
+aggirare. Versione leggibile a macchina: `app/scripts/mappa-agenti.mjs`.
+
+| Directory | Agente | Radice |
+| --- | --- | --- |
+| `app/src/core/` | `01-core-engine` | entrambe |
+| `app/src/ingest/` | `02-data-ingest` — **non attivato** | — |
+| `app/src/ui/` | `03-ui-builder` | entrambe |
+| `app/src/guardrails/`, `app/tests/` | `04-guardrail-officer` | entrambe |
+| `app/src/assessment/` | `05-impact-analyst` | entrambe |
+| `app/types/`, `app/fixtures/`, `app/scripts/`, `app/docs/`, `agents/`, `.claude/` | `00-architect` | root |
+| `presentation/evidence/`, `presentation/screenshots/`, `app/tests/e2e/` | `06-evidence-collector` | root |
+| `presentation/build-deck.ts`, `presentation/deck.html` | `07-deck-builder` | root |
+| `presentation/demo-script.md` | `08-demo-director` | root |
 
 Motivo: in un hackathon i conflitti non nascono dal codice difficile, nascono
 da due agenti che scrivono lo stesso file — e falliscono in silenzio.
 
-## I contratti si congelano a T+1:40
+---
 
-Da quel momento esiste `.contracts-frozen` nella root e un hook `PreToolUse`
-**blocca** ogni scrittura sotto `app/types/`.
+## Le due scadenze
 
-Dopo il congelamento i contratti **si estendono, non si riscrivono**: campo
-opzionale o tipo nuovo nel file dell'agente che ne ha bisogno. Se una firma è
-davvero sbagliata è una decisione di squadra: **rivolgersi all'architetto**,
+### T+1:40 — congelamento dei contratti
+
+```bash
+echo "congelati a T+1:40" > .contracts-frozen
+```
+
+Da quel momento un hook `PreToolUse` **blocca** ogni scrittura sotto
+`app/types/`, da entrambe le radici. I contratti **si estendono, non si
+riscrivono**: campo opzionale o tipo nuovo nel file dell'agente che ne ha
+bisogno. Una deroga è una decisione di squadra: **rivolgersi all'architetto**,
 annotare in `app/docs/decisioni.md`, poi ricongelare.
 
-Il numero «contratti modificati dopo il freeze» finisce in slide 8.
+### T+2:45 — feature freeze
 
-## Convenzioni di dominio
+```bash
+git tag freeze && git switch -c evolution-proof
+```
 
-- Importi: **interi in centesimi** (`...Cent`). Nessun float nel dominio.
-- Percentuali: **punti base** (`...Bp`), 1% = 100 bp.
-- Formato italiano (`1.234,56` · `5,90%`): solo nel layer di presentazione,
-  con `app/src/core/formatoIt.ts`. Mai `Intl` con locale variabile.
-- Il core è **puro**: niente `Date.now()`, niente random, niente I/O. È ciò
-  che rende le fixture una verità verificabile.
-- Ciò che non si sa calcolare si **dichiara** (`nonClassificate`), non si
-  assorbe in «altro» in silenzio.
+Il branch `evolution-proof` non viene mai unito: la build della demo non deve
+mai dipendere dall'esperimento.
 
-## Prima di ogni commit
+---
 
-`npm --prefix app test` verde. Oppure `/verifica`, che fa lo stesso più il
-controllo offline e il confronto dei contratti con il tag `freeze`.
+## Comandi
+
+Dalla root si usano con `--prefix app`; da `app/` senza.
+
+| Comando | Cosa fa |
+| --- | --- |
+| `npm --prefix app run dev` | app in sviluppo |
+| `npm --prefix app test` | suite completa |
+| `npm --prefix app run verify:roots` | stato delle due radici Claude Code |
+| `npm --prefix app run agents:sync` | riallinea `.claude/` da `agents/` e dalle rules |
+| `npm --prefix app run agents:trace` | `agents/trace.md` + `evidence/process.json` |
+| `npm --prefix app run evolution:proof` | `evidence/evolution.json` |
+| `npm --prefix app run deck` | `presentation/deck.html` |
+
+Formato commit: `tipo(agente): descrizione`, dove `agente` corrisponde a un
+file realmente presente in `agents/`.
+
+Prima di ogni commit: `npm --prefix app test` verde, o la skill `/verifica`.
