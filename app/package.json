@@ -17,7 +17,8 @@
     "deck:compat": "tsc ../presentation/build-deck.ts --target es2022 --module nodenext --moduleResolution nodenext --skipLibCheck --outDir ../presentation/.compat && node ../presentation/.compat/build-deck.js",
     "agents:trace": "node scripts/agents-trace.mjs",
     "agents:sync": "node scripts/agents-sync.mjs",
-    "evolution:proof": "node scripts/evolution-proof.mjs"
+    "evolution:proof": "node scripts/evolution-proof.mjs",
+    "verify:roots": "node scripts/verify-roots.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

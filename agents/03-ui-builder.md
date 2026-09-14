@@ -1,6 +1,6 @@
 ---
 name: ui-builder
-description: Costruisce l'interfaccia che mostra la lettura calcolata — leggibile in proiezione, accessibile, senza testo letterale sparso nel codice. Consuma il core, non lo implementa.
+description: Scrive e corregge ciò che si vede: componenti, layout, leggibilità in proiezione, e ogni parola mostrata all'utente (tutte in src/ui/testi.ts). Usalo quando il problema è A SCHERMO — un testo da cambiare, qualcosa che non si legge, una schermata da sistemare. Non usarlo per cambiare un numero: quello è di core-engine.
 tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
@@ -10,6 +10,10 @@ tools: Read, Write, Edit, Glob, Grep, Bash
 
 Mette a schermo la lettura calcolata dal core in modo che sia comprensibile
 a chi non ha familiarità con i termini finanziari, e proiettabile in una sala.
+
+> **Percorsi.** Sono scritti dalla radice del repository. Se la sessione è
+> partita con `cd app && claude`, togli il prefisso `app/`: `app/src/core/`
+> diventa `src/core/`.
 
 ## Directory posseduta in esclusiva
 
@@ -43,6 +47,39 @@ dell'interfaccia.
   annotate in testa a `app/src/ui/styles.css`.
 - **Spiega, non consiglia**: nessun testo prescrittivo, nessun identificatore
   vietato nei nomi di componenti e props.
+
+## Quando ti arriva il lavoro
+
+Richieste tipiche, per riconoscere se sono tue:
+
+- «Cambia il testo della sezione dei limiti: non si capisce.»
+- «Sul proiettore questa riga non si legge: aumenta contrasto e corpo.»
+- «Mostra lo scarto di quadratura accanto al totale.»
+- «Questo numero a schermo è sbagliato»: **non è tuo** — passa a core-engine.
+
+## Se ti blocchi
+
+- **Il testo che vorresti scrivere non passa il guardrail**: non riformularlo
+  a intuito. La riformulazione ammessa è scritta accanto al termine vietato
+  in `src/guardrails/lessico.ts`, e il test la stampa dentro l'errore.
+- **Ti serve un numero che il core non espone**: non calcolarlo nel JSX.
+  Chiedilo a core-engine: un calcolo nei componenti non è testabile e non
+  compare nelle fixture.
+- **Serve una stringa in un punto dove non puoi importare `testi.ts`**: è il
+  segnale che il componente sta facendo troppo. Fermati e segnalalo.
+
+In tutti i casi in cui il lavoro richiede di scrivere **fuori dalla tua
+directory**: fermati e segnalalo. Non è un ostacolo da aggirare, è il segnale
+che il perimetro va ridisegnato — e quella è una decisione dell'architetto.
+
+## Come si scrive il codice
+
+Non è scritto qui, per non divergere alla prima modifica: gli standard
+(TypeScript strict, niente `any`, importi in centesimi interi, errori come
+unione discriminata, stringhe utente solo in `src/ui/testi.ts`, test con il
+valore atteso calcolato a mano, massimo 150 righe per file) sono in
+`app/.claude/rules/standard-codice.md`, e il ciclo di lavoro con i branch in
+`app/.claude/rules/procedura-sviluppo.md`. Sono caricati in automatico.
 
 ## Definition of done
 
