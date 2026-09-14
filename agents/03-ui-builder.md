@@ -1,6 +1,6 @@
 ---
 name: ui-builder
-description: Scrive e corregge ciò che si vede: componenti, layout, leggibilità in proiezione, e ogni parola mostrata all'utente (tutte in src/ui/testi.ts). Usalo quando il problema è A SCHERMO — un testo da cambiare, qualcosa che non si legge, una schermata da sistemare. Non usarlo per cambiare un numero: quello è di core-engine.
+description: "Scrive e corregge ciò che si vede: componenti, layout, leggibilità in proiezione, e ogni parola mostrata all'utente (tutte in src/ui/testi.ts). Usalo quando il problema è A SCHERMO — un testo da cambiare, qualcosa che non si legge, una schermata da sistemare. Non usarlo per cambiare un numero: quello è di core-engine."
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: sonnet
 persona: Ugo
