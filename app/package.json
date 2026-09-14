@@ -14,7 +14,6 @@
     "test:guardrails": "vitest run tests/guardrails.test.ts tests/lessico-ui.test.ts",
     "capture": "playwright test --config=playwright.config.ts",
     "deck": "node ../presentation/build-deck.ts",
-    "deck:short": "node ../presentation/build-deck.ts --merge-7-8",
     "deck:compat": "tsc ../presentation/build-deck.ts --target es2022 --module nodenext --moduleResolution nodenext --skipLibCheck --outDir ../presentation/.compat && node ../presentation/.compat/build-deck.js",
     "agents:trace": "node scripts/agents-trace.mjs",
     "agents:sync": "node scripts/agents-sync.mjs",
