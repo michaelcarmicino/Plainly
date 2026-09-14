@@ -1,7 +1,6 @@
 ---
 name: prepara
 description: Prepara l'ambiente locale per eseguire l'applicazione — versione di Node, dipendenze, browser di Playwright, directory di lavoro, controllo di salute e prova di avvio. Lanciala una volta all'inizio, e di nuovo solo se qualcosa smette di funzionare.
-disable-model-invocation: true
 ---
 
 # /prepara — dal repository clonato a un progetto che gira

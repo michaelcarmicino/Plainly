@@ -1,7 +1,6 @@
 ---
 name: pm
 description: Coordina più funzionalità insieme invece di una alla volta — legge il backlog, calcola quali task possono procedere in parallelo senza toccare gli stessi file, li lancia a ondate e registra cosa è successo. Usala quando hai più cose da fare e non sai in che ordine.
-disable-model-invocation: true
 ---
 
 # /pm — più funzionalità insieme, senza pestarsi i piedi
@@ -64,16 +63,43 @@ confermare**. Per tutti gli altri lascia `directory` **vuota** e li dichiara
 Indovinare con chi un task confligge produce esattamente il conflitto che il PM
 esiste per evitare, e lo produce con l'aria di aver funzionato.
 
-### Il tuo lavoro dopo `carica`
+### Se il file è un documento unico, decomponilo
 
-Per ogni task senza impronta o con impronta solo proposta:
+Un documento che descrive l'intero prodotto caricato come **un task solo** non
+serve a pianificare niente. Spezzalo nei deliverable che descrive davvero, uno
+per task, e su ciascuno metti **il rimando alla sezione d'origine**.
+
+Non è una deviazione dal comportamento automatico: **è il comportamento
+richiesto.** Un task deve essere qualcosa che un agente può prendere in mano.
+
+### Quando manca l'impronta: non chiedere, ottienila
+
+Per ogni task senza impronta:
 
 1. se **esiste già una specifica** in `docs/features/`, leggila: dichiara le
    directory che toccherà, e quella è l'impronta;
-2. se **non esiste**, il task non è pianificabile finché non passa da `/spec`.
-   Dillo e fermati lì: è il momento giusto per scoprirlo, non a metà ondata.
+2. se **non esiste, lancia `/spec` tu** sul task. È lo strumento che produce
+   l'impronta. **Non fermarti a chiedere quali task specificare per primi:**
+   quella è una decisione che puoi prendere, e fermarsi lì rimette l'uomo nel
+   ciclo proprio dove non serve.
 
-Poi `npm run pm:piano`, e il task entra nelle ondate.
+> **L'impronta non si indovina, si ottiene.** Sono due cose diverse, e la
+> seconda non richiede il tuo intervento.
+
+**Il criterio d'ordine, dichiaralo e applicalo:**
+
+- prima i task che **sbloccano il collo di bottiglia**: se una cartella è
+  occupata da un lavoro aperto, tutto ciò che la tocca è in fila comunque;
+- poi quelli che **si dividono naturalmente fra `src/core/` e `src/ui/`**,
+  perché sono gli unici che possono davvero girare in parallelo;
+- per ultimi quelli che atterrano tutti sulla stessa cartella: lì l'ordine non
+  cambia niente.
+
+Questo criterio è **un'aspettativa finché `/spec` non la conferma**: dopo ogni
+specifica, rilancia `npm run pm:piano` e lascia che sia il piano a decidere,
+non la previsione.
+
+Poi avvia le ondate.
 
 ## 1. Il piano
 

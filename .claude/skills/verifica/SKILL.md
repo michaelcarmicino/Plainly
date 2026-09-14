@@ -1,7 +1,6 @@
 ---
 name: verifica
 description: Il cancello d'uscita, da lanciare prima di ogni commit. Esegue test, scansione del lessico prescrittivo, controllo che il bundle non contenga chiamate di rete, e confronto dei contratti con il tag freeze. Esito binario.
-disable-model-invocation: true
 ---
 
 # /verifica — il cancello d'uscita

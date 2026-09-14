@@ -2,6 +2,30 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
+      "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Bash(npm ci:*)",
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx vitest:*)",
+      "Bash(npx playwright:*)",
+      "Bash(node scripts/:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git switch:*)",
+      "Bash(git merge:*)",
+      "Bash(git branch:*)",
+      "Bash(git rev-parse:*)",
+      "Edit(src/**)",
+      "Write(src/**)",
+      "Edit(tests/**)",
+      "Write(tests/**)",
+      "Edit(docs/**)",
+      "Write(docs/**)",
+      "Edit(fixtures/**)",
       "Write(../presentation/evidence/**)",
       "Edit(../presentation/evidence/**)",
       "Write(../presentation/screenshots/**)",
@@ -10,9 +34,14 @@
     ],
     "deny": [
       "Write(../agents/**)",
-      "Write(../.claude/**)",
       "Edit(../agents/**)",
-      "Edit(../.claude/**)"
+      "Write(../.claude/**)",
+      "Edit(../.claude/**)",
+      "Write(types/**)",
+      "Edit(types/**)",
+      "Bash(git push:*)",
+      "Bash(git reset:*)",
+      "Bash(rm -rf:*)"
     ]
   },
   "hooks": {

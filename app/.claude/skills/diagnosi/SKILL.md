@@ -1,7 +1,6 @@
 ---
 name: diagnosi
 description: Parte da un sintomo — un test rosso, un numero sbagliato, una schermata che non si comporta come dovrebbe — e ne trova la causa prima di toccare qualsiasi cosa. Usala quando qualcosa non funziona e non sai perché. Non modifica nulla senza conferma.
-disable-model-invocation: true
 ---
 
 # /diagnosi — capire prima di correggere

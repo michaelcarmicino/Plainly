@@ -1,7 +1,6 @@
 ---
 name: guarda
 description: Apre l'applicazione in un browser vero, cattura uno screenshot da esaminare e riporta gli errori di console. Usala ogni volta che una modifica riguarda ciò che si vede, e per controllare che una schermata regga su mobile stretto e su proiettore.
-disable-model-invocation: true
 ---
 
 # /guarda — vedere l'interfaccia, non immaginarla

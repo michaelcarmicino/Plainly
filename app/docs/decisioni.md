@@ -280,3 +280,55 @@ qualcosa di rosso è una scelta di chi ci mette la faccia.
 
 Il PM **non può ribaltare un rifiuto**: se potesse, `/spec` smetterebbe di
 essere un cancello e diventerebbe un suggerimento.
+
+### D26 · Apertura piena: le skill del ciclo sono invocabili dal modello
+
+**Scelta.** Rimosso `disable-model-invocation` da tutte le skill tranne
+`nuovo-agente`. Allargata l'allowlist dei permessi in
+`app/.claude/settings.json` a npm, npx, git di lavoro e scritture sotto
+`src/`, `tests/`, `docs/`.
+
+**Perché.** Il PM non poteva far avanzare niente: le istruzioni dicevano «il PM
+lancia /implementa» ma le skill erano solo-umane, quindi quella frase
+descriveva un'intenzione e non un meccanismo. Il ciclo si fermava a ogni
+passaggio proprio dove le conferme non aggiungevano informazione.
+
+**Rischio accettato, dichiarato.** `/spec` può ora partire da sola, quindi un
+suo **rifiuto di conformità** potrebbe non passare più sotto gli occhi di una
+persona. È stato segnalato prima di procedere ed è stata una scelta esplicita,
+non una svista.
+
+Il rischio non è nudo: il divieto di linguaggio prescrittivo resta **eseguibile**
+(test, hook `PostToolUse`, componente `<Testo>` a runtime), quindi una
+raccomandazione che sfuggisse a `/spec` verrebbe comunque bloccata più a valle.
+
+**Restano chiusi:** `nuovo-agente` (crea perimetri, cambia la mappa e la
+presentazione), le scritture su `types/`, `agents/`, `.claude/`, e
+`git push` / `git reset` / `rm -rf`, che restano a comando esplicito.
+
+### D27 · Il PM non chiede l'impronta: la ottiene
+
+**Scelta.** Quando un task non ha impronta, il PM **lancia `/spec`** invece di
+fermarsi a chiedere su quali task farlo per primi. L'ordine lo decide con un
+criterio dichiarato: prima ciò che sblocca il collo di bottiglia, poi ciò che
+si divide fra `src/core/` e `src/ui/`, per ultimo ciò che atterra tutto sulla
+stessa cartella.
+
+**Perché.** Il divieto era «non indovinare l'impronta», e resta valido.
+Ma fermarsi a chiedere non è l'unica alternativa a indovinare: **ottenerla** lo
+è. Il modo più comune in cui questo ruolo fallisce non è decidere troppo, è
+fermarsi a chiedere qualcosa che poteva ottenere.
+
+Il criterio d'ordine resta **un'aspettativa finché `/spec` non la conferma**:
+dopo ogni specifica si rilancia `pm:piano` e decide il piano, non la previsione.
+
+### D28 · Un documento unico si decompone, non si carica intero
+
+**Scelta.** `/task-file` e `/task-cartella` spezzano un documento che descrive
+l'intero prodotto nei deliverable che descrive davvero, uno per task, con il
+rimando alla sezione d'origine.
+
+**Perché.** Un documento caricato come task singolo non serve a pianificare
+niente: un task deve essere qualcosa che un agente può prendere in mano. Era
+già stato fatto a mano in una sessione, marcandolo come deviazione dal
+comportamento automatico: ora è il comportamento automatico.

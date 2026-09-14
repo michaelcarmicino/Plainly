@@ -1,7 +1,6 @@
 ---
 name: annulla
 description: Riporta il progetto all'ultimo stato in cui i test passavano, mostrando prima che cosa andrebbe perso. Usala quando una modifica ha rotto qualcosa e i tentativi di aggiustarla stanno peggiorando la situazione. Non riscrive mai la storia già committata.
-disable-model-invocation: true
 ---
 
 # /annulla — tornare all'ultimo stato verde

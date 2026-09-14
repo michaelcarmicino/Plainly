@@ -1,7 +1,6 @@
 ---
 name: task-cartella
 description: Legge i task buttati nella cartella docs/backlog/_in-arrivo/, li sistema nel formato del backlog anche se sono scritti male, e li carica. Usala quando hai degli appunti o dei file di task da far entrare nel progetto senza riscriverli a mano.
-disable-model-invocation: true
 ---
 
 # /task-cartella — svuota la cartella dei task in arrivo
@@ -53,10 +52,16 @@ vuota.
 Tu la confermi **leggendo la specifica** in `docs/features/`, che dichiara le
 directory che toccherà.
 
-> **Se la specifica non esiste, non inventare l'impronta.** Lascia il task non
-> pianificabile e dì che deve passare da `/spec`. Indovinare con chi un task
-> confligge produce esattamente il conflitto che il PM esiste per evitare — e
-> lo produce con l'aria di aver funzionato.
+> **Se la specifica non esiste, lancia `/spec`.** Non inventare l'impronta e
+> non lasciare il task fermo in attesa che qualcuno decida: `/spec` è lo
+> strumento che l'impronta la produce.
+>
+> Indovinare con chi un task confligge produce esattamente il conflitto che il
+> PM esiste per evitare — ma **ottenere** l'impronta non è indovinare.
+
+Se il file è **un documento unico** che descrive tutto il prodotto, non
+caricarlo come un task solo: **spezzalo** nei deliverable che descrive, con il
+rimando alla sezione d'origine su ciascuno.
 
 ## Che cosa riportare
 

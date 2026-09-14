@@ -1,7 +1,6 @@
 ---
 name: implementa
 description: Prende una spec approvata in docs/features/ e la realizza instradando il lavoro verso i subagent nell'ordine contratti, core-engine, ui-builder, guardrail-officer. Si ferma se servono modifiche ai contratti congelati.
-disable-model-invocation: true
 ---
 
 # /implementa — dalla spec al codice
