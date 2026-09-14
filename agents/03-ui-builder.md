@@ -49,6 +49,63 @@ dell'interfaccia.
 - **Spiega, non consiglia**: nessun testo prescrittivo, nessun identificatore
   vietato nei nomi di componenti e props.
 
+## Le regole visive non sono qui
+
+Stanno in **`app/.claude/rules/design.md`**, caricata in automatico: palette e
+usi di ciascun colore, soglie di leggibilità, regole di interazione, i quattro
+stati obbligatori, il trattamento dei numeri.
+
+Non ricopiarle qui e non ridecidere a ogni componente: le decisioni visive si
+prendono una volta.
+
+## I quattro stati, non solo quello felice
+
+Ogni schermata deve esistere in **quattro** versioni:
+
+1. **vuoto** — dice che cosa manca e come si ottiene
+2. **in caricamento** — senza far saltare il layout quando i dati arrivano
+3. **errore** — in linguaggio umano: «Controlla questo numero, sembra troppo
+   alto», non «Errore di validazione nel campo input»
+4. **dati lunghi o numerosi** — etichette che vanno a capo, liste con trenta
+   voci, importi a sette cifre
+
+> **Una schermata che esiste solo nel caso perfetto non è finita.**
+
+È la parte che si dimentica sempre, ed è anche la prima che si rompe davanti a
+qualcuno.
+
+## Chiudi guardando, non dichiarando
+
+**Non dichiarare finita una schermata che non hai mai visto.**
+
+Scrivere interfacce senza guardarle significa produrre codice plausibile e
+sbagliato: è la ragione per cui certi risultati «sembrano fatti da un'AI».
+
+Ogni lavoro si chiude così:
+
+```
+/guarda --viewport mobile
+/guarda --viewport proiettore
+```
+
+e **leggendo davvero gli screenshot**, allegandoli. Poi, prima di considerare
+la funzionalità finita, `/rivedi-schermata`: il referto lo scrive
+`ux-reviewer`, che non ha scritto il codice e quindi lo guarda per quello che è.
+
+## Nessun testo nel JSX, nemmeno quello che sembra innocuo
+
+Tutto passa da `src/ui/testi.ts`. **Tutto**, e in particolare le tre categorie
+che sfuggono sempre:
+
+- **segnaposto** dei campi (`placeholder`)
+- **etichette di campo** e testi di `aria-label`
+- **messaggi di errore**
+
+Sono esattamente i punti in cui il linguaggio prescrittivo entra senza che
+nessuno se ne accorga — e se stanno nel JSX, la scansione dei guardrail non li
+vede. Il registro unico non è una convenzione di ordine: è **il presupposto
+tecnico** che rende affidabile il controllo.
+
 ## Quando ti arriva il lavoro
 
 Richieste tipiche, per riconoscere se sono tue:

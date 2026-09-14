@@ -8,10 +8,10 @@
  *   app/.claude/rules/*.md       gli standard di codice
  *
  * Destinazioni derivate, mai modificate a mano:
- *   .claude/agents/              tutti e 9 gli agenti            (architetto)
+ *   .claude/agents/              tutti gli agenti attivi         (architetto)
  *   .claude/rules/               le stesse rules                 (architetto)
- *   app/.claude/agents/          i 4 agenti di costruzione       (developer)
- *   app/.claude/skills/          le 4 skill del developer        (developer)
+ *   app/.claude/agents/          6 agenti visibili dal developer (developer)
+ *   app/.claude/skills/          le 10 skill del developer       (developer)
  *
  * NON si collega `nuovo-agente` sotto app/: creare un perimetro è una
  * decisione dell'architetto e non deve comparire dalla radice del developer.
@@ -46,6 +46,8 @@ const AGENTI_COSTRUZIONE = [
   '05-impact-analyst.md',
   '09-doc-funzionale.md',
   '10-pm.md',
+  '11-tester.md',
+  '12-ux-reviewer.md',
 ];
 
 /** Skill visibili dalla radice del product developer. */
@@ -60,6 +62,8 @@ const SKILL_DEVELOPER = [
   'diagnosi',
   'annulla',
   'promuovi',
+  'pm',
+  'rivedi-schermata',
 ];
 
 let symlink = 0;

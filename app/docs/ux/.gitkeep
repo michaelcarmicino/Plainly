@@ -1,0 +1,5 @@
+# app/docs/ux/ — posseduta da 12-ux-reviewer
+#
+# I referti di revisione visiva, uno per schermata: NN-schermata.md
+# Scritti da ux-reviewer, che NON puo modificare src/ (non ha Edit fra i
+# suoi strumenti). I rilievi li applica ui-builder.

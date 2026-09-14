@@ -20,13 +20,21 @@ export const MAPPA_AGENTI = [
   { prefisso: 'presentation/demo-script.md', agente: '08-demo-director' },
   { prefisso: 'presentation/', agente: '07-deck-builder' },
   { prefisso: 'app/tests/e2e/', agente: '06-evidence-collector' },
+  // Prima di app/tests/: i test di accettazione sono del tester, quelli
+  // unitari e di guardrail restano a guardrail-officer.
+  { prefisso: 'app/tests/accettazione/', agente: '11-tester' },
   { prefisso: 'app/tests/', agente: '04-guardrail-officer' },
+  { prefisso: 'app/src/core/__tests__/', agente: '01-core-engine' },
   { prefisso: 'app/fixtures/', agente: '00-architect' },
   { prefisso: 'app/types/', agente: '00-architect' },
-  // Più specifici prima: doc-funzionale possiede le schede e l'indice
-  // generato, il resto di app/docs/ resta all'architetto.
+  // Più specifici prima: il resto di app/docs/ resta all'architetto.
   { prefisso: 'app/docs/features/', agente: '09-doc-funzionale' },
   { prefisso: 'app/docs/FUNZIONALITA.md', agente: '09-doc-funzionale' },
+  { prefisso: 'app/docs/backlog/', agente: '10-pm' },
+  { prefisso: 'app/docs/BACKLOG.md', agente: '10-pm' },
+  { prefisso: 'app/docs/test/', agente: '11-tester' },
+  { prefisso: 'app/docs/TEST.md', agente: '11-tester' },
+  { prefisso: 'app/docs/ux/', agente: '12-ux-reviewer' },
   { prefisso: 'app/docs/', agente: '00-architect' },
   { prefisso: 'app/scripts/', agente: '00-architect' },
   { prefisso: 'agents/', agente: '00-architect' },
@@ -45,6 +53,9 @@ export const AGENTI = [
   '07-deck-builder',
   '08-demo-director',
   '09-doc-funzionale',
+  '10-pm',
+  '11-tester',
+  '12-ux-reviewer',
 ];
 
 /** Fasce orarie del piano, in minuti dal primo commit. */
