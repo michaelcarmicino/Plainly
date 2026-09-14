@@ -62,9 +62,29 @@ try {
     }
   }
 
+  // L'invito a /prepara compare SOLO se serve davvero: nominarla a ogni
+  // avvio aggiungerebbe rumore a un output che deve restare leggibile.
+  const moduli = existsSync(join(APP, 'node_modules'));
+  const base =
+    process.platform === 'win32'
+      ? join(process.env.LOCALAPPDATA ?? '', 'ms-playwright')
+      : join(process.env.HOME ?? '', '.cache', 'ms-playwright');
+  let browser = false;
+  try {
+    browser = existsSync(base) && readdirSync(base).some((d) => d.startsWith('chromium'));
+  } catch {
+    /* assenza = non pronto */
+  }
+
   righe.push('── Plainly · radice del product developer ──────────────────────');
+  if (!moduli || !browser) {
+    righe.push(
+      `AMBIENTE NON PRONTO (${!moduli ? 'dipendenze mancanti' : 'browser Playwright mancante'}) → lancia /prepara`,
+    );
+  }
   righe.push('Ciclo:  /spec → conferma → /implementa → /verifica → commit');
   righe.push('');
+  righe.push('  /prepara    porta l\'ambiente in uno stato eseguibile (una volta sola)');
   righe.push('  /spec       propone una funzionalità e la rifiuta se non è conforme');
   righe.push('  /implementa la realizza instradando gli agenti giusti');
   righe.push('  /verifica   il cancello prima di ogni commit e di ogni merge');

@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Plainly — educazione alla finanza personale di base. Gira offline: nessuna chiamata LLM o API esterna a runtime.",
   "scripts": {
+    "prepara": "node scripts/prepara.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
@@ -26,11 +27,15 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.48.0",
+    "@types/node": "^26.5.1",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
     "typescript": "^5.6.3",
     "vite": "^5.4.10",
     "vitest": "^2.1.4"
+  },
+  "engines": {
+    "node": ">=22.6.0"
   }
 }

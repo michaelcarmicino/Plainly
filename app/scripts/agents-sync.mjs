@@ -48,6 +48,7 @@ const AGENTI_COSTRUZIONE = [
 
 /** Skill visibili dalla radice del product developer. */
 const SKILL_DEVELOPER = [
+  'prepara',
   'spec',
   'implementa',
   'verifica',

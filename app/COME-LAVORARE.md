@@ -9,7 +9,24 @@ come si scrive il codice · **`../agents/README.md`** dice chi fa cosa e perché
 
 ---
 
-## 1. Da dove si lancia
+## 1. La prima volta: `/prepara`
+
+```
+/prepara
+```
+
+Porta il progetto da «appena clonato» a «gira»: controlla la versione di Node,
+installa le dipendenze e il browser che serve a `/guarda`, crea le cartelle di
+lavoro, lancia i test e prova ad avviare il server.
+
+**Si lancia una volta all'inizio, e di nuovo solo se qualcosa smette di
+funzionare.** Rilanciarla quando è già tutto a posto non fa danni: se ne
+accorge e finisce subito.
+
+Serve rete solo per questo passo. Il prodotto, una volta pronto, gira anche
+con il Wi-Fi spento.
+
+## 2. Da dove si lancia
 
 ```bash
 cd app
@@ -23,7 +40,7 @@ vedresti nessuna delle skill qui sotto, e ti sembrerebbe che non esistano.
 Le regole generali del progetto arrivano comunque, perché Claude risale
 l'albero delle cartelle da solo.
 
-## 2. Il ciclo
+## 3. Il ciclo
 
 ```
 /spec → confermi → /implementa → /verifica → commit
@@ -47,7 +64,7 @@ Accanto, quattro skill per le cose che succedono davvero mentre lavori:
   causa **prima** di toccare il codice.
 - **`/annulla`** — torna all'ultimo stato in cui i test passavano.
 
-## 3. Pianificare prima di scrivere
+## 4. Pianificare prima di scrivere
 
 **Se leggi una sola cosa di questa guida, leggi questa: è l'abitudine che
 cambia di più la qualità del risultato.**
@@ -74,7 +91,7 @@ troppo.
 `.claude/rules/procedura-sviluppo.md`: qui c'è lo strumento che la rende
 automatica invece che una buona intenzione.
 
-## 4. Tenere pulito il contesto
+## 5. Tenere pulito il contesto
 
 Claude ha una memoria di lavoro limitata. In una sessione lunga si riempie di
 cose vecchie — file letti un'ora fa, tentativi abbandonati, errori già risolti
@@ -97,7 +114,7 @@ Tre comandi, e una regola:
 > **Regola pratica: una funzionalità, una sessione pulita.**
 > Finita e committata → `/clear` → si ricomincia.
 
-## 5. Correggere senza peggiorare
+## 6. Correggere senza peggiorare
 
 Quando Claude prende una direzione sbagliata, l'istinto è scrivere «no, non
 così» e poi «intendevo un'altra cosa» e poi «rifallo». **È la cosa peggiore da
@@ -120,7 +137,7 @@ Meglio:
 > È esattamente il motivo per cui esistono `/annulla` e la regola di committare
 > a ogni funzionalità verde: quella è la rete di sicurezza vera.
 
-## 6. Dargli un modo per accorgersi da solo degli errori
+## 7. Dargli un modo per accorgersi da solo degli errori
 
 Claude lavora molto meglio quando può **verificare** invece che supporre. Il
 modo più semplice è nominare, dentro la richiesta, come si controlla il
@@ -143,7 +160,7 @@ da solo. Senza, si ferma al primo risultato che sembra plausibile — e
 «sembra plausibile» su un numero è precisamente ciò che questo progetto non può
 permettersi.
 
-## 7. Riprendere il lavoro
+## 8. Riprendere il lavoro
 
 ```bash
 claude --continue    # riapre l'ultima sessione dov'era
@@ -157,7 +174,7 @@ Ricorda comunque il punto 4: riprendere una sessione lunga significa riprendere
 anche il suo contesto sporco. Se stai cominciando una cosa nuova, `/clear` è
 meglio di `--continue`.
 
-## 8. Le tre cose da non fare mai, qui
+## 9. Le tre cose da non fare mai, qui
 
 1. **Non lanciare `npm run dev` a mano.** Non termina mai: la sessione resta
    appesa e non capisci perché. Usa `/avvia`, che lo fa partire staccato e ti
