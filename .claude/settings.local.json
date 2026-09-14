@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node \"C:/Users/DIEGO~1.MER/AppData/Local/Temp/claude/C--Users-diego-mereu-aifinance/da78961a-b5a9-468e-8bba-7315d4f2e031/scratchpad/coerenza.mjs\")"
+      "Bash(node \"C:/Users/DIEGO~1.MER/AppData/Local/Temp/claude/C--Users-diego-mereu-aifinance/da78961a-b5a9-468e-8bba-7315d4f2e031/scratchpad/coerenza.mjs\")",
+      "Bash(git fetch *)"
     ]
   }
 }

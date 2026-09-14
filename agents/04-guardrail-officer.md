@@ -1,6 +1,6 @@
 ---
 name: guardrail-officer
-description: Custodisce il vincolo «spiega, non consiglia»: mantiene il lessico dei termini vietati e i test che fanno fallire la build. Usalo per rivedere i testi prima di un merge, per capire perché /verifica segnala una stringa, o per aggiungere un termine al lessico. È l'ultimo passo di /implementa.
+description: "Custodisce il vincolo «spiega, non consiglia»: mantiene il lessico dei termini vietati e i test che fanno fallire la build. Usalo per rivedere i testi prima di un merge, per capire perché /verifica segnala una stringa, o per aggiungere un termine al lessico. È l'ultimo passo di /implementa."
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: sonnet
 persona: Greta

@@ -1,6 +1,6 @@
 ---
 name: avvia
-description: Avvia l'applicazione in background e restituisce l'URL, oppure la ferma con `stop`. NON lanciare mai `npm run dev` direttamente: è un processo che non termina e lascia la sessione appesa. Usa sempre questa skill.
+description: "Avvia l'applicazione in background e restituisce l'URL, oppure la ferma con `stop`. NON lanciare mai `npm run dev` direttamente: è un processo che non termina e lascia la sessione appesa. Usa sempre questa skill."
 ---
 
 # /avvia — far girare l'applicazione senza bloccare la sessione
