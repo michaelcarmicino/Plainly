@@ -1,0 +1,9 @@
+# app/tests/accettazione/ — posseduta da 11-tester
+#
+# Test di ACCETTAZIONE: la funzionalita' fa cio' che la specifica prometteva.
+# I test UNITARI stanno altrove ed appartengono a core-engine:
+#   src/core/__tests__/   la funzione calcola bene
+#
+# Vuota finche' la prima funzionalita' non passa dalla fase 2 del tester.
+# Le funzionalita' implementate prima che questo agente esistesse non hanno
+# test qui, ed e' voluto: la copertura dichiarata vale in avanti.

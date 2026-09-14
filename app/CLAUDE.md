@@ -148,6 +148,17 @@ giusto. Ognuno possiede una directory in esclusiva e non scrive fuori.
 | `guardrail-officer` | `src/guardrails/`, `tests/` | il problema è **una parola** rivolta all'utente |
 | `impact-analyst` | `src/assessment/` | serve **una misurazione** |
 | `doc-funzionale` | `docs/features/`, `docs/FUNZIONALITA.md` | parte da solo con `/spec` e `/implementa` — non chiamarlo tu |
+| `tester` | `tests/accettazione/`, `docs/test/` | idem: casi di prova e referto, in parallelo |
+| `pm` | `docs/backlog/` | hai più cose da fare e non sai in che ordine → `/pm` |
+
+`doc-funzionale` e `tester` si dividono il lavoro senza sovrapporsi: **il primo
+descrive la strada buona** («come si proverà», il percorso da mostrare), **il
+secondo tutte le buche** (casi limite, errori attesi, conformità). Entrambi
+derivano dalla specifica, non dal codice: è ciò che li rende indipendenti.
+
+I **test unitari restano di `core-engine`**, in `src/core/__tests__/`. Quelli
+di accettazione sono del `tester`, in `tests/accettazione/`. È il confine più
+facile da sfondare.
 
 `doc-funzionale` lavora **in parallelo** al codice: scrive la documentazione
 mentre la funzionalità viene costruita, al futuro, e la riscrive al presente

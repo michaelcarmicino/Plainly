@@ -101,10 +101,20 @@ Stampa il percorso del file scritto e le quattro dichiarazioni sopra, poi:
 
 **Non proseguire senza un sì esplicito.**
 
-## Passo 4 — alla conferma, avvia la documentazione in parallelo
+## Passo 4 — alla conferma, avvia documentazione e casi in parallelo
 
-Appena arriva il sì, **prima di restituire il controllo**, lancia l'agente
-`doc-funzionale` in **fase 1** sul file appena scritto.
+Appena arriva il sì, **prima di restituire il controllo**, lancia **due**
+agenti in **fase 1**, in un solo messaggio così partono davvero insieme:
+
+- **`doc-funzionale`** → `docs/features/NN-nome.md`, sotto `## Previsto`
+- **`tester`** → `docs/test/NN-nome.md`, la lista dei casi
+
+Si dividono il lavoro senza sovrapporsi: **`doc-funzionale` descrive la strada
+buona** («come si proverà», il percorso nominale), **`tester` tutte le buche**
+(casi limite, valori di confine, errori attesi, conformità). Entrambi derivano
+dalla **specifica**, non dal codice, che ancora non esiste — ed è proprio
+questo a rendere i casi indipendenti invece che una conferma di ciò che è
+stato scritto.
 
 **Non aspettarlo.** Avvialo e restituisci subito il controllo: la
 documentazione si scrive mentre il codice viene costruito, non dopo. Il

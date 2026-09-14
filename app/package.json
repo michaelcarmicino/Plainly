@@ -22,7 +22,8 @@
     "verify:roots": "node scripts/verify-roots.mjs",
     "docs:funzionali": "node scripts/docs-funzionali.mjs",
     "promuovi": "node scripts/promuovi.mjs",
-    "pm:piano": "node scripts/pm-piano.mjs"
+    "pm:piano": "node scripts/pm-piano.mjs",
+    "test:referto": "node scripts/test-referto.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
