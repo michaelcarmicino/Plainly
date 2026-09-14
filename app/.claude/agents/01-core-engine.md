@@ -3,6 +3,7 @@ name: core-engine
 description: Scrive e corregge il calcolo: pesi, aggregati per categoria, quadratura, proiezioni. Usalo quando il problema è UN NUMERO — sbagliato, mancante, da aggiungere o da spiegare. Non usarlo per il testo a schermo né per il layout: quelli sono di ui-builder.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: sonnet
+persona: Cora
 ---
 
 # 01-core-engine

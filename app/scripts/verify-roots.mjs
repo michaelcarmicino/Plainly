@@ -57,11 +57,19 @@ function controlla(etichetta, fonte, destinazione) {
   }
 }
 
-// Si controlla ciò che è EFFETTIVAMENTE caricato in ciascuna radice, non
-// l'intero catalogo: ogni agente sta in una radice sola, e cercarlo
-// nell'altra produrrebbe un falso problema a ogni esecuzione.
-for (const n of elenco(join(ROOT, '.claude', 'agents'))) {
-  controlla(`.claude/agents/${n}`, join(ROOT, 'agents', n), join(ROOT, '.claude', 'agents', n));
+// `.claude/agents/` è SORGENTE, non copia: ci vivono gli agenti di impianto
+// e presentazione, che non fanno parte della squadra di prodotto e quindi non
+// stanno in `agents/`. Qui si controlla solo che ci sia qualcosa e che abbia
+// frontmatter: non c'è una fonte con cui confrontarli.
+const impiantoRoot = elenco(join(ROOT, '.claude', 'agents'));
+for (const n of impiantoRoot) {
+  const p = join(ROOT, '.claude', 'agents', n);
+  const ok = /^---\r?\n[\s\S]*?^name:/m.test(leggi(p));
+  console.log(`  ${ok ? 'sorgente ' : 'SENZA FM '} .claude/agents/${n}`);
+  if (!ok) problemi.push(`.claude/agents/${n}: frontmatter assente o non valido`);
+}
+if (impiantoRoot.length === 0) {
+  problemi.push('.claude/agents/ è vuota: l\'architetto non vede nessun agente');
 }
 for (const n of elenco(join(ROOT, 'app', '.claude', 'agents'))) {
   controlla(
