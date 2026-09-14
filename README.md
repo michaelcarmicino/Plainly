@@ -1,4 +1,4 @@
-# Conti Chiari
+# Plainly
 
 > **Scheletro da compilare a T+3:00.** Le sezioni e il loro ordine sono
 > definitivi; i contenuti marcati TODO si riempiono quando lo scenario è
@@ -7,7 +7,7 @@
 <!-- TODO(T+3:00): una frase. Quale persona, quale difficoltà, cosa risolve.
      Esempio di forma, da sostituire:
      «Chi riceve un estratto conto legge un totale che non sa verificare:
-      Conti Chiari mostra da dove viene ogni cifra, voce per voce.» -->
+      Plainly mostra da dove viene ogni cifra, voce per voce.» -->
 
 **Una frase:** TODO — quale persona, quale difficoltà, cosa risolve.
 

@@ -14,7 +14,7 @@
  */
 
 export const STRINGHE_UTENTE = {
-  appTitolo: 'Conti Chiari',
+  appTitolo: 'Plainly',
   appSottotitolo:
     'Leggi un documento di spesa e capisci da dove viene ogni numero.',
 

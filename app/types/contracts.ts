@@ -1,5 +1,5 @@
 /**
- * CONTRATTI DI DOMINIO — "Conti Chiari"
+ * CONTRATTI DI DOMINIO — "Plainly"
  * =====================================================================
  * QUESTI CONTRATTI SI CONGELANO A T+1:40.
  * Dopo quel momento si crea il file `.contracts-frozen` nella root e un

@@ -1,9 +1,9 @@
 {
-  "name": "conti-chiari",
+  "name": "plainly",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Conti Chiari — educazione alla finanza personale di base. Gira offline: nessuna chiamata LLM o API esterna a runtime.",
+  "description": "Plainly — educazione alla finanza personale di base. Gira offline: nessuna chiamata LLM o API esterna a runtime.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

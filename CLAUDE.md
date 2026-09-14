@@ -1,4 +1,4 @@
-# Conti Chiari — governo del progetto
+# Plainly — governo del progetto
 
 Questo file contiene **solo le regole di governo**: vincoli, ruoli, proprietà
 delle directory, scadenze, comandi.

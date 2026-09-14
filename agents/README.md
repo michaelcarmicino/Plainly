@@ -1,4 +1,4 @@
-# agents/ — la squadra che ha costruito Conti Chiari
+# agents/ — la squadra che ha costruito Plainly
 
 Questa cartella è il **come**. Il prodotto in `app/` è la prova che il come
 ha funzionato.

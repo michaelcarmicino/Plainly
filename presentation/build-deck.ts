@@ -97,7 +97,7 @@ const immagine = (file: string | null, alt: string, fallback: string): string =>
 
 function slide1(): string {
   return `
-    <h1>Conti Chiari</h1>
+    <h1>Plainly</h1>
     <p class="occhiello">Educazione alla finanza personale di base</p>
     <p class="frase">
       <!-- TODO(scenario): una frase, il problema. Da congelare a T+1:40. -->
@@ -409,7 +409,7 @@ const html = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Conti Chiari — ${slides.length} slide</title>
+<title>Plainly — ${slides.length} slide</title>
 <!-- Nessun link esterno, nessun font remoto, nessuna richiesta di rete. -->
 <style>${CSS}</style>
 </head>

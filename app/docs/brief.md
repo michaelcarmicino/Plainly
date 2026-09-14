@@ -1,4 +1,4 @@
-# Brief — Conti Chiari
+# Brief — Plainly
 
 > Letto da `/spec` come primo contesto. **L'idea non è ancora congelata**:
 > si congela al checkpoint T+1:40 insieme ai contratti.
