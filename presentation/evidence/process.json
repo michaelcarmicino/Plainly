@@ -1,0 +1,87 @@
+{
+  "generatoIl": "2026-09-14T09:02:26.873Z",
+  "agenti": [
+    {
+      "agente": "00-architect",
+      "directoryPosseduta": "app/fixtures/",
+      "fileToccati": [],
+      "commit": 0,
+      "primoCommit": null,
+      "ultimoCommit": null
+    },
+    {
+      "agente": "01-core-engine",
+      "directoryPosseduta": "app/src/core/",
+      "fileToccati": [],
+      "commit": 0,
+      "primoCommit": null,
+      "ultimoCommit": null
+    },
+    {
+      "agente": "02-data-ingest (NON ATTIVATO)",
+      "directoryPosseduta": "app/src/ingest/",
+      "fileToccati": [],
+      "commit": 0,
+      "primoCommit": null,
+      "ultimoCommit": null
+    },
+    {
+      "agente": "03-ui-builder",
+      "directoryPosseduta": "app/src/ui/",
+      "fileToccati": [],
+      "commit": 0,
+      "primoCommit": null,
+      "ultimoCommit": null
+    },
+    {
+      "agente": "04-guardrail-officer",
+      "directoryPosseduta": "app/src/guardrails/",
+      "fileToccati": [],
+      "commit": 0,
+      "primoCommit": null,
+      "ultimoCommit": null
+    },
+    {
+      "agente": "05-impact-analyst",
+      "directoryPosseduta": "app/src/assessment/",
+      "fileToccati": [],
+      "commit": 0,
+      "primoCommit": null,
+      "ultimoCommit": null
+    },
+    {
+      "agente": "06-evidence-collector",
+      "directoryPosseduta": "presentation/evidence/",
+      "fileToccati": [],
+      "commit": 0,
+      "primoCommit": null,
+      "ultimoCommit": null
+    },
+    {
+      "agente": "07-deck-builder",
+      "directoryPosseduta": "presentation/",
+      "fileToccati": [],
+      "commit": 0,
+      "primoCommit": null,
+      "ultimoCommit": null
+    },
+    {
+      "agente": "08-demo-director",
+      "directoryPosseduta": "presentation/demo-script.md",
+      "fileToccati": [],
+      "commit": 0,
+      "primoCommit": null,
+      "ultimoCommit": null
+    }
+  ],
+  "agentiAttivi": 0,
+  "commitTotali": 0,
+  "durataPerFascia": {
+    "0:00-0:30 architect da solo": 0,
+    "0:30-1:40 wave 1": 0,
+    "1:40-1:50 checkpoint e congelamento contratti": 0,
+    "1:50-2:45 wave 2": 0,
+    "2:45-4:00 feature freeze e consegna": 0
+  },
+  "nota": "Nessun commit in cronologia: traccia generata vuota, di proposito. Rieseguire `npm run agents:trace` dopo i primi commit."
+}

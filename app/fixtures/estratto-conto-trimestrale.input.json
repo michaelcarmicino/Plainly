@@ -1,0 +1,72 @@
+{
+  "_nota": "VERITÀ DI RIFERIMENTO. Documento strutturato a mano (agente data-ingest NON attivato). Importi in CENTESIMI, percentuali in PUNTI BASE. Il campo _visualizzazione riporta le stesse cifre nel formato italiano come compaiono sul documento cartaceo.",
+  "id": "doc-2026-q3-cc",
+  "scenario": "estratto-conto",
+  "provenienza": "fixture",
+  "periodoInizio": "2026-07-01",
+  "periodoFine": "2026-09-30",
+  "totaleDichiaratoCent": 3817,
+  "metadati": {
+    "intestazione": "Estratto conto trimestrale — conto corrente ordinario",
+    "saldoFinale": "1.234,56 €",
+    "tassoScopertoAnnuo": "5,90%",
+    "ibanMascherato": "IT** **** **** **** **** **12 34"
+  },
+  "_visualizzazione": {
+    "totaleSpese": "38,17 €",
+    "saldoFinale": "1.234,56 €",
+    "tassoScopertoAnnuo": "5,90%"
+  },
+  "voci": [
+    {
+      "id": "voce-01",
+      "etichettaOriginale": "Canone conto corrente (3 mesi x 3,50)",
+      "categoria": "canone",
+      "importoCent": 1050,
+      "ricorrente": true
+    },
+    {
+      "id": "voce-02",
+      "etichettaOriginale": "Imposta di bollo su c/c",
+      "categoria": "imposta",
+      "importoCent": 855,
+      "ricorrente": false
+    },
+    {
+      "id": "voce-03",
+      "etichettaOriginale": "Commissioni prelievo ATM altro istituto (3 x 2,00)",
+      "categoria": "commissione",
+      "importoCent": 600,
+      "ricorrente": false
+    },
+    {
+      "id": "voce-04",
+      "etichettaOriginale": "Commissione bonifico istantaneo (2 x 1,90)",
+      "categoria": "commissione",
+      "importoCent": 380,
+      "ricorrente": false
+    },
+    {
+      "id": "voce-05",
+      "etichettaOriginale": "Canone carta di debito (3 mesi x 1,00)",
+      "categoria": "canone",
+      "importoCent": 300,
+      "ricorrente": true
+    },
+    {
+      "id": "voce-06",
+      "etichettaOriginale": "Spese invio estratto conto cartaceo",
+      "categoria": "commissione",
+      "importoCent": 120,
+      "ricorrente": false
+    },
+    {
+      "id": "voce-07",
+      "etichettaOriginale": "Competenze a debito - tasso 5,90%",
+      "categoria": "altro",
+      "importoCent": 512,
+      "ricorrente": false,
+      "aliquotaBp": 590
+    }
+  ]
+}

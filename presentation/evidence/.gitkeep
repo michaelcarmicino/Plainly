@@ -1,0 +1,13 @@
+# presentation/evidence/ — posseduta da 06-evidence-collector
+#
+# File JSON attesi, ognuno con la forma dichiarata nel tipo `Evidence`
+# di app/types/contracts.ts:
+#
+#   process.json        generato da `npm --prefix app run agents:trace`
+#   evolution.json      generato da `npm --prefix app run evolution:proof`
+#   comprehension.json  scritto da 05-impact-analyst
+#   capability.json     scritto da 06-evidence-collector
+#   persona.json        scritto da 06-evidence-collector
+#
+# Il deck legge SOLO da qui. Un'evidenza mancante produce un placeholder
+# visibile nella slide, mai un errore di build.

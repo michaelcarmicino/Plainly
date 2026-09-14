@@ -1,0 +1,85 @@
+{
+  "_nota": "Risultato atteso di calcolaLettura(estratto-conto-trimestrale.input.json). I pesi sono in punti base e sommano esattamente a 10000. Le spiegazioni descrivono il calcolo: non indicano azioni.",
+  "documentoId": "doc-2026-q3-cc",
+  "scenario": "estratto-conto",
+  "totaleCent": 3817,
+  "quadratura": {
+    "sommaVociCent": 3817,
+    "totaleDichiaratoCent": 3817,
+    "scartoCent": 0,
+    "quadra": true
+  },
+  "voci": [
+    {
+      "id": "voce-01",
+      "etichettaOriginale": "Canone conto corrente (3 mesi x 3,50)",
+      "categoria": "canone",
+      "importoCent": 1050,
+      "pesoBp": 2751,
+      "spiegazione": "10,50 € su 38,17 € di spese del trimestre, pari al 27,51% del totale.",
+      "rifOriginale": "voce-01"
+    },
+    {
+      "id": "voce-02",
+      "etichettaOriginale": "Imposta di bollo su c/c",
+      "categoria": "imposta",
+      "importoCent": 855,
+      "pesoBp": 2240,
+      "spiegazione": "8,55 € su 38,17 €, pari al 22,40% del totale.",
+      "rifOriginale": "voce-02"
+    },
+    {
+      "id": "voce-03",
+      "etichettaOriginale": "Commissioni prelievo ATM altro istituto (3 x 2,00)",
+      "categoria": "commissione",
+      "importoCent": 600,
+      "pesoBp": 1572,
+      "spiegazione": "6,00 € su 38,17 €, pari al 15,72% del totale.",
+      "rifOriginale": "voce-03"
+    },
+    {
+      "id": "voce-04",
+      "etichettaOriginale": "Commissione bonifico istantaneo (2 x 1,90)",
+      "categoria": "commissione",
+      "importoCent": 380,
+      "pesoBp": 996,
+      "spiegazione": "3,80 € su 38,17 €, pari al 9,96% del totale.",
+      "rifOriginale": "voce-04"
+    },
+    {
+      "id": "voce-05",
+      "etichettaOriginale": "Canone carta di debito (3 mesi x 1,00)",
+      "categoria": "canone",
+      "importoCent": 300,
+      "pesoBp": 786,
+      "spiegazione": "3,00 € su 38,17 €, pari al 7,86% del totale.",
+      "rifOriginale": "voce-05"
+    },
+    {
+      "id": "voce-06",
+      "etichettaOriginale": "Spese invio estratto conto cartaceo",
+      "categoria": "commissione",
+      "importoCent": 120,
+      "pesoBp": 314,
+      "spiegazione": "1,20 € su 38,17 €, pari al 3,14% del totale.",
+      "rifOriginale": "voce-06"
+    },
+    {
+      "id": "voce-07",
+      "etichettaOriginale": "Competenze a debito - tasso 5,90%",
+      "categoria": "altro",
+      "importoCent": 512,
+      "pesoBp": 1341,
+      "spiegazione": "5,12 € su 38,17 €, pari al 13,41% del totale. La voce riporta un tasso del 5,90% annuo; il calcolo che la produce non è ricostruibile dai dati presenti sul documento.",
+      "rifOriginale": "voce-07"
+    }
+  ],
+  "perCategoriaCent": {
+    "canone": 1350,
+    "imposta": 855,
+    "commissione": 1100,
+    "altro": 512
+  },
+  "proiezioneAnnuaCent": 5400,
+  "nonClassificate": ["voce-07"]
+}

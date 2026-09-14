@@ -1,0 +1,14 @@
+# app/src/ingest — DIRECTORY DELIBERATAMENTE VUOTA
+#
+# L'agente 02-data-ingest NON E' ATTIVATO. Vedi agents/02-data-ingest.md.
+# Motivo in una riga: su quattro ore il parsing di un documento reale e'
+# l'unico componente che puo' fallire IN SILENZIO (estrae un numero
+# sbagliato senza segnalare nulla), e un numero sbagliato in un prodotto
+# di educazione finanziaria e' peggio di nessun numero.
+#
+# Si parte da fixture strutturate a mano (app/fixtures/), che sono anche
+# la verita' di riferimento dei test.
+#
+# La directory esiste gia' perche' il perimetro dell'agente e' gia'
+# assegnato: se l'ingest viene attivato, nessun altro agente deve aver
+# nel frattempo occupato questo spazio.

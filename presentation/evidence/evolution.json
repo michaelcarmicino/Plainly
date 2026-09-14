@@ -1,0 +1,14 @@
+{
+  "generatoIl": "2026-09-14T09:02:38.182Z",
+  "branch": "(sconosciuto)",
+  "tagRiferimento": "freeze",
+  "tagPresente": false,
+  "minutiTrascorsi": 0,
+  "directoryToccate": [],
+  "numeroDirectoryToccate": 0,
+  "fileModificati": [],
+  "numeroFileModificati": 0,
+  "contrattiModificatiDopoFreeze": 0,
+  "contrattiModificati": [],
+  "note": "Tag \"freeze\" non ancora creato. Si crea al feature freeze (T+2:45) con: git tag freeze. Poi: git switch -c evolution-proof, si aggiunge la capability con un solo agente, e si rilancia npm run evolution:proof."
+}

@@ -1,0 +1,126 @@
+/* Palette dell'evento. Font di sistema: nessun CDN, nessun @import remoto.
+   Contrasto verificato su fondo #050008 (vedi app/docs/decisioni.md):
+     #ffffff  -> 20.4:1   testo corrente
+     #BE82FF  ->  7.0:1   accento su testo
+     #FF50A0  ->  6.5:1   accento secondario
+     #A100FF  ->  3.2:1   NON usato per il testo: solo bordi e fondi,
+                          con sopra testo bianco (6.3:1).
+   Corpo minimo 18px: l'interfaccia va proiettata. */
+
+:root {
+  --purple: #a100ff;
+  --purple-light: #be82ff;
+  --purple-dark: #460073;
+  --ink: #0a0014;
+  --rose: #ff50a0;
+  --fondo: #050008;
+  --testo: #ffffff;
+
+  --font-corpo: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+  --font-cifre: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', Consolas,
+    'Liberation Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--fondo);
+  color: var(--testo);
+  font-family: var(--font-corpo);
+  font-size: 18px; /* minimo 16px imposto dal vincolo di leggibilità */
+  line-height: 1.6;
+}
+
+.app {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 2rem clamp(1rem, 4vw, 3rem) 4rem;
+}
+
+.intestazione {
+  border-bottom: 3px solid var(--purple);
+  padding-bottom: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin: 0 0 0.75rem;
+  color: var(--purple-light);
+}
+
+.sottotitolo {
+  margin: 0;
+  font-size: 1.125rem;
+  color: var(--testo);
+  opacity: 0.92;
+}
+
+.sezione {
+  background: var(--ink);
+  border: 1px solid var(--purple-dark);
+  border-left: 4px solid var(--purple);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.placeholder {
+  margin: 0;
+  color: var(--testo);
+  opacity: 0.85;
+  font-style: italic;
+}
+
+.limiti {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.limiti li + li {
+  margin-top: 0.6rem;
+}
+
+.cifra {
+  font-family: var(--font-cifre);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.05em;
+}
+
+.violazione-guardrail {
+  background: var(--rose);
+  color: var(--ink);
+  font-weight: 700;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+.pie {
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--purple-dark);
+  font-size: 1rem;
+  color: var(--testo);
+  opacity: 0.9;
+}
+
+a {
+  color: var(--purple-light);
+}
+
+:focus-visible {
+  outline: 3px solid var(--rose);
+  outline-offset: 2px;
+}

@@ -1,0 +1,11 @@
+# presentation/screenshots/ — posseduta da 06-evidence-collector
+#
+# Catturati da `npm --prefix app run capture` (Playwright).
+#
+#   01-schermata-principale.png
+#   02-before.png          il documento così com'è          -> slide 4
+#   03-after.png           la lettura calcolata             -> slide 4
+#   04-test-rosso.png      il guardrail che rompe la build  -> slide 6, piano B
+#
+# Il before va catturato PRIMA di costruire l'after: dopo non è
+# ricostruibile.

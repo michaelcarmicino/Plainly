@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Conti Chiari — 8 slide</title>
+<!-- Nessun link esterno, nessun font remoto, nessuna richiesta di rete. -->
+<style>
+:root{--purple:#A100FF;--purple-light:#BE82FF;--purple-dark:#460073;
+--ink:#0A0014;--rose:#FF50A0;--fondo:#050008;--testo:#fff}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--fondo);color:var(--testo);
+font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+font-size:20px;line-height:1.5;overflow:hidden}
+.slide{display:none;height:100vh;padding:4vh 6vw 9vh;overflow-y:auto}
+.slide.attiva{display:block}
+h1{font-size:clamp(2.5rem,7vw,5rem);margin:0 0 .5rem;letter-spacing:-.02em}
+h2{font-size:clamp(1.8rem,4vw,3rem);margin:0 0 1.5rem;color:var(--purple-light);
+border-bottom:3px solid var(--purple);padding-bottom:.5rem}
+h3{font-size:1.3rem;color:var(--purple-light);margin:0 0 .4rem}
+.tag{display:inline-block;background:var(--purple);color:#fff;font-size:.9rem;
+font-weight:700;letter-spacing:.12em;padding:.2em .7em;border-radius:4px;
+vertical-align:middle;margin-right:.6rem}
+.occhiello{color:var(--rose);font-size:1.4rem;margin:0 0 2rem;font-weight:600}
+.frase{font-size:clamp(1.3rem,2.6vw,2rem);max-width:32em;margin:0 0 2rem}
+.frase-piccola{font-size:1.05rem;max-width:46em;margin:0 0 1.2rem;opacity:.95}
+.nota{font-size:.95rem;opacity:.85;margin-top:1.2rem}
+.cifre{display:flex;gap:1.5rem;flex-wrap:wrap;margin:1.5rem 0}
+.cifra{background:var(--ink);border:1px solid var(--purple-dark);
+border-left:4px solid var(--purple);border-radius:10px;padding:1rem 1.4rem;min-width:9rem}
+.cifra.evidenziata{border-left-color:var(--rose);background:#1a0010}
+.cifra-v{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;line-height:1;
+font-variant-numeric:tabular-nums}
+.cifra.evidenziata .cifra-v{color:var(--rose)}
+.cifra-e{font-size:.95rem;margin-top:.35rem}
+.cifra-n{font-size:.82rem;opacity:.8;margin-top:.2rem}
+table{width:100%;border-collapse:collapse;font-size:.95rem;margin:1rem 0}
+th,td{text-align:left;padding:.5rem .7rem;border-bottom:1px solid var(--purple-dark)}
+th{color:var(--purple-light);font-size:.85rem;text-transform:uppercase;letter-spacing:.06em}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+code{font-family:ui-monospace,Consolas,monospace;background:var(--ink);
+padding:.1em .35em;border-radius:4px;font-size:.9em;color:var(--purple-light)}
+pre.codice{background:var(--ink);border:1px solid var(--purple-dark);border-left:4px solid var(--rose);
+border-radius:8px;padding:1.2rem;overflow-x:auto;font-size:.95rem;line-height:1.45;
+font-family:ui-monospace,Consolas,monospace;white-space:pre-wrap}
+.due{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.due.immagini figure{margin:0}
+.due img,img.piccola{max-width:100%;border:1px solid var(--purple-dark);border-radius:8px}
+img.piccola{max-height:30vh;margin-top:1rem}
+figcaption{font-size:.9rem;opacity:.85;margin-top:.5rem}
+.blocco{border-left:4px solid var(--rose);padding-left:1rem}
+.manca{background:#1a0010;border:2px dashed var(--rose);border-radius:8px;
+padding:1.2rem;color:#fff;font-size:1rem;margin:1rem 0}
+.manca code{background:transparent;color:var(--rose)}
+.limiti{max-width:46em;font-size:1rem}
+.limiti li+li{margin-top:.5rem}
+hr.unione{border:0;border-top:2px solid var(--purple-dark);margin:2rem 0}
+#barra{position:fixed;left:0;right:0;bottom:0;height:6px;background:var(--ink)}
+#avanzamento{height:100%;background:var(--purple);transition:width .2s}
+#contatore{position:fixed;right:1.5rem;bottom:1.2rem;font-size:.9rem;opacity:.7;
+font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<section class="slide" data-n="1">
+    <h1>Conti Chiari</h1>
+    <p class="occhiello">Educazione alla finanza personale di base</p>
+    <p class="frase">
+      <!-- TODO(scenario): una frase, il problema. Da congelare a T+1:40. -->
+      Chi riceve una bolletta o un estratto conto legge un totale, non capisce
+      da dove viene, e non ha modo di verificarlo.
+    </p>
+    <p class="nota">Hackathon Agentic Coding · Accenture Application Engineering</p></section>
+<section class="slide" data-n="2"><h2>La persona, e dove si blocca</h2>
+      <div class="manca"><strong>Evidenza mancante:</strong> persona.json — chi è, e il punto esatto in cui si ferma<br>
+   <code>presentation/evidence/persona.json (agente 06-evidence-collector)</code></div>
+      <p class="nota">TODO(scenario): da compilare al congelamento dell'idea.</p></section>
+<section class="slide" data-n="3"><h2><span class="tag">METODO</span> Come abbiamo organizzato il lavoro</h2>
+    <div class="cifre">
+      <div class="cifra"><div class="cifra-v">4</div>
+   <div class="cifra-e">ore totali</div>
+   </div>
+      <div class="cifra"><div class="cifra-v">2</div>
+   <div class="cifra-e">persone</div>
+   <div class="cifra-n">un architetto, un product developer</div></div>
+      <div class="cifra"><div class="cifra-v">4</div>
+   <div class="cifra-e">cartelle valutate</div>
+   <div class="cifra-n">3 non sono l'applicazione</div></div>
+      <div class="cifra"><div class="cifra-v">9</div>
+   <div class="cifra-e">agenti</div>
+   <div class="cifra-n">una directory in esclusiva ciascuno</div></div>
+    </div>
+    <p class="frase-piccola">
+      In un hackathon i conflitti non nascono dal codice difficile: nascono da
+      due agenti che scrivono lo stesso file. Il criterio della decomposizione
+      non è la coesione concettuale, è <strong>l'assenza di sovrapposizione sul
+      filesystem</strong>. Due agenti girano in parallelo se e solo se le
+      directory che possiedono sono disgiunte.
+    </p>
+    <p class="frase-piccola">
+      Il team non è simmetrico: <strong>l'architetto</strong> tocca contratti,
+      agenti, hook e guardrail; <strong>il product developer</strong> interagisce
+      con il progetto solo attraverso skill e non ha bisogno di sapere quanti
+      agenti esistono — il routing lo fa la skill.
+    </p>
+    <table><thead><tr><th>Agente</th><th>Directory posseduta</th><th>File</th><th>Commit</th></tr></thead>
+           <tbody><tr><td><code>00-architect</code></td>
+             <td><code>app/fixtures/</code></td>
+             <td class="num">0</td>
+             <td class="num">0</td></tr><tr><td><code>01-core-engine</code></td>
+             <td><code>app/src/core/</code></td>
+             <td class="num">0</td>
+             <td class="num">0</td></tr><tr><td><code>02-data-ingest (NON ATTIVATO)</code></td>
+             <td><code>app/src/ingest/</code></td>
+             <td class="num">0</td>
+             <td class="num">0</td></tr><tr><td><code>03-ui-builder</code></td>
+             <td><code>app/src/ui/</code></td>
+             <td class="num">0</td>
+             <td class="num">0</td></tr><tr><td><code>04-guardrail-officer</code></td>
+             <td><code>app/src/guardrails/</code></td>
+             <td class="num">0</td>
+             <td class="num">0</td></tr><tr><td><code>05-impact-analyst</code></td>
+             <td><code>app/src/assessment/</code></td>
+             <td class="num">0</td>
+             <td class="num">0</td></tr><tr><td><code>06-evidence-collector</code></td>
+             <td><code>presentation/evidence/</code></td>
+             <td class="num">0</td>
+             <td class="num">0</td></tr><tr><td><code>07-deck-builder</code></td>
+             <td><code>presentation/</code></td>
+             <td class="num">0</td>
+             <td class="num">0</td></tr><tr><td><code>08-demo-director</code></td>
+             <td><code>presentation/demo-script.md</code></td>
+             <td class="num">0</td>
+             <td class="num">0</td></tr></tbody></table>
+           <p class="nota">0 agenti attivi · 0 commit · da <code>evidence/process.json</code></p></section>
+<section class="slide" data-n="4"><h2>Before / after</h2>
+    <div class="due immagini">
+      <figure><div class="manca"><strong>Evidenza mancante:</strong> screenshot del before<br>
+   <code>npm --prefix app run capture</code></div>
+        <figcaption>Il documento così com'è</figcaption></figure>
+      <figure><div class="manca"><strong>Evidenza mancante:</strong> screenshot dell'after<br>
+   <code>npm --prefix app run capture</code></div>
+        <figcaption>La lettura calcolata, voce per voce</figcaption></figure>
+    </div></section>
+<section class="slide" data-n="5"><h2>Che cosa calcola il software</h2>
+      <div class="manca"><strong>Evidenza mancante:</strong> capability.json — la capability e l'agente che l'ha costruita<br>
+   <code>presentation/evidence/capability.json (agente 06-evidence-collector)</code></div>
+      <p class="nota">TODO(scenario): si compila quando il core produce la prima lettura reale.</p></section>
+<section class="slide" data-n="6"><h2><span class="tag">DAL VIVO</span> Il guardrail che rompe la build</h2>
+    <p class="frase-piccola">
+      Il vincolo è: <strong>il prodotto spiega e calcola, non consiglia</strong>.
+      Scritto in un documento è una speranza. Qui è un test e un hook.
+    </p>
+    <pre class="codice">// app/src/ui/stringheUtente.ts
+demoRotta: 'Ti consigliamo di scegliere il conto migliore.',
+
+$ npm --prefix app test
+  × lessico nelle stringhe rivolte all'utente
+    → demoRotta: «Ti consigliamo di scegliere il conto migliore.»
+      [blocco] "consigliamo" (consigliare)
+      [blocco] "scegliere"   (imperativo-scelta)
+      [blocco] "migliore"    (comparativo-valore)</pre>
+    <p class="frase-piccola">
+      L'hook <code>PostToolUse</code> lo esegue <strong>al salvataggio</strong>,
+      non alla consegna: la deriva viene bloccata prima che qualcuno la rilegga.
+    </p>
+    </section>
+<section class="slide" data-n="7+8"><h2><span class="tag">METODO</span> La base agentica</h2>
+    <table><thead><tr><th>Componente</th><th>Dove</th><th>A che cosa serve</th></tr></thead>
+    <tbody><tr><td>Regole di progetto</td><td><code>CLAUDE.md</code></td><td>i vincoli che valgono per ogni agente</td></tr><tr><td>Contratti</td><td><code>app/types/contracts.ts</code></td><td>congelati a T+1:40, protetti da hook</td></tr><tr><td>Ruoli e confini</td><td><code>agents/*.md</code></td><td>un agente, una directory in esclusiva</td></tr><tr><td>Fixture</td><td><code>app/fixtures/</code></td><td>la verità di riferimento dei test</td></tr><tr><td>Guardrail eseguibili</td><td><code>app/src/guardrails/</code></td><td>«spiega, non consiglia» come test</td></tr><tr><td>Hook che li impongono</td><td><code>.claude/hooks/</code></td><td>non dipendono dalla buona volontà del modello</td></tr><tr><td>Skill come interfaccia</td><td><code>.claude/skills/</code></td><td>il verbo che il product developer digita</td></tr><tr><td>Traccia</td><td><code>agents/trace.md</code></td><td>memoria del processo, generata da git</td></tr></tbody></table>
+    <div class="cifre">
+      <div class="cifra"><div class="cifra-v">2</div>
+   <div class="cifra-e">file da leggere</div>
+   <div class="cifra-n">agents/README.md + contracts.ts</div></div>
+      <div class="cifra"><div class="cifra-v">1</div>
+   <div class="cifra-e">directory libera da scegliere</div>
+   </div>
+      <div class="cifra"><div class="cifra-v">0</div>
+   <div class="cifra-e">riunioni necessarie</div>
+   </div>
+    </div>
+    <p class="nota">Costo di ingresso per una terza persona. Le regole sono
+       <strong>eseguibili, non scritte</strong>.</p><hr class="unione"><h2><span class="tag">METODO</span> Prova di evoluzione</h2>
+      <div class="manca"><strong>Evidenza mancante:</strong> evolution.json — la misura, non l'affermazione<br>
+   <code>git tag freeze &amp;&amp; git switch -c evolution-proof &amp;&amp; npm --prefix app run evolution:proof</code></div>
+      <p class="frase-piccola">Tag "freeze" non ancora creato. Si crea al feature freeze (T+2:45) con: git tag freeze. Poi: git switch -c evolution-proof, si aggiunge la capability con un solo agente, e si rilancia npm run evolution:proof.</p></section>
+<section class="slide" data-n="9"><h2>Il miglioramento misurato, e i limiti</h2>
+      <div class="manca"><strong>Evidenza mancante:</strong> comprehension.json — prima / dopo / delta<br>
+   <code>presentation/evidence/comprehension.json (agente 05-impact-analyst)</code></div></section>
+<div id="barra"><div id="avanzamento"></div></div>
+<div id="contatore"></div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let i=0;
+const barra=document.getElementById('avanzamento');
+const cont=document.getElementById('contatore');
+function mostra(n){i=Math.max(0,Math.min(slides.length-1,n));
+ slides.forEach((s,k)=>s.classList.toggle('attiva',k===i));
+ barra.style.width=((i+1)/slides.length*100)+'%';
+ cont.textContent=(i+1)+' / '+slides.length;
+ location.hash=String(i+1);}
+document.addEventListener('keydown',e=>{
+ if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();mostra(i+1);}
+ else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();mostra(i-1);}
+ else if(e.key==='Home'){mostra(0);}
+ else if(e.key==='End'){mostra(slides.length-1);}
+ else if(e.key==='f'||e.key==='F'){
+   if(document.fullscreenElement)document.exitFullscreen();
+   else document.documentElement.requestFullscreen();}});
+document.addEventListener('click',e=>{if(!e.target.closest('a'))mostra(i+1);});
+mostra(parseInt(location.hash.slice(1)||'1',10)-1);
+</script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+/**
+ * LESSICO PRESCRITTIVO VIETATO — agente guardrail-officer.
+ *
+ * Il prodotto SPIEGA e CALCOLA, non consiglia. Questo file è la forma
+ * ESEGUIBILE di quella regola: non è una linea guida scritta in un
+ * documento, è un elenco che un test legge e su cui la build fallisce.
+ *
+ * Ogni voce ha: una radice (regex), il motivo del divieto, e una
+ * riformulazione lecita da usare al suo posto.
+ */
+
+export type GravitaViolazione = 'blocco' | 'attenzione';
+
+export interface TermineVietato {
+  readonly id: string;
+  /** Radice case-insensitive. \p{L} per gestire gli accenti italiani. */
+  readonly radice: RegExp;
+  readonly motivo: string;
+  /** Come si dice la stessa cosa senza consigliare. */
+  readonly riformulazione: string;
+  readonly gravita: GravitaViolazione;
+}
+
+/** Costruisce una regex su radice di parola, accent-safe. */
+const r = (pattern: string): RegExp =>
+  new RegExp(`(?<![\\p{L}])(?:${pattern})(?![\\p{L}])`, 'giu');
+
+export const LESSICO_PRESCRITTIVO: readonly TermineVietato[] = [
+  {
+    id: 'consigliare',
+    radice: r('consigli\\p{L}*|consiglia\\p{L}*|sconsigli\\p{L}*'),
+    motivo: 'È una raccomandazione personalizzata: vietata dal vincolo di dominio.',
+    riformulazione: 'Descrivi il calcolo: «questa voce pesa il X% del totale».',
+    gravita: 'blocco',
+  },
+  {
+    id: 'suggerire',
+    radice: r('suggeri\\p{L}*|suggerim\\p{L}*'),
+    motivo: 'Indica all\'utente cosa fare invece di spiegargli cosa sta leggendo.',
+    riformulazione: 'Esponi il dato e la sua provenienza, senza indicare un\'azione.',
+    gravita: 'blocco',
+  },
+  {
+    id: 'raccomandare',
+    radice: r('raccomand\\p{L}*'),
+    motivo: 'Raccomandazione esplicita.',
+    riformulazione: 'Riporta il numero e la riga originale da cui viene.',
+    gravita: 'blocco',
+  },
+  {
+    id: 'comparativo-valore',
+    radice: r('miglior\\p{L}*|peggior\\p{L}*|ottim\\p{L}*|convenient\\p{L}*'),
+    motivo: 'Giudizio di valore su un prodotto finanziario.',
+    riformulazione: 'Confronto numerico esplicito: «costa X € in più su 12 mesi».',
+    gravita: 'blocco',
+  },
+  {
+    id: 'convenienza',
+    radice: r('convien\\p{L}*|convenga|converrebbe'),
+    motivo: 'Afferma una convenienza soggettiva per l\'utente.',
+    riformulazione: 'Mostra la differenza di importo, lascia la conclusione a chi legge.',
+    gravita: 'blocco',
+  },
+  {
+    id: 'imperativo-scelta',
+    radice: r('scegli|scegliere|passa\\sa|cambia\\sfornitore|apri\\sun\\sconto|chiudi\\sil\\sconto'),
+    motivo: 'Imperativo che indica una scelta contrattuale.',
+    riformulazione: 'Elenca le voci di costo; la scelta non è del software.',
+    gravita: 'blocco',
+  },
+  {
+    id: 'investimento',
+    radice: r('investi|investire|rendiment\\p{L}*\\sgarantit\\p{L}*|compra|comprare|vendi|vendere|acquista\\sil'),
+    motivo: 'Raccomandazione di investimento: fuori perimetro e potenzialmente illecita.',
+    riformulazione: 'Il prodotto non tratta investimenti. Rimuovere la frase.',
+    gravita: 'blocco',
+  },
+  {
+    id: 'dovere-personale',
+    radice: r('dovresti|dovrebbe\\p{L}*|ti\\sconviene|fai\\sbene\\sa|evita\\sdi'),
+    motivo: 'Consulenza personalizzata rivolta al singolo utente.',
+    riformulazione: 'Frase impersonale e descrittiva: «la voce X è presente N volte».',
+    gravita: 'blocco',
+  },
+  {
+    id: 'adatto-a-te',
+    radice: r('adatt\\p{L}*\\sa\\ste|su\\smisura\\sper\\ste|ideale\\sper\\ste|fa\\sper\\ste'),
+    motivo: 'Profilazione: implica una valutazione del profilo dell\'utente.',
+    riformulazione: 'Rimuovere. Il software non profila e non valuta le persone.',
+    gravita: 'blocco',
+  },
+  {
+    id: 'promessa-risparmio',
+    radice: r('risparmier\\p{L}*|guadagner\\p{L}*|ti\\sfar\\p{L}*\\srisparmiare'),
+    motivo: 'Promessa di un risultato futuro.',
+    riformulazione: 'Proiezione aritmetica dichiarata come tale: «su 12 mesi, a parità di voci».',
+    gravita: 'blocco',
+  },
+  {
+    id: 'garanzia',
+    radice: r('garantit\\p{L}*|sicuro\\sal|senza\\srischi|zero\\srischi'),
+    motivo: 'Garanzia di risultato: vietata.',
+    riformulazione: 'Dichiara invece il limite del calcolo.',
+    gravita: 'attenzione',
+  },
+  {
+    id: 'urgenza',
+    radice: r('affrettati|subito\\sprima\\sche|offerta\\slimitata|imperdibil\\p{L}*'),
+    motivo: 'Leva persuasiva: incompatibile con uno strumento educativo.',
+    riformulazione: 'Rimuovere ogni pressione temporale.',
+    gravita: 'attenzione',
+  },
+];
+
+/** Radici vietate anche negli IDENTIFICATORI del codice (nomi di tipi,
+ *  funzioni, componenti). Controllate da app/tests/lessico-ui.test.ts. */
+export const RADICI_VIETATE_NEGLI_IDENTIFICATORI: readonly string[] = [
+  'suggerisci',
+  'suggerimento',
+  'consiglia',
+  'consiglio',
+  'raccomanda',
+  'migliore',
+  'conviene',
+  'scegli',
+];
