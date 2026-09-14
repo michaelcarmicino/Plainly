@@ -63,6 +63,8 @@ const SKILL_DEVELOPER = [
   'annulla',
   'promuovi',
   'pm',
+  'task-cartella',
+  'task-file',
   'rivedi-schermata',
 ];
 
