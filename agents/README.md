@@ -134,6 +134,56 @@ conflitto scoperto tardi.
 
 ---
 
+## Come ci siamo arrivati: prima a mano, poi il PM
+
+La decomposizione qui sopra non è nata così. È il risultato di due passaggi, in
+quest'ordine — e l'ordine è la parte che conta.
+
+### Primo passaggio — una funzionalità aggiunta a mano
+
+Abbiamo costruito **gli agenti uno alla volta**, ciascuno con la sua cartella
+in esclusiva, e poi provato il ciclo completo su una funzionalità vera:
+specifica, implementazione, verifica. **Con una persona a dare la conferma fra
+uno step e l'altro.**
+
+Serviva esattamente a questo: a ogni fermata si guardava cosa era uscito e si
+correggeva qualcosa. Un perimetro troppo largo. Una `description` che diceva
+*che cosa* fa un agente ma non *quando* usarlo — e che quindi non instradava
+niente. Un controllo che mancava. Un confine fra due agenti che nessuno aveva
+scritto e che entrambi sfondavano.
+
+Nessuna di queste cose si vede leggendo la configurazione: si vedono solo
+mettendola al lavoro e fermandosi a guardare.
+
+### Secondo passaggio — le conferme hanno smesso di dire qualcosa
+
+Alla seconda configurazione, quelle conferme **tornavano tutte**. Ci si
+fermava, si guardava, e non c'era niente da correggere.
+
+Quello è il momento in cui una conferma smette di essere un controllo e
+diventa un collo di bottiglia. Allora l'orchestrazione degli step di una nuova
+funzionalità è passata a [`10-pm`](10-pm.md), **al posto della persona**: è lui
+che approva una spec conforme, fa partire le fasi, chiama l'implementazione e
+verifica il risultato.
+
+Per questo è l'agente che gira di default sul **modello più potente
+disponibile**: confermare al posto di una persona richiede giudizio, non
+esecuzione.
+
+### Il punto da non perdere
+
+> **Non abbiamo tolto la persona dal ciclo perché era più veloce. L'abbiamo
+> tolta quando i controlli avevano smesso di aver bisogno di lei** — e solo là
+> dove avevano smesso.
+
+La delega è arrivata **dopo** la prova, non al posto della prova. È la
+differenza fra automatizzare qualcosa che funziona e sperare che funzioni
+perché è automatizzato.
+
+E tre cose non sono state delegate, perché non sono verificabili da una
+macchina: il **rifiuto di una specifica** per non conformità, la **deroga sui
+contratti congelati**, e la decisione di **presentare qualcosa di rosso**.
+
 ## Le regole sono eseguibili, non scritte
 
 Due hook in `.claude/settings.json`. Sono la parte più importante di questa
