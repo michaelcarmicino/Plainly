@@ -67,7 +67,32 @@ confligge, e indovinare è il modo di sbagliare.
 già le directory che toccherà. Se la specifica non c'è ancora, l'impronta la
 si conosce solo dopo `/spec` — e finché non c'è, il task resta fuori dal piano.
 
-## 3. Lanciare un'ondata
+## 3. Le conferme le dà il PM, non tu
+
+Quando il lavoro parte da `/pm`, il ciclo **non si ferma ad aspettarti** a ogni
+passaggio: il PM approva le spec conformi, fa partire le fasi 1, lancia
+`/implementa` e **verifica il risultato**.
+
+Gira su **Opus**, l'unico agente del progetto: confermare al posto di una
+persona richiede giudizio, non esecuzione.
+
+**Tre cose restano tue, e il PM si ferma:**
+
+| Situazione | Perché non decide il PM |
+| --- | --- |
+| **`/spec` ha rifiutato** una funzionalità | È un vincolo di dominio, non una preferenza. Il PM riporta il rifiuto e la variante conforme proposta, e ferma il task |
+| Serve **modificare i contratti congelati** | Deroga di squadra, va annotata in `docs/decisioni.md` |
+| Si vorrebbe **chiudere con `/verifica` rossa** | È una decisione di chi presenta |
+
+**Come verifica**, in ordine: `/verifica` verde · i passi di «come si prova»
+eseguiti · il referto del `tester` letto · il diff confrontato con l'impronta
+dichiarata. Se uno solo non regge, il task torna `in-corso` o `bloccato` con il
+motivo nel registro.
+
+Se il diff esce dall'impronta, **è l'informazione più utile del giro**: la
+specifica dichiarava meno di quanto toccava. Va registrata.
+
+## 4. Lanciare un'ondata
 
 Il ciclo di ogni singolo task **non cambia**: `/spec` se manca la specifica,
 poi `/implementa`, che a sua volta instrada gli agenti e richiama

@@ -2,6 +2,7 @@
 name: deck-builder
 description: Genera presentation/deck.html a partire dalle evidenze in presentation/evidence/ — un unico file autocontenuto, zero richieste di rete, nove slide a struttura fissa di cui quattro dedicate al metodo.
 tools: Read, Write, Edit, Glob, Grep, Bash
+model: sonnet
 ---
 
 # 07-deck-builder
