@@ -1,0 +1,126 @@
+/* La schermata dei risparmi fermi, parte 2: il riquadro del risultato, la
+   provenienza del numero, il confine dichiarato. Agente ui-builder.
+   Parte 1 — intestazione e campi — in stiliSimulazione.css, dove sono anche
+   annotati i contrasti calcolati. Corpo minimo 1rem = 18px. */
+
+/* Il riquadro occupa già il suo spazio da vuoto: il calcolo è immediato e
+   locale, ma se lo spazio non fosse riservato l'arrivo della cifra
+   spingerebbe in basso l'avvertenza e i limiti, cioè proprio quello che la
+   persona stava per leggere. */
+.risultato {
+  min-height: 21rem;
+  padding: 1.5rem;
+  border: 1px solid var(--purple-dark);
+  border-left: 4px solid var(--purple);
+  border-radius: 10px;
+  background: var(--ink);
+}
+
+.risultato-etichetta {
+  margin: 0;
+  font-size: 1.0625rem;
+  color: var(--purple-light);
+}
+
+/* La cifra più grande della schermata: se i numeri sono tutti uguali, chi
+   guarda non sa dove posare l'occhio. Resta su una riga sola anche a sette
+   cifre — il corpo scende con la larghezza invece di andare a capo — e il
+   minimo del clamp è misurato perché il valore più largo che questa
+   schermata può produrre, «9.803.921,57 €», stia dentro uno schermo da
+   320px senza barra di scorrimento orizzontale. */
+.risultato-cifra {
+  margin: 0.2rem 0 0.9rem;
+  font-size: clamp(1.5rem, 6.2vw, 3.25rem);
+  line-height: 1.15;
+  white-space: nowrap;
+  color: var(--testo);
+}
+
+/* Lo spazio della cifra quando la cifra non c'è ancora: una riga da
+   riempire, non un numero finto. Decorazione, mai letta ad alta voce. */
+.risultato-segnaposto {
+  display: block;
+  max-width: 11ch;
+  height: clamp(1.5rem, 6.2vw, 3.25rem);
+  margin-top: 1.1rem;
+  border-bottom: 3px dashed var(--purple);
+}
+
+.risultato-frase {
+  margin: 0 0 0.7rem;
+  max-width: 62ch;
+  font-size: 1.125rem;
+}
+
+.risultato-paragone,
+.risultato-differenza {
+  margin: 0 0 0.7rem;
+  max-width: 62ch;
+  font-size: 1.0625rem;
+}
+
+.risultato-attesa {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 1.0625rem;
+}
+
+/* --- Da dove viene il numero, e che cosa non è ------------------------- */
+
+.nota-tasso {
+  margin: 1.5rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--purple-dark);
+}
+
+.nota-riga {
+  margin: 0 0 0.7rem;
+  max-width: 68ch;
+  font-size: 1rem;
+}
+
+/* Rosa: è il colore di ciò che il prodotto non fa. Qui dichiara il buco. */
+.nota-periodo {
+  color: var(--rose);
+}
+
+.nota-avvertenza {
+  margin-bottom: 0;
+  padding-left: 0.8rem;
+  border-left: 3px solid var(--purple);
+}
+
+.limiti-schermata {
+  margin-top: 2rem;
+}
+
+.limiti-titolo {
+  margin: 0 0 0.6rem;
+  font-size: 1.25rem;
+  color: var(--purple-light);
+}
+
+/* --- Una domanda che ha già la sua schermata --------------------------- */
+
+.domanda-collegata {
+  display: inline-block;
+  min-height: 44px;
+  padding: 0.55rem 0;
+  color: var(--purple-light);
+}
+
+/* Lo spazio da riservare cresce quando lo schermo stringe, perché le frasi
+   sotto la cifra vanno a capo più volte. I due gradini sono misurati, non
+   scelti a occhio: 26rem tiene uno schermo da 390px, 31rem uno da 320px. */
+@media (max-width: 767px) {
+  .risultato {
+    min-height: 26rem;
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 384px) {
+  .risultato {
+    min-height: 31rem;
+  }
+}

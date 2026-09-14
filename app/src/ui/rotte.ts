@@ -15,10 +15,19 @@ import { ID_AREE, type IdArea } from './contenutiHome.ts';
 export type Rotta =
   | { readonly tipo: 'home' }
   | { readonly tipo: 'macrocategoria'; readonly id: IdArea }
-  | { readonly tipo: 'lettura' };
+  | { readonly tipo: 'lettura' }
+  | { readonly tipo: 'valore-risparmi' };
 
 export const PERCORSO_HOME = '#/';
 export const PERCORSO_LETTURA = '#/lettura';
+
+/**
+ * La schermata dei risparmi fermi. Nell'indirizzo non finisce MAI la cifra
+ * digitata: i due numeri vivono nello stato della pagina e basta. Un importo
+ * nell'hash resterebbe nella cronologia del browser senza che nessuno lo
+ * abbia deciso, e la pagina promette il contrario.
+ */
+export const PERCORSO_VALORE_RISPARMI = '#/valore-dei-risparmi';
 
 export const percorsoArea = (id: IdArea): string => `#/${id}`;
 
@@ -29,6 +38,7 @@ export const percorsoArea = (id: IdArea): string => `#/${id}`;
 export function parseRotta(hash: string): Rotta {
   const nome = hash.replace(/^#/, '').replace(/^\//, '');
   if (nome === 'lettura') return { tipo: 'lettura' };
+  if (nome === 'valore-dei-risparmi') return { tipo: 'valore-risparmi' };
   const area = ID_AREE.find((id) => id === nome);
   if (area !== undefined) return { tipo: 'macrocategoria', id: area };
   return { tipo: 'home' };

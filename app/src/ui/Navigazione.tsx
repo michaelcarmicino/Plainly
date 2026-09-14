@@ -32,6 +32,8 @@ function passoCorrente(rotta: Rotta): ChiaveStringaUtente | undefined {
       return AREE[rotta.id].titolo;
     case 'lettura':
       return 'sezioneLettura';
+    case 'valore-risparmi':
+      return 'simulazioneRisparmioPasso';
   }
 }
 

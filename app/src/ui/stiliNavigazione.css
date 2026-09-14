@@ -16,10 +16,13 @@
 }
 
 /* «Home» è sempre il primo bottone della riga: così non si sposta quando
-   «Indietro» compare o sparisce. */
+   «Indietro» compare o sparisce. Sotto i 330px i due bottoni non ci stanno
+   affiancati: vanno a capo invece di far comparire una barra di scorrimento
+   orizzontale, e «Home» resta comunque il primo. */
 .barra-azioni {
   display: flex;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
   gap: 0.75rem;
 }
 

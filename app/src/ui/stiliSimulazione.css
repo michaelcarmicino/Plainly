@@ -1,0 +1,121 @@
+/* La schermata dei risparmi fermi, parte 1: intestazione e i due campi.
+   Agente ui-builder. Il riquadro del risultato e la provenienza del numero
+   stanno in stiliRisultato.css, affiancato: due file per restare entro le
+   150 righe, come già styles.css / stiliHome.css / stiliNavigazione.css.
+   Tutti importati da src/main.tsx: nessun @import, nessun font remoto.
+
+   Contrasti usati qui, calcolati (fondo #050008, riquadri #0a0014):
+     #ffffff su #0a0014 -> 20.5:1   corpo, cifra grande, messaggi di errore
+     #BE82FF su #050008 ->  7.7:1   occhielli, etichette, titoli minori
+     #FF50A0 su #0a0014 ->  6.7:1   SOLO il periodo non ancora dichiarato
+     #a100ff            ->  3.2:1   mai testo: solo bordi e riempimenti
+   Corpo minimo 1rem = 18px. Campi e bersagli di click minimo 44px. */
+
+.simulazione {
+  max-width: 60rem;
+}
+
+.occhiello {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--purple-light);
+}
+
+.simulazione-titolo {
+  margin: 0 0 1rem;
+  max-width: 34ch;
+  font-size: clamp(1.5rem, 3.4vw, 2.125rem);
+  letter-spacing: -0.015em;
+  color: var(--testo);
+}
+
+.simulazione-intro {
+  margin: 0 0 2rem;
+  max-width: 66ch;
+}
+
+/* --- I due campi ------------------------------------------------------- */
+
+.campi {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem 2rem;
+  margin-bottom: 1.75rem;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* L'etichetta sta ACCANTO al campo, non solo dentro: il testo dentro
+   sparisce appena si scrive, e con lui sparirebbe la domanda. */
+.campo-etichetta {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--purple-light);
+}
+
+.campo-aiuto {
+  margin: 0.3rem 0 0.6rem;
+  max-width: 46ch;
+  font-size: 1rem;
+}
+
+.campo-input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0.6rem 0.8rem;
+  border: 2px solid var(--purple);
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--testo);
+  font-family: var(--font-cifre);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+.campo-input::placeholder {
+  color: var(--purple-light);
+  opacity: 1; /* Firefox la abbassa da solo, e 3.7:1 non passa */
+}
+
+.campo-in-errore .campo-input {
+  border-color: var(--rose);
+}
+
+/* Lo spazio del messaggio è riservato SEMPRE: un errore che compare non deve
+   spostare di una riga il riquadro del risultato e tutto ciò che segue.
+   Il messaggio è testo bianco a corpo pieno, non un bordo colorato: un
+   errore comunicato solo dal colore, per qualcuno, non c'è. */
+.campo-messaggio {
+  margin: 0.5rem 0 0;
+  min-height: 3.2rem;
+  max-width: 46ch;
+  font-size: 1rem;
+  color: var(--testo);
+}
+
+.campo-messaggio-errore {
+  padding-left: 0.7rem;
+  border-left: 4px solid var(--rose);
+}
+
+/* Affiancati, i due campi devono partire dalla stessa riga: un aiuto più
+   lungo dell'altro sfaserebbe le due caselle di una riga di testo. */
+@media (min-width: 768px) {
+  .campo-aiuto {
+    min-height: 3.2rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .campi {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}

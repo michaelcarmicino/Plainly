@@ -14,6 +14,7 @@ import { Home } from './Home.tsx';
 import { Navigazione } from './Navigazione.tsx';
 import { PaginaLettura } from './PaginaLettura.tsx';
 import { PaginaMacrocategoria } from './PaginaMacrocategoria.tsx';
+import { PaginaValoreRisparmi } from './PaginaValoreRisparmi.tsx';
 import { useRotta, type Rotta } from './rotte.ts';
 import { Testo } from './Testo.tsx';
 
@@ -25,6 +26,8 @@ function pagina(rotta: Rotta): ReactElement {
       return <PaginaMacrocategoria id={rotta.id} />;
     case 'lettura':
       return <PaginaLettura />;
+    case 'valore-risparmi':
+      return <PaginaValoreRisparmi />;
   }
 }
 
