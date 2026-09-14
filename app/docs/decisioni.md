@@ -332,3 +332,132 @@ rimando alla sezione d'origine.
 niente: un task deve essere qualcosa che un agente può prendere in mano. Era
 già stato fatto a mano in una sessione, marcandolo come deviazione dal
 comportamento automatico: ora è il comportamento automatico.
+
+---
+
+## Ripresa di `types/` dopo il conflitto fra sessioni parallele
+
+### D29 · `Scenario` esteso a `busta-paga` e `dichiarazione-730` — testo pronto, **non ancora scritto in `contracts.ts`**
+
+**La richiesta, per esteso.** Le spec `04-guida-interattiva-busta-paga.md` e
+`06-guida-interattiva-dichiarazione-730.md` chiedono, ciascuna per conto
+proprio, la stessa unica riga additiva su `types/contracts.ts`: aggiungere
+rispettivamente `'busta-paga'` e `'dichiarazione-730'` all'unione `Scenario`.
+Nessuna delle due spec ha letto l'altra prima di scriverlo — sono arrivate
+alla stessa conclusione da due punti di partenza indipendenti — ed entrambe
+segnalano lo stesso rischio: se le due righe vengono scritte in due momenti
+separati (due sessioni, due commit), la seconda scrittura può sovrascrivere
+la prima senza che alcun test se ne accorga, perché un'unione con un valore
+in meno non rompe nessuno switch esaustivo (non ne esiste uno su `Scenario`
+in tutto il repository, verificato da entrambe le spec). Il sintomo sarebbe
+silenzioso: **entrambi** i task risulterebbero "finiti" con un solo valore
+davvero presente. La correzione è ovvia — un intervento solo, non due — ed è
+per questo che vale la pena scriverla qui prima di applicarla, non dopo.
+
+**Non è stata applicata in questa sessione.** Il tentativo di scrivere
+`app/types/contracts.ts` da qui è stato **negato dal sistema di permessi di
+Claude Code**, non dall'hook di congelamento: `.contracts-frozen` non esiste
+(verificato prima di iniziare), quindi quella porta era aperta. A bloccare è
+stata invece `app/.claude/settings.json`, che nega esplicitamente
+`Edit`/`Write` su `types/**` — la stessa regola che questo stesso documento
+descrive altrove come il modo in cui si impedisce al **product developer** di
+toccare i contratti. Questa sessione, però, ha risolto la propria radice su
+`app/` invece che sulla root del repository, e quella regola non distingue
+il ruolo di chi la esegue: nega e basta. Non è stata aggirata scrivendo con
+un altro strumento: un permesso negato si segnala, non si scavalca — è la
+stessa logica per cui l'hook di congelamento non va aggirato quando blocca.
+
+**Il testo pronto da incollare**, al posto dell'attuale dichiarazione di
+`Scenario` in `app/types/contracts.ts`, da una sessione la cui radice sia
+davvero la root del repository:
+
+```ts
+/** Scenario applicativo. L'idea non è ancora congelata: il core deve
+ *  reggere questi casi. I quattro del brief (`bolletta`, `estratto-conto`,
+ *  `budget`, `simulazione-risparmio`) restano il nucleo; `busta-paga` e
+ *  `dichiarazione-730` sono un'estensione di perimetro dichiarata dalle
+ *  spec `04` e `06`, non un ripensamento del tema — vedi D29. */
+export type Scenario =
+  | 'bolletta'          // lettura di una bolletta (energia, gas, telco)
+  | 'estratto-conto'    // costi e commissioni di un conto corrente
+  | 'budget'            // budget personale mensile
+  | 'simulazione-risparmio' // accantonamento nel tempo
+  | 'busta-paga'         // guida interattiva al cedolino stipendio (spec 04)
+  | 'dichiarazione-730'; // guida interattiva alla dichiarazione dei redditi (spec 06)
+```
+
+**Da fare, in ordine:** riaprire questo file da una sessione lanciata dalla
+root del repository (non da `app/`) o con il permesso corretto, incollare il
+blocco sopra **in un intervento solo**, poi tornare qui e riscrivere questa
+voce spostando «Il testo pronto da incollare» in una sezione **Fatto**,
+questa volta ad applicazione avvenuta e verificata — non prima.
+
+### D30 · `VoceCalcolata.spiegazione`: chiarire che non è testo da schermo — proposta di commento, **non ancora scritta**
+
+**Il problema.** `VoceCalcolata.spiegazione` è dichiarata come prosa italiana
+fattuale prodotta dal core. Ma `standard-codice.md` vuole ogni stringa
+rivolta all'utente in `src/ui/testi.ts`, e la terza verifica di
+`tests/lessico-ui.test.ts` scandisce solo i **letterali** scritti nel codice
+sorgente di `src/` — non la prosa che una funzione compone a runtime
+concatenando numeri e frammenti brevi. La frase già scritta a mano in
+`fixtures/estratto-conto-trimestrale.atteso.json` (es. «10,50 € su 38,17 € di
+spese del trimestre, pari al 27,51% del totale.») **è** scandita, perché sta
+ferma dentro un file di fixture e la seconda verifica del test legge tutti i
+`.json` di `fixtures/`. Ma il giorno in cui `calcolaVoce()` (oggi non
+implementata: lancia `ErroreCalcolo` di proposito) produrrà frasi per rami non
+coperti da quell'unica fixture, quella prosa arriverebbe a schermo senza
+essere mai passata da un test o da un hook: il contratto chiede al core di
+scrivere per lo schermo in un punto che il guardrail non guarda.
+
+**Non è teoria: è già successo, due volte, prima di questa domanda.** Sulla
+funzionalità `07`, il tasso dichiarato e la sua provenienza sono stati
+spostati fuori dal calcolo puro: `src/core/inflazioneDichiarata.ts` oggi
+espone solo un numero (`valoreBp`) e un booleano (`periodoDichiarato`); la
+frase che li descrive vive in `src/ui/testi.ts` e la compone
+`src/ui/NotaTasso.tsx`. I messaggi d'errore hanno seguito la stessa strada.
+**Tre agenti indipendenti** sono arrivati alla stessa diagnosi da tre punti di
+partenza diversi: l'autore della spec `05`, `guardrail-officer` nella
+rilettura della `07`, e `core-engine` stesso scrivendo `inflazioneDichiarata.ts`.
+Quando tre percorsi indipendenti convergono sullo stesso punto, è un segnale
+del contratto, non una coincidenza.
+
+**Scelta.** Allineare `VoceCalcolata.spiegazione` allo stesso pattern già in
+uso, non rimuoverla: il campo resta nel contratto — serve a `Evidence.lettura`
+e al confronto con le fixture, che è tracciabilità, non presentazione — ma il
+suo commento va reso inequivocabile: non è testo pronto per lo schermo, e chi
+implementa la schermata compone il proprio testo in `testi.ts` a partire dai
+campi numerici già presenti sulla stessa voce (`importoCent`, `pesoBp`,
+`categoria`, `etichettaOriginale`), esattamente come `NotaTasso.tsx` fa oggi
+con `INFLAZIONE_DICHIARATA` invece di stampare una frase uscita dal core.
+
+**Non è stata applicata in questa sessione**, per lo stesso motivo di D29: la
+scrittura su `app/types/contracts.ts` è negata dal permesso attivo su questa
+sessione. Il testo pronto, al posto del commento attuale sul campo
+`spiegazione` di `VoceCalcolata`:
+
+```ts
+  /** Spiegazione FATTUALE di come si ottiene il numero. Descrive il calcolo,
+   *  non che cosa l'utente dovrebbe fare.
+   *
+   *  NON è testo per lo schermo: è prosa di tracciabilità (finisce in
+   *  `Evidence.lettura` e nel confronto con le fixture), composta a runtime
+   *  e quindi fuori dalla scansione lessicale di `tests/lessico-ui.test.ts`,
+   *  che scandisce i letterali scritti in `src/`, non le stringhe assemblate
+   *  da una funzione. La schermata NON stampa questo campo così com'è:
+   *  compone il proprio testo in `src/ui/testi.ts` a partire dagli altri
+   *  campi della stessa voce (`importoCent`, `pesoBp`, `categoria`,
+   *  `etichettaOriginale`) — lo stesso pattern già in uso fra
+   *  `src/core/inflazioneDichiarata.ts` e `src/ui/NotaTasso.tsx`. Deciso in
+   *  `docs/decisioni.md`, D30. */
+  readonly spiegazione: string;
+```
+
+**Rischio dichiarato finché non si applica.** Fino a quel momento — e finché
+nessuno estende la scansione lessicale a coprire anche la prosa composta a
+runtime dal core, cosa che questa decisione **raccomanda** a
+`guardrail-officer`/`tester` ma non esegue, perché `tests/` non è di questa
+sessione e in questo momento ci scrive `tester` su un'altra funzionalità —
+un componente che stampasse `voce.spiegazione` direttamente non verrebbe
+fermato da nessun controllo automatico: solo la rilettura umana di
+`guardrail-officer` prima del merge lo intercetterebbe. Segnalato esplicitamente
+a `ui-builder` e a `guardrail-officer` perché non resti un rischio silenzioso.

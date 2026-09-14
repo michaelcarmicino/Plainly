@@ -28,7 +28,15 @@ const STATI = {
 
 /** Estrae il corpo di una sezione `### Titolo` fino alla successiva. */
 function sezione(testo, titolo) {
-  const re = new RegExp(`^###\\s+${titolo}\\s*$([\\s\\S]*?)(?=^###\\s|^##\\s|\\Z)`, 'mi');
+  // `\Z` NON è un token di regex in JavaScript: nella stringa costruita da
+  // questo template diventa il carattere letterale 'Z', e con il flag 'i'
+  // anche 'z' minuscola — quindi il testo veniva troncato alla prima 'z'
+  // che precedeva l'intestazione successiva (es. "accettazione", "inflazione",
+  // "cadenza"). `(?![\s\S])` è la vera fine-stringa: nessun altro carattere
+  // resta da leggere, e funziona invariata sotto il flag 'm'. Il flag 'i' è
+  // stato tolto perché non serve: i titoli passati qui sotto compaiono nei
+  // file sorgente sempre con la stessa capitalizzazione (verificato).
+  const re = new RegExp(`^###\\s+${titolo}\\s*$([\\s\\S]*?)(?=^###\\s|^##\\s|(?![\\s\\S]))`, 'm');
   const m = testo.match(re);
   return m ? m[1].trim() : '';
 }
