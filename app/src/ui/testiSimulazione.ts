@@ -50,7 +50,7 @@ export const STRINGHE_SIMULAZIONE = {
   simulazioneRisparmioParagone:
     'Su ogni 100 € lasciati fermi, dopo {anni} anni ne resta il valore di {resto}.',
   simulazioneRisparmioPerdita:
-    'Fra le due cifre ballano {perdita}: i soldi sono ancora tutti lì, ma portano a casa meno roba.',
+    'Fra le due cifre c\'è una differenza di {perdita}: i soldi sono ancora tutti lì, ma portano a casa meno roba.',
   simulazioneRisparmioPerditaNulla:
     'Su una cifra così piccola la differenza non arriva a un centesimo: l\'aumento dei prezzi c\'è lo stesso, ma in euro non si vede.',
 
