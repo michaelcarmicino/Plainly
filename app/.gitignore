@@ -7,3 +7,4 @@ playwright-report/
 .dev-server.log
 .dev-server.pid
 .screenshots/
+*.tsbuildinfo
