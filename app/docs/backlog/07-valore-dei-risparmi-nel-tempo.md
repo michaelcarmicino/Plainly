@@ -1,5 +1,5 @@
 id: 07-valore-dei-risparmi-nel-tempo
-stato: da-fare
+stato: fatto
 directory: src/core/, src/ui/, tests/
 dipende-da: 01-landing-page
 note: impronta ricavata da docs/features/07-valore-dei-risparmi-nel-tempo.md

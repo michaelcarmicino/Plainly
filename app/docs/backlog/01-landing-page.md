@@ -1,5 +1,5 @@
 id: 01-landing-page
-stato: in-corso
+stato: fatto
 directory: src/ui/, tests/
 dipende-da:
 note: impronta ricavata da docs/features/01-landing-page.md (riga 205)
