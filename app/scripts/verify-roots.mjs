@@ -93,6 +93,56 @@ for (const s of elenco(join(ROOT, 'app', '.claude', 'skills'))) {
   );
 }
 
+console.log('\n=== 1-bis. frontmatter di agenti e skill ===\n');
+
+/**
+ * Un valore non quotato che contiene ": " rompe il parser YAML, e Claude Code
+ * scarta il file con «mapping values are not allowed in this context».
+ * È successo davvero su 15 file: la configurazione sembrava a posto e non lo
+ * era, perché nessuno leggeva l'errore.
+ */
+function controllaFrontmatter(p, etichetta) {
+  const t = leggi(p);
+  const m = t.match(/^---\n([\s\S]*?)\n---/);
+  if (!m) {
+    problemi.push(`${etichetta}: frontmatter assente`);
+    return;
+  }
+  for (const riga of m[1].split('\n')) {
+    if (!riga.trim()) continue;
+    const r = riga.match(/^([A-Za-z-]+):[ \t]*(.*)$/);
+    if (!r) {
+      problemi.push(`${etichetta}: riga di frontmatter non valida — «${riga.slice(0, 40)}»`);
+      continue;
+    }
+    const v = r[2].trim();
+    if (v && !/^["'].*["']$/.test(v) && /:\s/.test(v)) {
+      problemi.push(
+        `${etichetta}: \`${r[1]}\` contiene ": " e non è quotato — YAML lo legge come mappa`,
+      );
+    }
+  }
+}
+
+let controllati = 0;
+for (const [dir, tipo] of [
+  [join(ROOT, 'agents'), 'agents'],
+  [join(ROOT, '.claude', 'agents'), '.claude/agents'],
+]) {
+  for (const n of elenco(dir).filter((f) => /^\d\d-.+\.md$/.test(f))) {
+    controllaFrontmatter(join(dir, n), `${tipo}/${n}`);
+    controllati += 1;
+  }
+}
+for (const s of elenco(join(ROOT, '.claude', 'skills'))) {
+  const p = join(ROOT, '.claude', 'skills', s, 'SKILL.md');
+  if (existsSync(p)) {
+    controllaFrontmatter(p, `.claude/skills/${s}`);
+    controllati += 1;
+  }
+}
+console.log(`  ${controllati} file di frontmatter controllati`);
+
 console.log('\n=== 2. hook nei due settings.json ===\n');
 
 for (const [etichetta, p] of [
