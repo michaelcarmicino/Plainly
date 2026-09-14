@@ -93,6 +93,7 @@ try {
   righe.push('  /guarda     cattura la schermata e gli errori di console');
   righe.push('  /diagnosi   trova la causa di un sintomo prima di correggere');
   righe.push('  /annulla    torna all\'ultimo stato verde');
+  righe.push('  /promuovi   porta su master quello che è verde su develop');
   righe.push('');
   righe.push(
     `Stato:  ${spec.length} spec in docs/features/ (${implementate.length} implementate) · ` +

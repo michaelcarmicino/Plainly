@@ -63,6 +63,13 @@ Accanto, quattro skill per le cose che succedono davvero mentre lavori:
 - **`/diagnosi`** — quando qualcosa non funziona e non sai perché. Trova la
   causa **prima** di toccare il codice.
 - **`/annulla`** — torna all'ultimo stato in cui i test passavano.
+- **`/promuovi`** — quando quello che c'è su `develop` è pronto da consegnare
+  o da mostrare, lo porta su `master`. Ricontrolla tutto prima, e si rifiuta
+  di promuovere qualcosa di rosso.
+
+I due branch servono a questo: su **`develop`** un difetto è un problema
+interno, su **`master`** è qualcosa che qualcuno vede. Per questo il passaggio
+non è automatico.
 
 ## 4. Pianificare prima di scrivere
 

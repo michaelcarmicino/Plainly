@@ -20,7 +20,8 @@
     "agents:sync": "node scripts/agents-sync.mjs",
     "evolution:proof": "node scripts/evolution-proof.mjs",
     "verify:roots": "node scripts/verify-roots.mjs",
-    "docs:funzionali": "node scripts/docs-funzionali.mjs"
+    "docs:funzionali": "node scripts/docs-funzionali.mjs",
+    "promuovi": "node scripts/promuovi.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

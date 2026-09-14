@@ -58,6 +58,7 @@ const SKILL_DEVELOPER = [
   'guarda',
   'diagnosi',
   'annulla',
+  'promuovi',
 ];
 
 let symlink = 0;
