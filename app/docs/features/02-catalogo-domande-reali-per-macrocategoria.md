@@ -377,25 +377,212 @@ non toccano più nessun componente.
 *Scritto da `doc-funzionale` in fase 1, dalla sola specifica, mentre il codice
 viene costruito. **Tutto al futuro**: nulla qui è ancora verificato.*
 
+> Stato: **in sviluppo** · fase 1 scritta il 2026-09-14, dalla sola specifica.
+> La fase 2 — rilettura del codice e dei test, esecuzione dei passi qui sotto e
+> riscrittura al presente sotto «Verificato» — non è ancora stata fatta.
+
 ### Cosa farà
 
-«Due righe comprensibili a chi non vede il codice.»
+Le pagine delle tre aree mostreranno diciotto domande al posto delle dodici di
+oggi — cinque per «il costo della vita», sei per «il lavoro», sette per «il
+futuro», sei in più di adesso — e sotto ognuna comparirà una riga scritta a
+parole, non a colori, che dirà se il sito sa già rispondere, se risponderà
+presto, oppure se dichiara di non avere ancora una fonte per quel numero.
+
+Sette domande che oggi chiedono «che cosa mi conviene» o provano a indovinare
+il futuro di chi legge diventeranno domande su un meccanismo — la differenza
+fra due percorsi, non la scelta fra loro. E «Il mio settore è a rischio nei
+prossimi anni?» lascerà il posto in evidenza sulla card «Il lavoro» a una
+domanda a cui si può rispondere con i fatti: scenderà in fondo all'elenco della
+sua area, riscritta e segnata «senza fonte» — resterà visibile, non sparirà.
 
 ### Per chi
 
-«La persona, e il momento esatto in cui le serve.»
+Una persona che entra in un'area del sito con un'ansia già formata — «la
+bolletta di questo mese non me la spiego», «se perdo il posto, di che vivo» —
+e che davanti a un elenco di parole tecniche non saprebbe dove guardare,
+perché nessuna di quelle parole è la sua. Non cercherà «inflazione» né
+«previdenza complementare»: cercherà la propria frase, scritta come la
+direbbe lei. Se non la trova in dieci secondi, se ne andrà convinta che il
+sito non parli con lei.
+
+Le servirà **nei primi due tocchi, sempre**: nel momento in cui entra in
+un'area dalla pagina iniziale e scorre un elenco corto per riconoscere la
+domanda che si è fatta stamattina — e per capire subito, senza passare il
+mouse su niente, se il sito le sa già rispondere, le risponderà presto, o le
+dice onestamente che oggi non ha una fonte per farlo.
 
 ### Come si proverà
 
-«I passi esatti per vederla funzionare, dall'avvio in poi:
- 1. `/prepara` (solo la prima volta) · 2. `/avvia` · 3. apri … · 4. ti aspetti …
+Sono i criteri di accettazione: finché anche uno solo di questi passi non dà
+il risultato atteso, la funzionalità non è finita. I comandi vanno eseguiti da
+`app/`.
 
- Questi passi sono anche i CRITERI DI ACCETTAZIONE: `/implementa` li legge e li
- tratta come parte della richiesta.»
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (chi non usa Claude
+   Code ottiene lo stesso risultato con `npm run prepara`).
+   *Risultato atteso:* lo script dirà «Ambiente già pronto», oppure elencherà i
+   passi che ha installato, e il suo controllo di salute — `tsc --noEmit` e poi
+   `npm test` — finirà senza errori. Se fallisce, ci si ferma qui.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia`. Mai `npm run dev` a
+   mano: è un processo che non termina e lascia la sessione appesa.
+   *Risultato atteso:* lo script riporterà l'indirizzo `http://localhost:5173`.
+   Aprendolo comparirà la home.
+
+3. **Il numero sui tre badge, e perché non è più lo stesso ovunque.** Sulla
+   home, leggere la riga in fondo a ciascuna delle tre card.
+   *Risultato atteso:* oggi le tre card leggono tutte «altre 3 domande qui
+   dentro», lo stesso numero ovunque. Dopo, si leggeranno tre numeri diversi:
+   **«altre 4 domande qui dentro»** su «Il costo della vita», **«altre 5
+   domande qui dentro»** su «Il lavoro» (la funzione che lo calcola,
+   `contaAltreDomande('lavoro')`, passerà da 3 a 5) e **«altre 6 domande qui
+   dentro»** su «Il futuro». Tre liste di lunghezza diversa, tre badge diversi:
+   è il segno che il numero si deriva dalla lista invece di essere scritto a
+   mano.
+
+4. **Diciotto domande in tutto, non più dodici.** Entrare in ciascuna delle tre
+   aree ed elencare tutte le voci, quella già letta sulla card compresa.
+   *Risultato atteso:* «Il costo della vita» ne conterà **5**, «Il lavoro»
+   **6**, «Il futuro» **7** — 5 + 6 + 7 fa **18**, sei domande in più delle
+   dodici di prima. Le liste non saranno lunghe uguali, ed è voluto: pareggiarle
+   avrebbe voluto dire inventare una domanda o buttarne via una vera.
+
+5. **La card «Il lavoro» ha cambiato domanda, e quella vecchia non è sparita.**
+   Sulla home, leggere la domanda in evidenza sulla card «Il lavoro»; poi
+   entrare nell'area e scorrere fino all'ultima voce dell'elenco.
+   *Risultato atteso:* sulla card si leggerà **«Se perdo il lavoro, quanto
+   prendo ogni mese e per quanto tempo?»**, non più «Il mio settore è a rischio
+   nei prossimi anni?». Quella domanda non sarà sparita: comparirà come
+   **ultima** voce dell'elenco, riscritta in **«Nel mio settore, quante persone
+   hanno perso il lavoro negli ultimi anni?»**, con sotto la frase «Su questa
+   il sito non ha una risposta con una fonte dichiarata, e non la inventa.»
+
+6. **Le sette domande che sceglievano per chi legge, tutte con una nuova
+   formulazione.** Cercare, nelle tre aree, se compare ancora una delle sette
+   domande d'origine qui sotto; se non compare, verificare che al suo posto
+   compaia la riscrittura.
+
+   | Non comparirà più | Comparirà al suo posto |
+   | --- | --- |
+   | «Mutuo o affitto, cosa mi conviene?» | «Quanto mi costa la casa ogni mese, tutto compreso?» |
+   | «Come proteggo i miei risparmi dall'inflazione?» | «I risparmi fermi sul conto: che cosa succede loro mentre i prezzi salgono?» |
+   | «Conviene cambiare fornitore o offerta?» | «Che cosa cambia in bolletta fra un'offerta a prezzo fisso e una a prezzo variabile?» |
+   | «Conviene aprire una partita IVA o restare dipendente?» | «Con lo stesso importo, quanto resta a un dipendente e quanto a chi lavora in proprio?» |
+   | «Il mio contratto a termine verrà rinnovato? Cosa cambia rispetto a un indeterminato?» | «Contratto a termine e a tempo indeterminato: che cosa cambia, in concreto, fra i due?» |
+   | «Il mio settore è a rischio nei prossimi anni?» | «Nel mio settore, quante persone hanno perso il lavoro negli ultimi anni?» |
+   | «Meglio conto deposito, ETF o BTP per i miei risparmi?» | «Se i soldi mi servono fra sei mesi, che cosa cambia rispetto a quando mi servono fra dieci anni?» |
+
+   *Risultato atteso:* nessuna delle sette frasi di sinistra comparirà in
+   nessuna delle tre aree; ognuna delle sette di destra sì. Le nuove
+   formulazioni descriveranno un meccanismo o una differenza fra due percorsi,
+   mai una scelta da fare o un pronostico sulla persona che legge — coerente
+   con il fatto che il sito spiega e calcola, non consiglia.
+
+7. **Ogni voce dice il proprio stato a parole, senza bisogno del mouse.**
+   Scorrere l'elenco di un'area intera senza mai avvicinare il puntatore a
+   nessuna riga.
+   *Risultato atteso:* sotto ogni domanda **con schermata** ci sarà un link
+   vero, riconoscibile perché **sottolineato** — non da un colore diverso, che
+   da lontano, al proiettore, si vedrebbe peggio di una riga sotto la parola.
+   Sotto ogni domanda **in arrivo** si leggerà «La schermata che risponde a
+   questa domanda non c'è ancora.» Sotto l'unica domanda **senza fonte** si
+   leggerà «Su questa il sito non ha una risposta con una fonte dichiarata, e
+   non la inventa.» Tutte e tre le frasi si leggeranno stando fermi, senza
+   passare il mouse su niente: al proiettore e su un telefono il passaggio del
+   mouse non esiste.
+
+8. **L'unico link vero porta dove promette.** Entrare in «Il futuro» e
+   cliccare sulla domanda «I risparmi fermi sul conto: che cosa succede loro
+   mentre i prezzi salgono?».
+   *Risultato atteso:* il click porterà alla schermata della funzionalità 07
+   (`#/valore-dei-risparmi`), quella già costruita per calcolare quanto valgono
+   i risparmi fermi nel tempo. È l'unica delle diciotto voci raggiungibile oggi
+   con un link vero: una su diciotto, non zero e non finta.
+
+9. **Lo stato vuoto — un'area dove nessuna voce ha ancora una schermata.**
+   Entrare in «Il costo della vita» oppure in «Il lavoro»: oggi nessuna delle
+   due ha una voce «con schermata».
+   *Risultato atteso:* l'elenco delle domande comparirà comunque per intero, e
+   una frase dirà che cosa manca e che arriverà — non «nessun risultato», che è
+   una porta chiusa e non una spiegazione.
+
+10. **Lo stato «in caricamento» non esiste, e non dovrà comparire.** Ricaricare
+    la pagina di un'area e guardarla nell'istante in cui appare.
+    *Risultato atteso:* l'elenco comparirà **subito, già completo**: nessuna
+    rotellina, nessun lampeggio, nessun testo che cambia un attimo dopo. Il
+    catalogo è compilato dentro il pacchetto della pagina, non arriva da
+    nessuna parte: se comparisse un'attesa, sarebbe un difetto nuovo, non una
+    cosa prevista.
+
+11. **L'errore — un indirizzo d'area che non esiste.** Scrivere a mano nella
+    barra dell'indirizzo qualcosa come `#/un-area-inventata`.
+    *Risultato atteso:* si aprirà la home, non una pagina bianca né un
+    messaggio d'errore tecnico: è lo stesso comportamento già garantito per
+    ogni indirizzo storto, e questa funzionalità non dovrà romperlo.
+
+12. **Dati lunghi — le domande più lunghe non rompono la griglia.** Aprire «Il
+    futuro», che con sette voci è l'elenco più lungo dei tre, e cercare la
+    domanda su che cosa cambia se i soldi servono fra sei mesi o fra dieci
+    anni: la sua riga misurerà più di 90 caratteri — più del doppio di «Perché
+    la bolletta è così alta questo mese?», che oggi sta per intero su una card.
+    *Risultato atteso:* il testo andrà a capo su più righe senza tagliarsi a
+    metà parola, resterà leggibile sopra i 16 px, e l'area toccabile — link o
+    meno — resterà larga almeno 44×44 px anche quando occupa due righe: quanto
+    un polpastrello, non meno.
+
+13. **Il resto della home resta come prima.** Ripetere, su questa versione, i
+    controlli già superati dalla funzionalità 01: le tre card restano
+    identiche per dimensione, colore e stile; il bottone «Pagina iniziale» e
+    «Indietro» restano nello stesso punto su ogni pagina; stringendo la
+    finestra sotto i 768 px le tre card si impilano nello stesso ordine; con
+    solo Tab il focus attraversa le card e poi le voci dell'elenco in ordine di
+    lettura, con un contorno visibile a ogni passaggio.
+    *Risultato atteso:* nessuna di queste cose sarà cambiata. Le uniche
+    differenze rispetto a prima saranno i numeri dei badge (passo 3), la
+    domanda sulla card «Il lavoro» (passo 5) e il contenuto delle liste (passi
+    4 e 6): tutto il resto della funzionalità 01 continuerà a funzionare
+    esattamente come il giorno in cui è stata verificata.
+
+14. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire la pagina dalla cartella
+    `dist/` servita da un server locale.
+    *Risultato atteso:* la build finirà senza errori, e rifacendo i passi 3–9
+    si vedrà lo stesso risultato, **senza che parta una sola richiesta fuori
+    dal computer**: il catalogo è testo dichiarato nel codice, non un dato
+    preso da qualche parte. Il caso del doppio clic diretto su
+    `dist/index.html` è un difetto già noto e registrato nella funzionalità 01
+    (passo 8): qui si verifica solo che questa funzionalità non ne aggiunga
+    uno nuovo, non lo si risolve.
 
 ### Limiti previsti
 
-«Cosa non farà, e perché.»
+- **Non introdurrà nessun campo di domanda libera né una ricerca a testo.** Un
+  campo così, senza un modello che gira sul dispositivo, produrrebbe l'attesa
+  di una risposta che il sito non può dare: resterà un elenco a tocco, non una
+  casella da riempire.
+- **Non risponderà a nessuna delle diciotto domande.** Costruirà solo l'indice
+  e il suo stato: le risposte vere sono compito delle pagine di spiegazione
+  (funzionalità 03) e dei simulatori (08–12).
+- **Non aggiungerà nessuna schermata nuova e nessuna rotta.** L'unico percorso
+  citato resterà quello che la funzionalità 07 ha già aperto.
+- **Non calcolerà nessun numero di dominio.** Il catalogo è contenuto
+  redazionale: nessuna fixture, nessun euro, nessuna voce di un documento.
+- **Non ordinerà le domande per quanto contano.** L'ordine resterà una scelta
+  dichiarata — la più frequente per prima — non una classifica: dire a
+  qualcuno che la sua domanda è l'ultima della lista la farebbe sentire
+  giudicata, ed è proprio ciò che il sito non deve mai far succedere.
+- **Non separerà «quanto sarà la mia pensione» da «a che età potrò andare in
+  pensione» in due voci distinte.** Restano un'unica voce finché una specifica
+  dedicata alla pensione non deciderà diversamente, con i dati sotto gli occhi.
+- **Non dichiarerà da quale fonte arriverà ciascuna risposta ancora da
+  scrivere.** Le voci «in arrivo» diranno solo che la risposta arriverà, non
+  quando né da quale numero: la tabella delle fonti è compito della
+  funzionalità 13.
+- **Non riscriverà le domande già a schermo, a un'unica eccezione:** quella in
+  evidenza sulla card «Il lavoro», spostata e riscritta perché restava un
+  pronostico sulla situazione di chi legge, travestito da domanda.
+- **Non toccherà `types/`.** Il catalogo resterà contenuto redazionale dentro
+  `src/ui/`, come già oggi le dodici domande esistenti.
 
 ---
 
@@ -405,22 +592,19 @@ viene costruito. **Tutto al futuro**: nulla qui è ancora verificato.*
 letto codice e test ed **eseguito** i passi qui sopra. **Tutto al presente**:
 solo ciò che è stato confermato.*
 
-*Finché questa sezione non esiste, la funzionalità non è riconciliata e
-`/verifica` non la accetta come `implementato`.*
-
-### Cosa fa
-
-«…»
-
-### Come si prova
-
-«…»
-
-### Limiti
-
-«…»
-
-### Divergenze fra previsto e realizzato
-
-«Ogni scostamento, con il motivo. Si segnalano, non si appianano: riscrivere la
-previsione per farla combaciare con il risultato rende inutile l'esercizio.»
+> **Non ancora compilata.** Il codice di questa funzionalità non esiste ancora:
+> non c'è niente da verificare, e scrivere qui qualcosa significherebbe
+> dichiarare fatto ciò che nessuno ha controllato.
+>
+> Questa sezione si riempie in **fase 2**, al termine di `/implementa`, aprendo
+> `src/ui/catalogoDomande.ts`, `src/ui/testiCatalogo.ts`,
+> `src/ui/contenutiHome.ts`, `src/ui/PaginaMacrocategoria.tsx` e
+> `src/guardrails/lessico.ts`, leggendo `tests/catalogo.test.ts` e le due
+> asserzioni cambiate in `tests/home.test.ts`, e **rieseguendo davvero** i
+> quattordici passi scritti sopra — badge compresi, Wi-Fi spento compreso.
+> Conterrà «Cosa fa», «Come si prova», «Limiti» e «Divergenze fra previsto e
+> realizzato», tutto al presente, e solo allora lo stato passerà a
+> `implementato`.
+>
+> Finché questa sezione resta vuota, `/verifica` non accetta la funzionalità
+> come `implementato`.
