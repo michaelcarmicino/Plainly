@@ -14,7 +14,9 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
-    include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
+    // I test unitari del core stanno accanto al codice (src/core/__tests__/),
+    // come prescrive app/CLAUDE.md; quelli di accettazione restano in tests/.
+    include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx', 'src/**/__tests__/*.test.ts'],
     exclude: ['tests/e2e/**'],
   },
 });
