@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plainly — 10 slide</title>
+<!-- Nessun link esterno, nessun font remoto, nessuna richiesta di rete. -->
+<style>
+:root{--purple:#A100FF;--purple-light:#BE82FF;--purple-dark:#460073;
+--ink:#0A0014;--rose:#FF50A0;--fondo:#050008;--testo:#fff}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--fondo);color:var(--testo);
+font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+font-size:22px;line-height:1.5;overflow:hidden}
+.slide{display:none;height:100vh;width:100vw;padding:8vh 8vw 13vh;
+flex-direction:column;justify-content:center}
+.slide.attiva{display:flex}
+/* Marchio Accenture: il chevron, in alto a sinistra su ogni slide. */
+#marchio{position:fixed;top:5vh;left:8vw;display:flex;align-items:baseline;gap:.6rem;z-index:5}
+#chevron{color:var(--purple);font-size:2rem;font-weight:800;line-height:1}
+#marchio span{font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;
+color:#fff;opacity:1}
+.occhiello{text-transform:uppercase;letter-spacing:.28em;font-size:.82rem;
+font-weight:700;color:var(--purple-light);margin:0 0 1.6rem}
+h1{font-size:clamp(2.6rem,6vw,5rem);letter-spacing:-.03em;line-height:1.05;
+margin:0 0 2rem;max-width:18ch}
+h3{font-size:1.05rem;text-transform:uppercase;letter-spacing:.16em;
+color:var(--purple-light);margin:0 0 1rem}
+.frase{font-size:clamp(1.4rem,2.6vw,2.1rem);margin:0;max-width:26ch}
+.eroe{font-size:clamp(140px,17vw,300px);font-weight:800;line-height:.9;
+letter-spacing:-.05em;color:var(--purple-light);font-variant-numeric:tabular-nums;margin:0 0 1.5rem}
+.traduzione{font-size:clamp(1.3rem,2.2vw,1.9rem);margin:0 0 1.5rem;max-width:28ch}
+.fonte{font-size:1rem;color:var(--purple-light);margin:0;letter-spacing:.04em}
+.confronto{display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:start}
+.col{border-left:5px solid var(--purple);padding-left:1.6rem}
+.col.esclusa{border-left-color:var(--rose)}
+.col.esclusa h3{color:var(--rose)}
+.col p{margin:0;font-size:1.25rem}
+.col img{max-width:100%;max-height:40vh;border-radius:10px;
+border:1px solid var(--purple-dark);margin-bottom:1rem;display:block}
+.schema{display:flex;flex-wrap:wrap;align-items:center;gap:.9rem 1.1rem}
+.nodo{background:var(--ink);border:1px solid var(--purple-dark);
+border-left:4px solid var(--purple);border-radius:12px;padding:1rem 1.5rem;
+font-size:1.35rem;font-weight:600}
+.freccia{color:var(--purple-light);font-size:1.6rem}
+.consegna{font-size:clamp(1.6rem,3vw,2.4rem);color:var(--purple-light);margin:0}
+.elenco{list-style:none;padding:0;margin:2.5rem 0 0;font-size:1.2rem}
+.elenco li{margin-bottom:.7rem}
+.marcatore{color:var(--rose);font-weight:700;margin-right:.8rem}
+.manca{background:#1a0010;border:2px dashed var(--rose);border-radius:12px;
+padding:1.5rem;font-size:1.15rem;max-width:34ch}
+.manca code{color:var(--rose);font-family:ui-monospace,Consolas,monospace}
+.ponte{margin-top:3.5rem;padding-top:2rem;border-top:1px solid var(--purple-dark)}
+.ponte-titolo{font-size:1.3rem;font-weight:700;color:var(--purple-light);
+margin:0 0 1rem;letter-spacing:-.01em}
+.ponte ul{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.8rem 2.5rem}
+.ponte li{font-size:1.15rem;position:relative;padding-left:1.2rem}
+.ponte li::before{content:'›';position:absolute;left:0;color:var(--purple);font-weight:700}
+#barra{position:fixed;left:0;right:0;bottom:0;height:6px;background:var(--ink)}
+#avanzamento{height:100%;background:linear-gradient(90deg,var(--purple),var(--rose))}
+#atto{position:fixed;left:8vw;bottom:2.4rem;font-size:.85rem;
+text-transform:uppercase;letter-spacing:.22em;color:var(--purple-light)}
+#pie{position:fixed;right:8vw;bottom:2.4rem;font-size:.85rem;color:#fff;letter-spacing:.04em}
+</style></head><body>
+<div id="marchio"><span id="chevron">&gt;</span><span>Accenture</span></div>
+<section class="slide" data-atto="Il problema">
+  <p class="occhiello">Plainly</p>
+  <h1>Il totale lo paghi, il perché no</h1>
+  <p class="frase">Una bolletta si subisce.</p>
+</section>
+<section class="slide" data-atto="Il problema">
+  
+  <h1>Questo arriva a casa ogni tre mesi</h1>
+  <div class="confronto"><div class="col"><h3>Quello che ricevi</h3><p>Sette voci.</p></div><div class="col"><h3>Quello che capisci</h3><p>Il totale, e basta.</p></div></div>
+</section>
+<section class="slide" data-atto="Il problema">
+  
+  <h1>Una voce su sette resta inspiegata</h1>
+  <div class="eroe">1/7</div><p class="traduzione">Il tasso c'è, la base di calcolo no.</p><p class="fonte">fixtures/estratto-conto</p>
+</section>
+<section class="slide" data-atto="Che cosa fa">
+  <p class="occhiello">Che cosa fa</p>
+  <h1>Ogni cifra torna alla sua riga</h1>
+  <p class="frase">Niente di più.</p>
+</section>
+<section class="slide" data-atto="Che cosa fa">
+  
+  <h1>La stessa bolletta, riga per riga</h1>
+  <div class="confronto"><div class="col"><h3>Prima</h3><p>Un totale.</p></div><div class="col"><h3>Dopo</h3><p>Da dove viene.</p></div></div>
+</section>
+<section class="slide" data-atto="Che cosa fa">
+  
+  <h1>Il canone pesa più di quanto sembri</h1>
+  <div class="manca"><strong>Evidenza mancante:</strong> la capability<br><code>evidence/capability.json</code></div>
+</section>
+<section class="slide" data-atto="Che cosa fa">
+  
+  <h1>La somma torna al centesimo</h1>
+  <div class="eroe">10000</div><p class="traduzione">I pesi in punti base sommano esatti.</p><p class="fonte">tests/core.test.ts</p>
+</section>
+<section class="slide" data-atto="I limiti">
+  <p class="occhiello">I limiti</p>
+  <h1>Spiega e calcola, non consiglia</h1>
+  <p class="frase">Un vincolo, non uno stile.</p>
+</section>
+<section class="slide" data-atto="I limiti">
+  
+  <h1>Chi legge capisce di più, e lo misuriamo</h1>
+  <div class="manca"><strong>Evidenza mancante:</strong> la misura<br><code>evidence/comprehension.json</code></div>
+</section>
+<section class="slide" data-atto="I limiti">
+  
+  <h1>Quello che non fa</h1>
+  <div class="confronto"><div class="col"><h3>Spiega e calcola</h3></div><div class="col esclusa"><h3>Non consiglia</h3></div></div><ul class="elenco"><li><span class="marcatore">×</span>Non legge documenti</li><li><span class="marcatore">×</span>Non consiglia prodotti</li><li><span class="marcatore">×</span>Campione ridotto</li></ul>
+</section>
+<div id="barra"><div id="avanzamento"></div></div>
+<div id="atto"></div>
+<div id="pie">Accenture Application Engineering</div>
+<script>
+const s=[...document.querySelectorAll('.slide')];let i=0;
+const b=document.getElementById('avanzamento'),a=document.getElementById('atto');
+function m(n){i=Math.max(0,Math.min(s.length-1,n));
+ s.forEach((x,k)=>x.classList.toggle('attiva',k===i));
+ b.style.width=((i+1)/s.length*100)+'%';
+ a.textContent=s[i].dataset.atto+' · '+(i+1)+'/'+s.length;
+ location.hash=String(i+1);}
+document.addEventListener('keydown',e=>{
+ if(['ArrowRight','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();m(i+1);}
+ else if(['ArrowLeft','PageUp','Backspace'].includes(e.key)){e.preventDefault();m(i-1);}
+ else if(e.key==='Home')m(0); else if(e.key==='End')m(s.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}});
+document.addEventListener('click',()=>m(i+1));
+m(parseInt(location.hash.slice(1)||'1',10)-1);
+</script></body></html>

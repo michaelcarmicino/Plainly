@@ -1,151 +1,278 @@
 {
-  "generatoIl": "2026-09-14T12:09:40.438Z",
-  "durataPrevista": 480,
-  "totaleStimato": 467,
-  "slide": [
-    {
-      "n": 1,
-      "atto": "Il problema",
-      "archetipo": "AFFERMAZIONE",
-      "titolo": "Il totale lo paghi, il perché no",
-      "parole": 12,
-      "secondi": 23,
-      "consegnaDemo": null
+  "generatoIl": "2026-09-14T12:52:32.499Z",
+  "deck": {
+    "squadra": {
+      "file": "slide-squadra.html",
+      "durataPrevista": 90,
+      "totaleStimato": 37,
+      "slide": [
+        {
+          "n": 1,
+          "atto": "La squadra",
+          "archetipo": "SCHEMA",
+          "titolo": "Una squadra di agenti, una cartella ciascuno",
+          "parole": 19,
+          "secondi": 37,
+          "consegnaDemo": null
+        }
+      ]
     },
-    {
-      "n": 2,
-      "atto": "Il problema",
-      "archetipo": "CONFRONTO",
-      "titolo": "Questo arriva a casa ogni tre mesi",
-      "parole": 19,
-      "secondi": 39,
-      "consegnaDemo": null
+    "metodo": {
+      "file": "deck-metodo.html",
+      "durataPrevista": 480,
+      "totaleStimato": 487,
+      "slide": [
+        {
+          "n": 1,
+          "atto": "Il rischio",
+          "archetipo": "AFFERMAZIONE",
+          "titolo": "Due persone, quattro ore, un modello",
+          "parole": 11,
+          "secondi": 22,
+          "consegnaDemo": null
+        },
+        {
+          "n": 2,
+          "atto": "Il rischio",
+          "archetipo": "CONFRONTO",
+          "titolo": "Dove si perde tempo davvero",
+          "parole": 16,
+          "secondi": 36,
+          "consegnaDemo": null
+        },
+        {
+          "n": 3,
+          "atto": "Il rischio",
+          "archetipo": "NUMERO",
+          "titolo": "Il conflitto si scopre due ore dopo",
+          "parole": 13,
+          "secondi": 28,
+          "consegnaDemo": null
+        },
+        {
+          "n": 4,
+          "atto": "La squadra e il ciclo",
+          "archetipo": "AFFERMAZIONE",
+          "titolo": "Un agente, una cartella, nessun conflitto",
+          "parole": 11,
+          "secondi": 22,
+          "consegnaDemo": null
+        },
+        {
+          "n": 5,
+          "atto": "La squadra e il ciclo",
+          "archetipo": "SCHEMA",
+          "titolo": "Ogni cartella ha un proprietario solo",
+          "parole": 14,
+          "secondi": 33,
+          "consegnaDemo": null
+        },
+        {
+          "n": 6,
+          "atto": "La squadra e il ciclo",
+          "archetipo": "NUMERO",
+          "titolo": "Le skill sono i verbi che digiti",
+          "parole": 15,
+          "secondi": 30,
+          "consegnaDemo": null
+        },
+        {
+          "n": 7,
+          "atto": "La squadra e il ciclo",
+          "archetipo": "SCHEMA",
+          "titolo": "Il ciclo di vita di una funzionalità",
+          "parole": 12,
+          "secondi": 31,
+          "consegnaDemo": null
+        },
+        {
+          "n": 8,
+          "atto": "La squadra e il ciclo",
+          "archetipo": "CONFRONTO",
+          "titolo": "Documentazione e test nascono prima",
+          "parole": 18,
+          "secondi": 38,
+          "consegnaDemo": null
+        },
+        {
+          "n": 9,
+          "atto": "La squadra e il ciclo",
+          "archetipo": "NUMERO",
+          "titolo": "Si sa prima come si verrà misurati",
+          "parole": 14,
+          "secondi": 29,
+          "consegnaDemo": null
+        },
+        {
+          "n": 10,
+          "atto": "La squadra e il ciclo",
+          "archetipo": "NUMERO",
+          "titolo": "Entrare nel progetto costa due file",
+          "parole": 14,
+          "secondi": 29,
+          "consegnaDemo": null
+        },
+        {
+          "n": 11,
+          "atto": "La prova",
+          "archetipo": "AFFERMAZIONE",
+          "titolo": "Le regole non si scrivono, si eseguono",
+          "parole": 10,
+          "secondi": 21,
+          "consegnaDemo": null
+        },
+        {
+          "n": 12,
+          "atto": "La prova",
+          "archetipo": "CONSEGNA",
+          "titolo": "Guardate il portatile",
+          "parole": 9,
+          "secondi": 16,
+          "consegnaDemo": "Il guardrail che rompe la build"
+        },
+        {
+          "n": 13,
+          "atto": "La prova",
+          "archetipo": "NUMERO",
+          "titolo": "Tre divieti in una riga di testo",
+          "parole": 14,
+          "secondi": 29,
+          "consegnaDemo": null
+        },
+        {
+          "n": 14,
+          "atto": "La prova",
+          "archetipo": "NUMERO",
+          "titolo": "Anche questo deck si rifiuta di generare",
+          "parole": 13,
+          "secondi": 28,
+          "consegnaDemo": null
+        },
+        {
+          "n": 15,
+          "atto": "La prova",
+          "archetipo": "NUMERO",
+          "titolo": "Il lavoro è tracciato, non raccontato",
+          "parole": 13,
+          "secondi": 28,
+          "consegnaDemo": null
+        },
+        {
+          "n": 16,
+          "atto": "La prova",
+          "archetipo": "NUMERO",
+          "titolo": "Dopo il freeze i contratti non si toccano",
+          "parole": 15,
+          "secondi": 30,
+          "consegnaDemo": null
+        },
+        {
+          "n": 17,
+          "atto": "La prova",
+          "archetipo": "CONFRONTO",
+          "titolo": "Prima a mano, poi il PM",
+          "parole": 17,
+          "secondi": 37,
+          "consegnaDemo": null
+        }
+      ]
     },
-    {
-      "n": 3,
-      "atto": "Il problema",
-      "archetipo": "NUMERO",
-      "titolo": "Una voce su sette resta inspiegata",
-      "parole": 15,
-      "secondi": 30,
-      "consegnaDemo": null
-    },
-    {
-      "n": 4,
-      "atto": "Come lo abbiamo costruito",
-      "archetipo": "AFFERMAZIONE",
-      "titolo": "Un agente, una cartella, nessun conflitto",
-      "parole": 11,
-      "secondi": 22,
-      "consegnaDemo": null
-    },
-    {
-      "n": 5,
-      "atto": "Come lo abbiamo costruito",
-      "archetipo": "SCHEMA",
-      "titolo": "Ogni cartella ha un proprietario solo",
-      "parole": 14,
-      "secondi": 33,
-      "consegnaDemo": null
-    },
-    {
-      "n": 6,
-      "atto": "Come lo abbiamo costruito",
-      "archetipo": "NUMERO",
-      "titolo": "Il lavoro è tracciato, non raccontato",
-      "parole": 14,
-      "secondi": 29,
-      "consegnaDemo": null
-    },
-    {
-      "n": 7,
-      "atto": "Come lo abbiamo costruito",
-      "archetipo": "CONFRONTO",
-      "titolo": "La stessa bolletta, riga per riga",
-      "parole": 15,
-      "secondi": 36,
-      "consegnaDemo": null
-    },
-    {
-      "n": 8,
-      "atto": "Come lo abbiamo costruito",
-      "archetipo": "NUMERO",
-      "titolo": "Il canone pesa più di quanto sembri",
-      "parole": 14,
-      "secondi": 29,
-      "consegnaDemo": null
-    },
-    {
-      "n": 9,
-      "atto": "Come lo abbiamo costruito",
-      "archetipo": "SCHEMA",
-      "titolo": "Le regole non sono scritte, sono eseguite",
-      "parole": 15,
-      "secondi": 34,
-      "consegnaDemo": null
-    },
-    {
-      "n": 10,
-      "atto": "Come lo abbiamo costruito",
-      "archetipo": "NUMERO",
-      "titolo": "Entrare costa due file",
-      "parole": 14,
-      "secondi": 29,
-      "consegnaDemo": null
-    },
-    {
-      "n": 11,
-      "atto": "La prova",
-      "archetipo": "AFFERMAZIONE",
-      "titolo": "Se scriviamo un consiglio, la build non passa",
-      "parole": 11,
-      "secondi": 22,
-      "consegnaDemo": null
-    },
-    {
-      "n": 12,
-      "atto": "La prova",
-      "archetipo": "CONSEGNA",
-      "titolo": "Guardate il portatile",
-      "parole": 9,
-      "secondi": 16,
-      "consegnaDemo": "Il guardrail che rompe la build"
-    },
-    {
-      "n": 13,
-      "atto": "La prova",
-      "archetipo": "NUMERO",
-      "titolo": "Tre divieti in una riga di testo",
-      "parole": 14,
-      "secondi": 29,
-      "consegnaDemo": null
-    },
-    {
-      "n": 14,
-      "atto": "La prova",
-      "archetipo": "NUMERO",
-      "titolo": "Dopo il freeze i contratti non si toccano",
-      "parole": 15,
-      "secondi": 30,
-      "consegnaDemo": null
-    },
-    {
-      "n": 15,
-      "atto": "La prova",
-      "archetipo": "NUMERO",
-      "titolo": "Chi legge capisce di più, e lo misuriamo",
-      "parole": 14,
-      "secondi": 29,
-      "consegnaDemo": null
-    },
-    {
-      "n": 16,
-      "atto": "La prova",
-      "archetipo": "CONFRONTO",
-      "titolo": "Quello che non fa",
-      "parole": 17,
-      "secondi": 37,
-      "consegnaDemo": null
+    "prodotto": {
+      "file": "deck-prodotto.html",
+      "durataPrevista": 300,
+      "totaleStimato": 295,
+      "slide": [
+        {
+          "n": 1,
+          "atto": "Il problema",
+          "archetipo": "AFFERMAZIONE",
+          "titolo": "Il totale lo paghi, il perché no",
+          "parole": 12,
+          "secondi": 23,
+          "consegnaDemo": null
+        },
+        {
+          "n": 2,
+          "atto": "Il problema",
+          "archetipo": "CONFRONTO",
+          "titolo": "Questo arriva a casa ogni tre mesi",
+          "parole": 19,
+          "secondi": 39,
+          "consegnaDemo": null
+        },
+        {
+          "n": 3,
+          "atto": "Il problema",
+          "archetipo": "NUMERO",
+          "titolo": "Una voce su sette resta inspiegata",
+          "parole": 15,
+          "secondi": 30,
+          "consegnaDemo": null
+        },
+        {
+          "n": 4,
+          "atto": "Che cosa fa",
+          "archetipo": "AFFERMAZIONE",
+          "titolo": "Ogni cifra torna alla sua riga",
+          "parole": 12,
+          "secondi": 23,
+          "consegnaDemo": null
+        },
+        {
+          "n": 5,
+          "atto": "Che cosa fa",
+          "archetipo": "CONFRONTO",
+          "titolo": "La stessa bolletta, riga per riga",
+          "parole": 13,
+          "secondi": 34,
+          "consegnaDemo": null
+        },
+        {
+          "n": 6,
+          "atto": "Che cosa fa",
+          "archetipo": "NUMERO",
+          "titolo": "Il canone pesa più di quanto sembri",
+          "parole": 14,
+          "secondi": 29,
+          "consegnaDemo": null
+        },
+        {
+          "n": 7,
+          "atto": "Che cosa fa",
+          "archetipo": "NUMERO",
+          "titolo": "La somma torna al centesimo",
+          "parole": 13,
+          "secondi": 28,
+          "consegnaDemo": null
+        },
+        {
+          "n": 8,
+          "atto": "I limiti",
+          "archetipo": "AFFERMAZIONE",
+          "titolo": "Spiega e calcola, non consiglia",
+          "parole": 12,
+          "secondi": 23,
+          "consegnaDemo": null
+        },
+        {
+          "n": 9,
+          "atto": "I limiti",
+          "archetipo": "NUMERO",
+          "titolo": "Chi legge capisce di più, e lo misuriamo",
+          "parole": 14,
+          "secondi": 29,
+          "consegnaDemo": null
+        },
+        {
+          "n": 10,
+          "atto": "I limiti",
+          "archetipo": "CONFRONTO",
+          "titolo": "Quello che non fa",
+          "parole": 17,
+          "secondi": 37,
+          "consegnaDemo": null
+        }
+      ]
     }
-  ]
+  }
 }
