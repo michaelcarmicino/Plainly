@@ -155,3 +155,13 @@ Un intervento è finito quando **tutti e cinque** sono veri:
    `npm run docs:funzionali` è stato rigenerato.
    Uno stato `implementato` senza fase 2 fa fallire `/verifica`: significa che
    qualcuno ha dichiarato fatto qualcosa che nessuno ha controllato.
+6. **Il referto dei casi è aggiornato.** Se esiste `docs/test/NN-*.md`, la
+   fase 2 del `tester` è stata eseguita: i casi sono implementati in
+   `tests/accettazione/` o marcati `non coperto` **con il motivo**, il referto
+   riporta atteso/ottenuto/esito, e `npm run test:referto` è rigenerato.
+
+   **Retrocompatibilità:** una funzionalità **senza** lista dei casi viene
+   segnalata da `/verifica`, non fatta fallire. È lavoro iniziato prima che
+   l'agente `tester` esistesse, e un cancello che diventa rosso sul passato
+   viene aggirato subito — da lì in poi non protegge più niente. Il vincolo
+   vale **in avanti**.

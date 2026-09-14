@@ -61,9 +61,19 @@ Criteri di accettazione (da docs/features/NN-nome.md):
   2. ...
 ```
 
-Se quella sezione non c'è ancora, `doc-funzionale` sta ancora scrivendo:
-aspetta che compaia. Se non compare affatto, `/spec` non è stata confermata —
-fermati e dillo.
+Leggi anche **`docs/test/NN-nome.md`**, se esiste: è la lista dei casi che
+`tester` ha derivato dalla specifica. Vale la stessa regola — **è parte della
+richiesta**, non documentazione. Riporta in particolare i casi limite e gli
+errori attesi: è la differenza fra costruire il percorso nominale e costruire
+qualcosa che regge.
+
+Se quelle sezioni non ci sono ancora, `doc-funzionale` e `tester` stanno
+ancora scrivendo: aspetta che compaiano. Se non compaiono affatto, `/spec` non
+è stata confermata — fermati e dillo.
+
+**Funzionalità già in corso prima che questi agenti esistessero:** se non
+trovi né la scheda né la lista dei casi, **prosegui lo stesso** e segnalalo.
+Non bloccare lavoro già avviato per un passo introdotto dopo.
 
 ## Passo 1 — instrada, nell'ordine
 
@@ -95,6 +105,15 @@ L'agente verifica ogni affermazione leggendo codice e test, riscrive **al
 presente** solo ciò che ha confermato, **esegue davvero** i passi di «come si
 prova», registra le divergenze fra previsto e realizzato con il motivo, porta
 lo stato a `implementato` e rigenera l'indice con `npm run docs:funzionali`.
+
+Nello stesso momento richiama **`tester` in fase 2**, se esiste una lista di
+casi: implementa i casi in `tests/accettazione/`, li esegue, e scrive il
+referto con atteso, ottenuto, esito e file di test per ciascuno.
+
+**Se un caso fallisce, `tester` non corregge il codice.** Lo riporta, con
+l'input che lo produce, classificato bloccante o no. Un caso non implementabile
+si marca `non coperto` **con il motivo**: un buco dichiarato vale più di un
+test finto che passa.
 
 Due cose che devono restare chiare:
 

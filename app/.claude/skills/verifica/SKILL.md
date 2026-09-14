@@ -94,6 +94,31 @@ git status --porcelain docs/FUNZIONALITA.md
 Fallisce → indica **il file e la riga**, e di' quale delle tre condizioni non
 regge. Non «la documentazione è disallineata»: quale, e dove.
 
+### 6. Copertura dei casi
+
+```bash
+npm run test:referto
+```
+
+- **Se `docs/test/NN-*.md` esiste ma manca la sezione `## Referto`**, la fase 2
+  del `tester` non è mai stata eseguita: **fallisce**. I casi sono stati
+  scritti e mai provati, che è peggio che non averli scritti, perché sembrano
+  copertura.
+- **Se il referto è più vecchio dell'ultima modifica al codice della
+  funzionalità**, i risultati si riferiscono a un'altra versione: **fallisce**.
+
+**Retrocompatibilità, ed è deliberata.** Una funzionalità **senza** lista dei
+casi viene **segnalata**, non fatta fallire:
+
+```
+  avviso: 02-lettura-voci non ha una lista di casi (docs/test/)
+          implementata prima che l'agente tester esistesse
+```
+
+Un cancello che diventa rosso su lavoro già fatto viene aggirato il giorno
+stesso, e da lì in poi non protegge più niente. Il vincolo duro vale **in
+avanti**: chi apre una spec da adesso ha la lista, e senza referto non passa.
+
 ## Esito
 
 ```
