@@ -23,13 +23,57 @@ fila**, e tiene il registro.
 ## Uso
 
 ```
+/pm carica              prendi i task come sono e portali nel backlog
 /pm                     mostra il piano: chi può partire insieme
 /pm avvia               lancia la prossima ondata
 /pm stato               a che punto siamo, e cosa è successo
-/pm aggiungi <nome>     crea un task nel backlog
 ```
 
 Working directory: **`app/`**.
+
+## 0. Caricare i task, come sono
+
+I task arrivano come vengono: una lista incollata, un appunto, un file buttato
+in una cartella. **Chiederli già nel formato giusto significa che non li scrive
+nessuno.**
+
+```
+/pm carica                          normalizza i file in docs/backlog/_in-arrivo/
+/pm carica compra latte; paga...    una riga per task
+```
+
+Sotto:
+
+```bash
+node scripts/pm-carica.mjs --testo "primo task; secondo task"
+node scripts/pm-carica.mjs               # legge docs/backlog/_in-arrivo/
+node scripts/pm-carica.mjs --controlla   # non scrive, dice solo cosa manca
+```
+
+Lo script fa **solo la parte deterministica**: numerazione progressiva, slug,
+scheletro del file, archiviazione dell'originale.
+
+### Che cosa NON fa, ed è deliberato
+
+**Non inventa l'impronta.** Per i titoli riconoscibili propone una directory
+(`calcolo`, `somma`, `percentuale` → `src/core/`; `schermata`, `layout`,
+`mobile` → `src/ui/`) e la marca esplicitamente come **proposta da
+confermare**. Per tutti gli altri lascia `directory` **vuota** e li dichiara
+**non pianificabili**.
+
+Indovinare con chi un task confligge produce esattamente il conflitto che il PM
+esiste per evitare, e lo produce con l'aria di aver funzionato.
+
+### Il tuo lavoro dopo `carica`
+
+Per ogni task senza impronta o con impronta solo proposta:
+
+1. se **esiste già una specifica** in `docs/features/`, leggila: dichiara le
+   directory che toccherà, e quella è l'impronta;
+2. se **non esiste**, il task non è pianificabile finché non passa da `/spec`.
+   Dillo e fermati lì: è il momento giusto per scoprirlo, non a metà ondata.
+
+Poi `npm run pm:piano`, e il task entra nelle ondate.
 
 ## 1. Il piano
 

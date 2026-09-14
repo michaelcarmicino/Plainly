@@ -94,6 +94,7 @@ try {
   righe.push('  /diagnosi   trova la causa di un sintomo prima di correggere');
   righe.push('  /annulla    torna all\'ultimo stato verde');
   righe.push('  /promuovi   porta su master quello che è verde su develop');
+  righe.push('  /pm · /task-cartella · /task-file   più funzionalità insieme');
   righe.push('');
   righe.push(
     `Stato:  ${spec.length} spec in docs/features/ (${implementate.length} implementate) · ` +
