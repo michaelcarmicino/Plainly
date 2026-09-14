@@ -281,3 +281,200 @@ modificato: il `200` si sposta nel registro. Conseguenze, da rispettare:
 3. La 07 è chiusa e pubblicata, quindi `src/core/` e `src/ui/` sono liberi.
    `NotaTasso.tsx` e `src/core/index.ts` sono i due file già esistenti che
    questo intervento tocca: vanno riletti, non riscritti.
+
+---
+
+## Previsto
+
+*Scritto da `doc-funzionale` in fase 1, dalla sola specifica, mentre il codice
+viene costruito. **Tutto al futuro**: nulla qui è ancora verificato.*
+
+> Stato: **in sviluppo** · fase 1 scritta il 2026-09-14, dalla sola specifica.
+> La fase 2 — rilettura del codice e dei test, esecuzione dei passi qui sotto e
+> riscrittura al presente sotto «Verificato» — non è ancora stata fatta.
+
+### Cosa farà
+
+Aprendo questa pagina comparirà, per ogni numero che il sito usa, una riga con
+tre risposte: chi lo dice, su quale periodo vale, da quando è scritto qui
+dentro. Se anche una sola di queste tre cose manca, la pagina lo dichiarerà
+apertamente invece di lasciar credere che il numero sia comunque verificabile
+— ed è esattamente il caso di oggi: l'unica riga presente, quella
+dell'inflazione al 2,00% (due euro in più ogni cento spesi, ogni anno), ha gli
+anni su cui è calcolata la media ancora da stabilire, e la pagina lo dirà in
+chiaro invece di presentare quella percentuale come un fatto già controllato.
+
+### Per chi
+
+La persona che è arrivata in fondo a una schermata con un numero — per esempio
+quella dei risparmi fermi, con «un aumento dei prezzi di 2,00% all'anno» — e
+si è fatta la domanda che chiunque si fa davanti a una cifra scritta da
+qualcun altro: chi lo dice? Le servirà nel momento esatto in cui tocca la nota
+sotto quel numero, con un gesto solo, da qualunque punto del sito in cui
+compare una cifra.
+
+Le servirà anche, più raramente e in modo più delicato, quando la pagina le
+dirà che di un numero il periodo non è ancora stato stabilito: lì non sta
+approfondendo per curiosità, sta verificando — ed è il momento in cui il
+prodotto ha più da perdere se la lacuna viene nascosta invece che dichiarata.
+
+### Come si proverà
+
+Sono i **criteri di accettazione**: finché anche uno solo di questi passi non
+dà il risultato atteso, la funzionalità non è finita. I comandi vanno eseguiti
+da `app/`.
+
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (chi non usa Claude
+   Code ottiene lo stesso risultato con `npm run prepara`, che esegue
+   `node scripts/prepara.mjs`). Serve solo la prima volta.
+   *Risultato atteso:* lo script dirà «Ambiente già pronto», oppure elencherà
+   i passi che ha installato, e il suo controllo di salute — `tsc --noEmit` e
+   poi `npm test` — finirà senza errori.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia` (che esegue
+   `node scripts/dev-server.mjs start`). Mai `npm run dev` a mano: è un
+   processo che non termina e lascia la sessione appesa.
+   *Risultato atteso:* lo script riporterà l'indirizzo `http://localhost:5173`.
+
+3. **Partire da un numero vero, non dalla pagina delle fonti direttamente.**
+   Aprire quell'indirizzo, raggiungere la schermata «quanto valgono davvero i
+   miei risparmi» (funzionalità 07) e digitare una somma e degli anni
+   qualunque — per esempio 10.000 e 5 — così da vedere comparire il risultato
+   e, accanto, la nota su quale tasso è stato usato.
+   *Risultato atteso:* accanto al risultato comparirà la nota con scritto il
+   tasso — **2,00%** — e la sua fonte, la stessa già verificata nella
+   funzionalità 07. Quella nota è il punto di partenza: da lì, con un tocco
+   solo, si dovrà poter raggiungere la pagina «da dove vengono i numeri».
+
+4. **Il tocco che porta alla pagina delle fonti.** Toccare la nota del tasso.
+   *Risultato atteso:* si aprirà la pagina all'indirizzo
+   `#/da-dove-vengono-i-numeri`. Un tocco solo, non un percorso a più passaggi
+   dentro un menu.
+
+5. **Lo stato di oggi — il criterio più importante di tutti.** Guardare la
+   riga dell'inflazione, senza fare nient'altro.
+   *Risultato atteso:* la pagina **non presenterà il 2,00% come un numero già
+   del tutto verificabile**. Si leggeranno il valore e la fonte — ISTAT,
+   indice NIC — ma al posto del periodo comparirà una dichiarazione esplicita,
+   in linguaggio umano, che gli anni su cui è calcolata la media non sono
+   ancora stati stabiliti. Sarà scritta **in rosa** (`#FF50A0`, il colore
+   riservato a ciò che il prodotto non fa o non sa) — non un trattino, non un
+   campo vuoto: una frase che dice che quell'informazione manca e che qualcuno
+   deve ancora scriverla. È il caso reale di oggi — righe presenti, nessuna a
+   provenienza completa — e la pagina lo tratterà come lavoro non finito, non
+   lo nasconderà.
+
+6. **Il resto della riga, letto nell'ordine giusto.** Sulla stessa riga,
+   controllare l'ordine e la forma delle altre informazioni, e guardarsi
+   attorno per vedere dove altro compare il rosa.
+   *Risultato atteso:* prima la frase di tutti i giorni — qualcosa come «di
+   quanto salgono i prezzi in un anno» — **poi** il nome tecnico, «indice
+   NIC»: mai il nome tecnico da solo. Il valore, «2,00%», sarà allineato a
+   destra con cifre tabulari e l'unità **accanto** al numero, non in
+   un'intestazione separata. La data sarà scritta in lettere, non nel formato
+   `AAAA-MM-GG`: qualcosa come «scritto qui il 14 settembre 2026». E il rosa
+   del passo 5 sarà l'**unico** punto colorato così in tutta la pagina: da
+   nessun'altra parte sarà usato per decorare.
+
+7. **Il ritorno.** Usare il collegamento «Indietro» o l'equivalente di
+   navigazione.
+   *Risultato atteso:* comparirà nella stessa posizione in cui compare in ogni
+   altra pagina del sito, e riporterà alla schermata da cui si era partiti —
+   quella dei risparmi — senza aver perso i due numeri digitati al passo 3.
+
+8. **Lo stato «in caricamento» non deve far saltare il layout.** Osservare la
+   pagina delle fonti nell'istante esatto in cui si apre.
+   *Risultato atteso:* nessuna rotellina che gira e sparisce. Il registro è
+   una costante compilata dentro la pagina, quindi le righe compariranno già
+   pronte, senza uno scatto del layout un istante dopo l'apertura.
+
+9. **Errore e dati lunghi — verificabili solo in parte con i dati di oggi.**
+   Cercare, nel registro visibile a schermo, una riga con l'unità e il valore
+   incoerenti fra loro, e poi contare quante righe ci sono in tutto.
+   *Risultato atteso:* non se ne troverà nessuna incoerente, e le righe
+   saranno una sola — perché l'unica riga che esiste oggi, quella
+   dell'inflazione, è coerente e da sola. **Questi due passi non sono quindi
+   eseguibili end-to-end con l'app in esecuzione oggi**: il comportamento
+   previsto per una riga rotta (resta al suo posto, con una frase da persona
+   al posto del numero, invece di sparire) e quello per trenta righe con nomi
+   di fonte lunghi vanno verificati in fase 2 leggendo
+   `src/core/__tests__/registroFonti.test.ts`, non cliccando sulla pagina. Se
+   in fase 2 quel test non copre questi casi, va segnalato come divergenza —
+   non inventato un dato finto solo per poterlo mostrare.
+
+10. **Da tastiera e a finestra stretta come un telefono.** Restringere la
+    finestra sotto i 768 px di larghezza — quanto misura lo schermo di un
+    telefono tenuto in verticale — e rifare i passi 5 e 6; poi, senza toccare
+    il mouse, premere Tab più volte fino a raggiungere e attivare il
+    collegamento del passo 4.
+    *Risultato atteso:* la riga si impilerà a riquadro, senza barra di
+    scorrimento orizzontale, nessuna scritta scenderà sotto i 16 px e nessun
+    bersaglio sarà più piccolo di 44×44 px — cioè del polpastrello di un dito.
+    Con Tab si raggiungerà la nota del tasso e la pagina delle fonti si aprirà
+    anche premendo Invio, con un contorno netto visibile a ogni elemento che
+    ha il focus.
+
+11. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire la schermata dalla cartella
+    `dist/`.
+    *Risultato atteso:* la build finirà senza errori, e rifacendo i passi 3-6
+    si leggerà esattamente lo stesso contenuto — **senza che parta una sola
+    richiesta fuori dal computer**: il registro è scritto nel codice, non un
+    dato che si va a prendere da qualche parte.
+
+### Limiti previsti
+
+- **Non aggiornerà niente da solo.** Nessuna chiamata alla rete, né mentre il
+  sito gira né mentre viene costruito: ogni numero entrerà a mano, e la riga
+  dichiarerà quando è stato scritto e su quale periodo vale. L'aggiornamento
+  resterà un gesto umano — una persona che apre il file, cambia il numero e la
+  data, e committa.
+- **Non avrà una colonna che promette una cadenza** («mensile», «annuale»)
+  come nel documento d'origine: sarebbe una promessa sul futuro che nessun
+  meccanismo qui dentro può mantenere. Al suo posto resterà solo la data in cui
+  il numero è stato scritto, che lascia giudicare da sola se è vecchio.
+- **Non includerà la riga sui contenuti educativi** del documento d'origine:
+  non è un valore numerico ma un elenco di letture, e il registro esiste per
+  tenere numeri con la loro provenienza, non bibliografie.
+- **Non tradurrà i nomi delle fonti né degli indicatori.** «ISTAT» resterà
+  «ISTAT», «indice NIC» resterà «indice NIC»: la frase di tutti i giorni si
+  affiancherà al nome tecnico, non lo sostituirà.
+- **Non giudicherà le fonti** e non le metterà in ordine di affidabilità:
+  elencherà soltanto, dichiarando la provenienza di ciascuna.
+- **Non inventerà le righe che mancano.** Partirà con l'unica riga che esiste
+  davvero oggi nel codice — quella dell'inflazione — e non con le sei della
+  tabella del documento d'origine. Le altre entreranno una alla volta, insieme
+  al numero che le renderà vere, con le funzionalità che porteranno le fasce di
+  tassazione e i tassi del mutuo.
+- **Non toccherà i contratti condivisi** in `types/`: i tipi del registro
+  nasceranno dentro `src/core/`.
+- **Non risolverà da sola il periodo mancante dell'inflazione.** Resterà un
+  buco dichiarato finché una persona non recupererà gli anni su cui la media
+  ISTAT è calcolata: questa pagina lo rende visibile, non lo chiude.
+
+---
+
+## Verificato
+
+*Scritto da `doc-funzionale` in fase 2, al termine di `/implementa`, dopo aver
+letto codice e test ed **eseguito** i passi qui sopra. **Tutto al presente**:
+solo ciò che è stato confermato.*
+
+> **Non ancora compilata.** Il codice di questa funzionalità è in costruzione
+> proprio ora: non c'è niente da verificare, e scrivere qui qualcosa
+> significherebbe dichiarare fatto ciò che nessuno ha controllato.
+>
+> Questa sezione si riempie in **fase 2**, al termine di `/implementa`,
+> aprendo `src/core/registroFonti.ts`, la modifica a
+> `src/core/inflazioneDichiarata.ts`, i file di `src/ui/` (`PaginaFonti.tsx`,
+> `testiFonti.ts`, `NotaTasso.tsx`, `rotte.ts`), leggendo
+> `src/core/__tests__/registroFonti.test.ts` e
+> `tests/accettazione/13-tabella-fonti.test.ts`, e **rieseguendo davvero** gli
+> undici passi scritti sopra — compresi i due segnalati come «verificabili
+> solo in parte con i dati di oggi», che in fase 2 vanno confermati leggendo
+> il test invece che usando l'app. Conterrà «Cosa fa», «Come si prova»,
+> «Limiti» e «Divergenze fra previsto e realizzato», tutto al presente, e solo
+> allora lo stato passerà a `implementato`.
+>
+> Finché questa sezione resta vuota, `/verifica` non accetta la funzionalità
+> come `implementato`.

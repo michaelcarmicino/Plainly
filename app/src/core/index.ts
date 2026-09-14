@@ -75,6 +75,20 @@ export {
 } from './inflazioneDichiarata.ts';
 
 export {
+  REGISTRO_FONTI,
+  provenienzaCompleta,
+  righeConProvenienzaIncompleta,
+  fonteDi,
+  valoreBpDi,
+  valoreBpDiRiga,
+  MOTIVI_ERRORE_FONTE,
+  type RigaFonte,
+  type UnitaValore,
+  type PeriodoRiferimento,
+  type MotivoErroreFonte,
+} from './registroFonti.ts';
+
+export {
   simulaRisparmio,
   calcolaSimulazioneRisparmio,
   MOTIVI_RIFIUTO_RISPARMIO,
