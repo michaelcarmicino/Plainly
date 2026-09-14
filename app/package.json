@@ -21,7 +21,8 @@
     "evolution:proof": "node scripts/evolution-proof.mjs",
     "verify:roots": "node scripts/verify-roots.mjs",
     "docs:funzionali": "node scripts/docs-funzionali.mjs",
-    "promuovi": "node scripts/promuovi.mjs"
+    "promuovi": "node scripts/promuovi.mjs",
+    "pm:piano": "node scripts/pm-piano.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
