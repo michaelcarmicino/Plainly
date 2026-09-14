@@ -59,3 +59,29 @@ export function calcolaLettura(_documento: DocumentoUtente): LetturaCalcolata {
 }
 
 export { formattaEuro, formattaPercentuale, parseNumeroIt } from './formatoIt.ts';
+
+export {
+  esitoOk,
+  esitoErrore,
+  type Esito,
+  type EsitoRiuscito,
+  type EsitoFallito,
+} from './esito.ts';
+
+export {
+  INFLAZIONE_DICHIARATA,
+  periodoDaCompilare,
+  type TassoInflazioneDichiarato,
+} from './inflazioneDichiarata.ts';
+
+export {
+  simulaRisparmio,
+  calcolaSimulazioneRisparmio,
+  MOTIVI_RIFIUTO_RISPARMIO,
+  ANNI_MIN,
+  ANNI_MAX,
+  RISPARMIO_MAX_CENT,
+  type MotivoRifiutoRisparmio,
+  type IngressoSimulazioneRisparmio,
+  type RisultatoSimulazioneRisparmio,
+} from './simulazioneRisparmio.ts';
