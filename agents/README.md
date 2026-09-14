@@ -256,6 +256,18 @@ fine, non se lo ricorda nessuno. Tre o quattro voci bastano.*
 > Da quel momento la stessa deriva è stata bloccata al salvataggio, tre volte,
 > senza che nessuno la rileggesse.
 
-- **T+…** — …
+- **Dalla conferma manuale alla delega al PM.** Abbiamo costruito gli agenti
+  uno alla volta e provato il ciclo su una funzionalità vera — specifica,
+  implementazione, verifica — **con noi a confermare fra uno step e l'altro**.
+  A ogni fermata correggevamo qualcosa: un perimetro troppo largo, una
+  `description` che diceva *che cosa* fa un agente ma non *quando* usarlo, un
+  controllo che mancava. Alla seconda configurazione le conferme **tornavano
+  tutte**: ci fermavamo, guardavamo, e non c'era niente da correggere.
+  Da lì abbiamo delegato al `10-pm` l'orchestrazione degli step di una nuova
+  funzionalità.
+  **Non abbiamo tolto l'uomo dal ciclo perché era più veloce: l'abbiamo tolto
+  quando i controlli avevano smesso di aver bisogno di lui**, e solo là dove
+  avevano smesso. Restano alla persona il rifiuto di una spec, la deroga sui
+  contratti congelati, e la decisione di presentare qualcosa di rosso.
 - **T+…** — …
 - **T+…** — …

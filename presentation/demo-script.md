@@ -84,6 +84,66 @@ davanti alla giuria.
 
 ---
 
+## Il passaggio di consegne al PM — da raccontare in slide 7 o 8
+
+**Persona B.** È il pezzo di metodo che vale di più, perché ha un prima e un
+dopo, e il dopo è una conseguenza del prima e non una scelta di comodo.
+
+### Come raccontarlo, in tre battute
+
+> **Primo tempo.** «Abbiamo costruito gli agenti uno alla volta, ciascuno con
+> una cartella in esclusiva. Poi abbiamo provato il ciclo su una funzionalità
+> vera — specifica, implementazione, verifica — **con noi a dare la conferma
+> fra uno step e l'altro**. Ogni volta che ci fermavamo, guardavamo cosa era
+> uscito e correggevamo: il perimetro di un agente, una descrizione che non
+> diceva *quando* usarlo, un controllo che mancava.»
+>
+> **Secondo tempo.** «Alla seconda configurazione, quelle conferme
+> **tornavano tutte**. Ci fermavamo, guardavamo, e non c'era niente da
+> correggere: stavamo battendo invio.»
+>
+> **Terzo tempo.** «Quello è il momento in cui una conferma smette di essere un
+> controllo e diventa un collo di bottiglia. Allora abbiamo delegato
+> l'orchestrazione degli step di una nuova funzionalità al PM.»
+
+### Il punto da non perdere
+
+**Non abbiamo tolto l'uomo dal ciclo perché era più veloce. L'abbiamo tolto
+quando i controlli avevano smesso di aver bisogno di lui** — e solo là dove
+avevano smesso.
+
+La delega è arrivata **dopo** la prova, non al posto della prova. È la
+differenza fra automatizzare qualcosa che funziona e sperare che funzioni
+perché è automatizzato.
+
+### E le tre cose che **non** abbiamo delegato
+
+Se qualcuno chiede «quindi il modello decide da solo?», la risposta è no, e va
+data con l'elenco preciso:
+
+1. **Il rifiuto di una specifica.** Se `/spec` rifiuta perché la funzionalità
+   darebbe un consiglio, il PM **non può ribaltarlo**. Se potesse, `/spec`
+   smetterebbe di essere un cancello e diventerebbe un suggerimento.
+2. **La deroga sui contratti congelati**, perché riguarda il lavoro di altri.
+3. **La decisione di presentare qualcosa di rosso**, perché è di chi ci mette
+   la faccia.
+
+Tutto il resto — approvare una spec conforme, far partire le fasi, chiudere un
+task — lo decide il PM, che per questo è **l'agente che gira di default sul
+modello più potente disponibile**: confermare al posto di una persona richiede
+giudizio, non esecuzione.
+
+### Come verifica, così non è una promessa
+
+`/verifica` verde · i passi di «come si prova» **eseguiti** · il referto del
+tester letto · il diff confrontato con l'impronta dichiarata. Se uno solo non
+regge, il task torna indietro con il motivo nel registro.
+
+> **Frase di chiusura, se serve una sola riga:** «Abbiamo dato via le conferme
+> quando hanno smesso di dirci qualcosa. Non prima, e non tutte.»
+
+---
+
 ## Le tre domande più probabili della giuria
 
 *Risposta scritta, sotto i 30 secondi ciascuna. Da provare a voce.*
