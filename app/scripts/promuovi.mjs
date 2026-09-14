@@ -134,6 +134,19 @@ if (m.status !== 0) {
 
 console.log(`  master ← develop  (${gitOut('rev-parse', '--short', 'HEAD')})`);
 
+// Il merge --no-ff lascia su master un commit che develop non ha. Senza
+// questo riallineamento, la promozione SUCCESSIVA si bloccherebbe sempre
+// sul controllo «master ha commit che develop non ha» — un attrito che si
+// ripresenta ogni volta e che non dice niente di utile.
+const ff = git('switch', 'develop').status === 0 && git('merge', '--ff-only', 'master').status === 0;
+if (ff) {
+  console.log('  develop ← master  (riallineato, il merge commit non resta scoperto)');
+} else {
+  console.log('  ATTENZIONE: develop non si è riallineato a master. Fallo a mano:');
+  console.log('    git switch develop && git merge --ff-only master');
+}
+git('switch', 'master');
+
 if (PUSH) {
   const p1 = git('push', 'origin', 'master');
   const p2 = git('push', 'origin', 'develop');
