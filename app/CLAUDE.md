@@ -147,6 +147,16 @@ giusto. Ognuno possiede una directory in esclusiva e non scrive fuori.
 | `ui-builder` | `src/ui/` | il problema è **a schermo** |
 | `guardrail-officer` | `src/guardrails/`, `tests/` | il problema è **una parola** rivolta all'utente |
 | `impact-analyst` | `src/assessment/` | serve **una misurazione** |
+| `doc-funzionale` | `docs/features/`, `docs/FUNZIONALITA.md` | parte da solo con `/spec` e `/implementa` — non chiamarlo tu |
+
+`doc-funzionale` lavora **in parallelo** al codice: scrive la documentazione
+mentre la funzionalità viene costruita, al futuro, e la riscrive al presente
+solo dopo averla verificata sul codice. Il parallelismo è sicuro perché
+possiede `docs/` in esclusiva e non tocca mai `src/`.
+
+Il campo **«come si proverà»** che produce sono i **criteri di accettazione**:
+`/implementa` li legge come parte della richiesta, così chi costruisce sa in
+anticipo su che cosa verrà misurato.
 
 Altri agenti esistono ma lavorano fuori da `app/` e non sono caricati qui: il
 catalogo completo è in `../agents/README.md`.

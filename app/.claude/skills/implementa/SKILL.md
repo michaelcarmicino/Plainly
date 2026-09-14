@@ -44,6 +44,27 @@ Il numero "contratti modificati dopo il freeze" finisce in slide 8.
 
 Una skill che disattiva un vincolo lo rende decorativo. Non farlo.
 
+## Passo 0-bis — leggi i criteri di accettazione
+
+Nel file della spec, sotto `## Previsto`, l'agente `doc-funzionale` ha scritto
+**«Come si proverà»**: i passi esatti per vedere la funzionalità funzionare.
+
+**Trattali come parte della richiesta, non come documentazione.** Sono la
+definizione operativa di «funziona»: chi costruisce deve sapere in anticipo su
+che cosa verrà misurato.
+
+Riportali in testa al lavoro, così restano sotto gli occhi:
+
+```
+Criteri di accettazione (da docs/features/NN-nome.md):
+  1. ...
+  2. ...
+```
+
+Se quella sezione non c'è ancora, `doc-funzionale` sta ancora scrivendo:
+aspetta che compaia. Se non compare affatto, `/spec` non è stata confermata —
+fermati e dillo.
+
 ## Passo 1 — instrada, nell'ordine
 
 Delega ai subagent visibili da questa radice, **uno alla volta e in
@@ -63,7 +84,26 @@ Se un agente ha bisogno di scrivere fuori dalla propria directory, **fermati e
 segnalalo**. È il segnale che il perimetro va ridisegnato, non un ostacolo da
 aggirare.
 
-## Passo 2 — chiudi con il conto delle directory
+## Passo 2 — riconciliazione della documentazione, obbligatoria
+
+Quando il codice è verde, richiama `doc-funzionale` in **fase 2**. Non è
+facoltativa e non è saltabile: senza, la documentazione resta una promessa
+scritta al futuro, e il progetto si ritrova con dei file che descrivono ciò
+che era stato previsto invece di ciò che esiste.
+
+L'agente verifica ogni affermazione leggendo codice e test, riscrive **al
+presente** solo ciò che ha confermato, **esegue davvero** i passi di «come si
+prova», registra le divergenze fra previsto e realizzato con il motivo, porta
+lo stato a `implementato` e rigenera l'indice con `npm run docs:funzionali`.
+
+Due cose che devono restare chiare:
+
+- **Se i passi di «come si prova» non funzionano, la funzionalità non è
+  finita.** Non si aggiusta la documentazione per farla combaciare.
+- **Le divergenze si segnalano, non si appianano.** Riscrivere la previsione
+  per farla corrispondere al risultato rende inutile tutto l'esercizio.
+
+## Passo 3 — chiudi con il conto delle directory
 
 Alla fine stampa, ricavandolo da `git diff --name-only`:
 

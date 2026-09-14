@@ -23,6 +23,25 @@ fascia oraria. Nient'altro.
 | [`06-evidence-collector`](06-evidence-collector.md) | `presentation/evidence/`, `presentation/screenshots/`, `app/tests/e2e/` | Raccoglie l'evidenza mentre accade | continuo, con 3 checkpoint |
 | [`07-deck-builder`](07-deck-builder.md) | `presentation/build-deck.ts`, `presentation/deck.html` | Genera il deck dalle evidenze | 1:50–2:45 · 3:40 |
 | [`08-demo-director`](08-demo-director.md) | `presentation/demo-script.md` | Copione a due voci, timing, risposte alla giuria | 2:45–3:40 · 3:40–4:00 |
+| [`09-doc-funzionale`](09-doc-funzionale.md) | `app/docs/features/`, `app/docs/FUNZIONALITA.md` | Documentazione funzionale in due fasi: al futuro mentre si costruisce, al presente dopo la verifica | **in parallelo** a ogni funzionalità |
+
+### Perché `doc-funzionale` può girare in parallelo
+
+Possiede `app/docs/` in esclusiva e **non scrive una riga sotto `app/src/`**.
+Le directory sono disgiunte da quelle di tutti gli agenti di costruzione,
+quindi la regola di concorrenza è soddisfatta per costruzione: la
+documentazione si scrive **mentre** il codice viene scritto, non dopo.
+
+Il rischio che questo introduce è documentare l'intenzione invece del
+risultato. È governato da una regola dura e da un segnale visibile: **nulla
+passa da previsto a fatto senza essere stato verificato sul codice**, e il
+tempo verbale lo rende leggibile a colpo d'occhio — futuro in fase 1, presente
+solo in fase 2.
+
+Costo dichiarato: un agente in più è un output in più da revisionare. Resta
+sostenibile in due persone perché la fase 1 produce **un solo file markdown
+breve**, e perché quel file — il campo «come si proverà» — è comunque lavoro
+che andava fatto: sono i criteri di accettazione.
 
 Traccia di ciò che gli agenti hanno **effettivamente** fatto: [`trace.md`](trace.md)
 (generato da `npm --prefix app run agents:trace`, mai scritto a mano).

@@ -71,6 +71,29 @@ git diff --name-only freeze...HEAD -- types/ 2>/dev/null
 - Tag presente e output non vuoto → elenca i file e avverti che il numero di
   slide 8 non sarà più zero.
 
+### 5. Documentazione funzionale allineata
+
+Tre condizioni. Se una sola non regge, la verifica **non passa**.
+
+```bash
+npm run docs:funzionali
+git status --porcelain docs/FUNZIONALITA.md
+```
+
+- **Nessuna funzionalità risulta `implementato` senza la fase 2.** Un file con
+  stato `implementato` deve avere la sezione `## Verificato`: senza, qualcuno
+  ha cambiato lo stato a mano saltando la riconciliazione.
+- **`FUNZIONALITA.md` non è più vecchio dei file in `docs/features/`.** Se
+  rigenerandolo cambia, era disallineato: è il segnale che una modifica alla
+  documentazione non è mai arrivata all'indice.
+- **Nessun file con stato `in sviluppo` contiene affermazioni al presente.**
+  Sotto `## Previsto` si scrive al futuro. Il presente lì dentro significa che
+  qualcosa è stato dichiarato fatto senza essere stato verificato — ed è
+  esattamente il guasto che la divisione in due fasi esiste per impedire.
+
+Fallisce → indica **il file e la riga**, e di' quale delle tre condizioni non
+regge. Non «la documentazione è disallineata»: quale, e dove.
+
 ## Esito
 
 ```
@@ -79,6 +102,7 @@ VERIFICA PASSATA
   lessico: nessuna formulazione prescrittiva
   offline: nessuna chiamata di rete nel bundle
   contratti dopo il freeze: 0
+  documentazione: allineata, 0 in sviluppo con affermazioni al presente
 
 Puoi committare:  tipo(agente): descrizione
 ```

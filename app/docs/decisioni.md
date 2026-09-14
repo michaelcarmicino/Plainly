@@ -196,3 +196,56 @@ file, evita di esporre l'infrastruttura a chi non deve toccarla.
 | T+2:45 | `npm --prefix app run agents:trace` | evidence-collector |
 | T+3:00 | README compilato | architetto |
 | T+3:30 | `agents:trace` finale + `deck` rigenerato | evidence-collector |
+
+---
+
+## Documentazione funzionale in parallelo
+
+### D19 · `doc-funzionale` è `09`, non `08`
+
+**Scelta.** Il prompt lo chiamava `08-doc-funzionale`, ma `08-demo-director`
+esiste già dal primo blocco. Usato `09-doc-funzionale`.
+
+**Perché.** Rinumerare un agente esistente avrebbe rotto i riferimenti in
+`agents/README.md`, in `mappa-agenti.mjs` e nella traccia git già prodotta,
+per guadagnare un numero.
+
+### D20 · La proprietà di `app/docs/` è divisa
+
+**Scelta.** `app/docs/features/` e `app/docs/FUNZIONALITA.md` a
+`09-doc-funzionale`; il resto di `app/docs/` (decisioni, brief, revisioni)
+resta all'architetto. In `mappa-agenti.mjs` i prefissi più specifici vengono
+prima.
+
+**Perché.** È ciò che rende sicuro il parallelismo: directory disgiunte da
+quelle di chi scrive sotto `src/`. Senza la divisione, `app/docs/` sarebbe
+posseduta da due agenti, cioè l'unica cosa che questa organizzazione vieta.
+
+### D21 · Il confine dentro il file della spec è una riga di markdown
+
+**Scelta.** Sopra `## Previsto` il file appartiene a `/spec`; da lì in giù a
+`doc-funzionale`. Nessun meccanismo tecnico lo impone: è una convenzione
+scritta nel template e nel file dell'agente.
+
+**Perché.** La più semplice che funziona. Separare i due contenuti in due file
+avrebbe raddoppiato i percorsi da tenere allineati e reso illeggibile la
+scheda di una funzionalità, che ha senso solo letta intera.
+
+### D22 · Il tempo verbale è il segnale di stato
+
+**Scelta.** Fase 1 scrive al futuro, fase 2 al presente. `/verifica` fallisce
+se un file in stato `in sviluppo` contiene affermazioni al presente.
+
+**Perché.** È un controllo che costa zero a chi legge: non serve confrontare
+con il codice per sapere che cosa è verificato. L'alternativa — un campo di
+stato per ogni affermazione — sarebbe più preciso e nessuno la compilerebbe.
+
+### D23 · `tester` non è stato creato
+
+**Scelta.** Era stato richiesto in un messaggio separato, poi la richiesta è
+stata ristretta alla sola documentazione. `app/tests/accettazione/` e
+`app/docs/test/` **non esistono**, e `09-tester` nemmeno.
+
+**Perché.** Non è una dimenticanza: è scope non ancora aperto. Va deciso
+esplicitamente prima di aprirlo, perché aggiunge un secondo output da
+revisionare per ogni funzionalità.

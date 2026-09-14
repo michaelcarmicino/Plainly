@@ -120,5 +120,10 @@ Un intervento è finito quando **tutti e cinque** sono veri:
 4. I file toccati stanno **tutti dentro la directory dell'agente incaricato**.
    Se ne è servito uno fuori, va segnalato all'architetto, non nascosto nel
    diff.
-5. La spec in `docs/features/` è aggiornata se l'implementazione si è
-   discostata, e l'evidenza per il deck è stata prodotta con `/evidenza`.
+5. **La documentazione funzionale è in fase 2.** Il file in `docs/features/`
+   ha la sezione `## Verificato` scritta al presente, i passi di «come si
+   prova» sono stati **eseguiti**, le divergenze fra previsto e realizzato
+   sono elencate con il motivo, lo stato è `implementato` e
+   `npm run docs:funzionali` è stato rigenerato.
+   Uno stato `implementato` senza fase 2 fa fallire `/verifica`: significa che
+   qualcuno ha dichiarato fatto qualcosa che nessuno ha controllato.

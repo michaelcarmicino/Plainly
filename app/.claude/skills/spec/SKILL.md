@@ -101,6 +101,31 @@ Stampa il percorso del file scritto e le quattro dichiarazioni sopra, poi:
 
 **Non proseguire senza un sì esplicito.**
 
+## Passo 4 — alla conferma, avvia la documentazione in parallelo
+
+Appena arriva il sì, **prima di restituire il controllo**, lancia l'agente
+`doc-funzionale` in **fase 1** sul file appena scritto.
+
+**Non aspettarlo.** Avvialo e restituisci subito il controllo: la
+documentazione si scrive mentre il codice viene costruito, non dopo. Il
+parallelismo è sicuro perché `doc-funzionale` possiede `docs/` in esclusiva e
+non scrive una riga sotto `src/`.
+
+Che cosa produce, nello stesso file sotto `## Previsto`: cosa farà in due
+righe, per chi e in quale momento, **come si proverà** con i passi esatti
+dall'avvio in poi, i limiti previsti, e lo stato `in sviluppo`. Tutto **al
+futuro**, perché nulla è ancora verificato.
+
+Il campo «come si proverà» non è solo documentazione: sono i **criteri di
+accettazione**, e `/implementa` li legge come parte della richiesta. Scriverli
+prima dell'implementazione è ciò che fa uscire meglio il codice, non solo la
+documentazione.
+
+Chiudi così:
+
+> Spec approvata. `doc-funzionale` sta scrivendo la documentazione in
+> parallelo. Puoi lanciare `/implementa`.
+
 ## Manutenzione
 
 Se modifichi `template.md` in questa cartella, riallinea

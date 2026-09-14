@@ -23,6 +23,10 @@ export const MAPPA_AGENTI = [
   { prefisso: 'app/tests/', agente: '04-guardrail-officer' },
   { prefisso: 'app/fixtures/', agente: '00-architect' },
   { prefisso: 'app/types/', agente: '00-architect' },
+  // Più specifici prima: doc-funzionale possiede le schede e l'indice
+  // generato, il resto di app/docs/ resta all'architetto.
+  { prefisso: 'app/docs/features/', agente: '09-doc-funzionale' },
+  { prefisso: 'app/docs/FUNZIONALITA.md', agente: '09-doc-funzionale' },
   { prefisso: 'app/docs/', agente: '00-architect' },
   { prefisso: 'app/scripts/', agente: '00-architect' },
   { prefisso: 'agents/', agente: '00-architect' },
@@ -40,6 +44,7 @@ export const AGENTI = [
   '06-evidence-collector',
   '07-deck-builder',
   '08-demo-director',
+  '09-doc-funzionale',
 ];
 
 /** Fasce orarie del piano, in minuti dal primo commit. */

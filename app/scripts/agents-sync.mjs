@@ -44,6 +44,7 @@ const AGENTI_COSTRUZIONE = [
   '03-ui-builder.md',
   '04-guardrail-officer.md',
   '05-impact-analyst.md',
+  '09-doc-funzionale.md',
 ];
 
 /** Skill visibili dalla radice del product developer. */

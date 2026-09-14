@@ -19,7 +19,8 @@
     "agents:trace": "node scripts/agents-trace.mjs",
     "agents:sync": "node scripts/agents-sync.mjs",
     "evolution:proof": "node scripts/evolution-proof.mjs",
-    "verify:roots": "node scripts/verify-roots.mjs"
+    "verify:roots": "node scripts/verify-roots.mjs",
+    "docs:funzionali": "node scripts/docs-funzionali.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
