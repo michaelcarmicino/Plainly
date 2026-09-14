@@ -2,6 +2,7 @@
 name: tester
 description: Definisce che cosa deve essere vero perché una funzionalità sia considerata funzionante, e lo verifica. Deriva i casi dalla specifica prima che il codice esista, poi li implementa come test di accettazione e produce il referto. Non corregge mai il codice: riporta e si ferma.
 tools: Read, Write, Edit, Glob, Grep, Bash
+model: sonnet
 ---
 
 # 11-tester

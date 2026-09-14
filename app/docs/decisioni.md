@@ -249,3 +249,34 @@ stata ristretta alla sola documentazione. `app/tests/accettazione/` e
 **Perché.** Non è una dimenticanza: è scope non ancora aperto. Va deciso
 esplicitamente prima di aprirlo, perché aggiunge un secondo output da
 revisionare per ogni funzionalità.
+
+### D24 · Solo il PM gira su Opus
+
+**Scelta.** `model: opus` nel frontmatter di `10-pm`, `model: sonnet` su tutti
+gli altri undici agenti, dichiarato esplicitamente invece che lasciato
+all'eredità dalla sessione.
+
+**Perché.** Il PM è l'unico che **decide al posto di una persona**: approva una
+spec, chiude un task, giudica se un risultato regge. È giudizio, non
+esecuzione. Gli altri agenti eseguono dentro un perimetro stretto, con i
+vincoli già resi eseguibili da test e hook: il modello più capace lì aggiunge
+poco e costa a ogni invocazione.
+
+Dichiararlo su tutti e non solo sul PM è voluto: `inherit` renderebbe il costo
+dipendente da come è avviata la sessione, cioè imprevedibile.
+
+### D25 · Il PM sostituisce l'uomo nel ciclo, con tre eccezioni
+
+**Scelta.** Quando è il PM ad avviare il lavoro, conferma lui e verifica lui.
+Restano alla persona: il **rifiuto di `/spec`**, la **deroga sui contratti
+congelati**, e la decisione di **presentare qualcosa di rosso**.
+
+**Perché.** Le conferme di routine erano il collo di bottiglia: fermavano il
+ciclo a ogni passaggio senza aggiungere informazione, perché i vincoli veri
+sono già eseguibili (test, lessico, hook). Le tre eccezioni invece non sono
+verificabili da una macchina: un rifiuto di conformità è un vincolo di
+dominio, una deroga sui contratti riguarda il lavoro di altri, e presentare
+qualcosa di rosso è una scelta di chi ci mette la faccia.
+
+Il PM **non può ribaltare un rifiuto**: se potesse, `/spec` smetterebbe di
+essere un cancello e diventerebbe un suggerimento.

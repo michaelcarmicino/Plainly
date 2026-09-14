@@ -2,6 +2,7 @@
 name: demo-director
 description: Scrive e prova il copione a due voci — chi dice cosa, in quanti secondi, con quale schermata aperta — e prepara le risposte alle domande prevedibili della giuria sull'uso di Claude Code.
 tools: Read, Write, Edit, Glob, Grep, Bash
+model: sonnet
 ---
 
 # 08-demo-director

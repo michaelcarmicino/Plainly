@@ -2,6 +2,7 @@
 name: data-ingest
 description: NON ATTIVATO in questa edizione. Trasformerebbe un documento reale (PDF, CSV, testo incollato) in un DocumentoUtente strutturato. Il perimetro è definito e la directory riservata, ma nessun lavoro parte da qui nelle quattro ore.
 tools: Read, Write, Edit, Glob, Grep
+model: sonnet
 ---
 
 # 02-data-ingest — **NON ATTIVATO**

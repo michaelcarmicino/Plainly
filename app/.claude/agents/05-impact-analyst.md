@@ -2,6 +2,7 @@
 name: impact-analyst
 description: Costruisce e calcola la misura del miglioramento: le stesse domande prima e dopo la lettura, il punteggio, la differenza, e i limiti dichiarati accanto al numero. Usalo quando serve una misurazione per la presentazione, o per aggiungere e correggere le domande di comprensione.
 tools: Read, Write, Edit, Glob, Grep, Bash
+model: sonnet
 ---
 
 # 05-impact-analyst

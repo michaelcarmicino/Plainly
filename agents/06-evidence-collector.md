@@ -2,6 +2,7 @@
 name: evidence-collector
 description: Raccoglie durante la giornata, non alla fine, tutto ciò che finirà nelle slide — screenshot, traccia degli agenti, prova di evoluzione — e lo deposita in presentation/evidence/ in forma strutturata.
 tools: Read, Write, Edit, Glob, Grep, Bash
+model: sonnet
 ---
 
 # 06-evidence-collector
