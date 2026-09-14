@@ -38,8 +38,32 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(join(dirname(fileURLToPath(import.meta.url)), '..', '..'));
 
-/** Agenti visibili dalla radice del product developer. */
-const AGENTI_COSTRUZIONE = [
+/**
+ * Ogni agente è caricato in UNA radice sola.
+ *
+ * `agents/` resta il catalogo completo — è la cartella valutata, e lì ci sono
+ * tutti. Le due radici Claude Code caricano invece solo ciò che serve dove si
+ * lavora: un agente presente in entrambe è una terza copia che può divergere,
+ * e non aggiunge niente perché nessuno lo invocherebbe dalla radice sbagliata.
+ */
+
+/**
+ * Radice dell'architetto: impianto e presentazione. Non toccano il prodotto:
+ * lavorano su `agents/`, `.claude/`, `app/types/` e `presentation/`.
+ */
+const AGENTI_IMPIANTO = [
+  '00-architect.md',
+  '06-evidence-collector.md',
+  '07-deck-builder.md',
+  '08-demo-director.md',
+];
+
+/**
+ * Radice del product developer: gli agenti che **fanno il prodotto**, cioè
+ * quelli che lavorano dentro `app/`. Sono questi a produrre ciò che si
+ * consegna.
+ */
+const AGENTI_PRODOTTO = [
   '01-core-engine.md',
   '03-ui-builder.md',
   '04-guardrail-officer.md',
@@ -92,24 +116,25 @@ function pulisci(dir, attesi) {
   }
 }
 
-// --- 1. .claude/agents/ : tutti e nove ----------------------------------
+// --- 1. .claude/agents/ : impianto e presentazione -----------------------
 const definizioni = readdirSync(join(ROOT, 'agents'))
   .filter((f) => /^\d\d-.+\.md$/.test(f))
   .sort();
 
 mkdirSync(join(ROOT, '.claude', 'agents'), { recursive: true });
-for (const nome of definizioni) {
+const impianto = AGENTI_IMPIANTO.filter((n) => definizioni.includes(n));
+for (const nome of impianto) {
   collega(join(ROOT, 'agents', nome), join(ROOT, '.claude', 'agents', nome), 'file');
 }
-pulisci(join(ROOT, '.claude', 'agents'), definizioni);
+pulisci(join(ROOT, '.claude', 'agents'), impianto);
 
-// --- 2. app/.claude/agents/ : solo i quattro di costruzione -------------
+// --- 2. app/.claude/agents/ : gli agenti che fanno il prodotto ----------
 mkdirSync(join(ROOT, 'app', '.claude', 'agents'), { recursive: true });
-const costruzione = AGENTI_COSTRUZIONE.filter((n) => definizioni.includes(n));
-for (const nome of costruzione) {
+const prodotto = AGENTI_PRODOTTO.filter((n) => definizioni.includes(n));
+for (const nome of prodotto) {
   collega(join(ROOT, 'agents', nome), join(ROOT, 'app', '.claude', 'agents', nome), 'file');
 }
-pulisci(join(ROOT, 'app', '.claude', 'agents'), costruzione);
+pulisci(join(ROOT, 'app', '.claude', 'agents'), prodotto);
 
 // --- 3. app/.claude/skills/ : solo le quattro del developer -------------
 mkdirSync(join(ROOT, 'app', '.claude', 'skills'), { recursive: true });
@@ -149,14 +174,34 @@ if (existsSync(tplSkill) && existsSync(tplDocs)) {
   templateDisallineato = corpo(a) !== corpo(b);
 }
 
+/** Chi non è caricato in nessuna radice: catalogo soltanto. */
+const soloCatalogo = definizioni.filter(
+  (n) => !impianto.includes(n) && !prodotto.includes(n),
+);
+
 console.log(
   `agents:sync\n` +
-    `  .claude/agents/        ${definizioni.length} agenti (tutti)\n` +
+    `  agents/                ${definizioni.length} definizioni (catalogo completo)\n` +
+    `  .claude/agents/        ${impianto.length} impianto e presentazione → architetto\n` +
+    `  app/.claude/agents/    ${prodotto.length} agenti di prodotto       → developer\n` +
     `  .claude/rules/         ${rules.length} regole\n` +
-    `  app/.claude/agents/    ${costruzione.length} agenti di costruzione\n` +
     `  app/.claude/skills/    ${skillPresenti.length} skill del developer (nuovo-agente escluso)\n` +
     `  modalità: ${symlink} symlink, ${copie} copie di fallback`,
 );
+
+if (soloCatalogo.length) {
+  console.log(
+    `  solo catalogo, non caricati: ${soloCatalogo.join(', ')}`,
+  );
+}
+
+const doppi = impianto.filter((n) => prodotto.includes(n));
+if (doppi.length) {
+  console.log(
+    `  ATTENZIONE: caricati in ENTRAMBE le radici: ${doppi.join(', ')}\n` +
+      '  Un agente va in una radice sola: due copie possono divergere.',
+  );
+}
 
 const skillMancanti = SKILL_DEVELOPER.filter((s) => !skillPresenti.includes(s));
 if (skillMancanti.length) {

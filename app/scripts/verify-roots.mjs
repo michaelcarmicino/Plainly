@@ -57,8 +57,10 @@ function controlla(etichetta, fonte, destinazione) {
   }
 }
 
-const agentiFonte = elenco(join(ROOT, 'agents')).filter((f) => /^\d\d-.+\.md$/.test(f));
-for (const n of agentiFonte) {
+// Si controlla ciò che è EFFETTIVAMENTE caricato in ciascuna radice, non
+// l'intero catalogo: ogni agente sta in una radice sola, e cercarlo
+// nell'altra produrrebbe un falso problema a ogni esecuzione.
+for (const n of elenco(join(ROOT, '.claude', 'agents'))) {
   controlla(`.claude/agents/${n}`, join(ROOT, 'agents', n), join(ROOT, '.claude', 'agents', n));
 }
 for (const n of elenco(join(ROOT, 'app', '.claude', 'agents'))) {
