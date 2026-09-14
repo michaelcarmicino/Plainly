@@ -16,10 +16,18 @@ export type Rotta =
   | { readonly tipo: 'home' }
   | { readonly tipo: 'macrocategoria'; readonly id: IdArea }
   | { readonly tipo: 'lettura' }
-  | { readonly tipo: 'valore-risparmi' };
+  | { readonly tipo: 'valore-risparmi' }
+  | { readonly tipo: 'fonti' };
 
 export const PERCORSO_HOME = '#/';
 export const PERCORSO_LETTURA = '#/lettura';
+
+/**
+ * «Da dove vengono i numeri di questo sito» (funzionalità 13). Ci si arriva
+ * con un tocco solo da sotto ogni numero del sito — oggi da NotaTasso.tsx —
+ * mai digitando un id: la pagina elenca tutte le righe del registro.
+ */
+export const PERCORSO_FONTI = '#/da-dove-vengono-i-numeri';
 
 /**
  * La schermata dei risparmi fermi. Nell'indirizzo non finisce MAI la cifra
@@ -39,6 +47,7 @@ export function parseRotta(hash: string): Rotta {
   const nome = hash.replace(/^#/, '').replace(/^\//, '');
   if (nome === 'lettura') return { tipo: 'lettura' };
   if (nome === 'valore-dei-risparmi') return { tipo: 'valore-risparmi' };
+  if (nome === 'da-dove-vengono-i-numeri') return { tipo: 'fonti' };
   const area = ID_AREE.find((id) => id === nome);
   if (area !== undefined) return { tipo: 'macrocategoria', id: area };
   return { tipo: 'home' };

@@ -12,6 +12,7 @@
 import type { ReactElement } from 'react';
 import { Home } from './Home.tsx';
 import { Navigazione } from './Navigazione.tsx';
+import { PaginaFonti } from './PaginaFonti.tsx';
 import { PaginaLettura } from './PaginaLettura.tsx';
 import { PaginaMacrocategoria } from './PaginaMacrocategoria.tsx';
 import { PaginaValoreRisparmi } from './PaginaValoreRisparmi.tsx';
@@ -28,6 +29,8 @@ function pagina(rotta: Rotta): ReactElement {
       return <PaginaLettura />;
     case 'valore-risparmi':
       return <PaginaValoreRisparmi />;
+    case 'fonti':
+      return <PaginaFonti />;
   }
 }
 

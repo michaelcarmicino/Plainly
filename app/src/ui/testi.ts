@@ -13,10 +13,12 @@
  * sorgenti: un esempio scritto qui renderebbe `npm test` rosso di default.
  *
  * Le stringhe della schermata sui risparmi fermi stanno in un file affiancato
- * — testiSimulazione.ts — per non superare le 150 righe. Entrano qui con lo
+ * — testiSimulazione.ts — e quelle della pagina «da dove vengono i numeri»
+ * in testiFonti.ts, per non superare le 150 righe. Entrano qui con lo
  * spread: il registro da scandire resta UN oggetto solo.
  */
 
+import { STRINGHE_FONTI } from './testiFonti.ts';
 import { STRINGHE_SIMULAZIONE } from './testiSimulazione.ts';
 
 export const STRINGHE_UTENTE = {
@@ -106,6 +108,7 @@ export const STRINGHE_UTENTE = {
   // (bolletta · estratto conto · budget · simulazione di risparmio).
 
   ...STRINGHE_SIMULAZIONE,
+  ...STRINGHE_FONTI,
 } as const satisfies Record<string, string>;
 
 export type ChiaveStringaUtente = keyof typeof STRINGHE_UTENTE;

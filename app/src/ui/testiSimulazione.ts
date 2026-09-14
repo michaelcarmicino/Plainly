@@ -63,6 +63,8 @@ export const STRINGHE_SIMULAZIONE = {
     'Su quali anni sia calcolata quella media non è ancora stato stabilito da nessuno. Finché manca, {tasso} è un numero di prova: il calcolo lo puoi rifare, la sua provenienza non la puoi ancora controllare.',
   simulazioneRisparmioAvvertenza:
     'Non è una previsione: è una divisione fatta su quel numero. Se nei prossimi anni i prezzi saliranno di più o di meno, la cifra sarà diversa.',
+  simulazioneRisparmioLinkFonti:
+    'Vedi da dove vengono tutti i numeri di questo sito, uno per uno',
 
   // --- Quando qualcosa non torna: messaggi da persona, non da modulo -----
   simulazioneRisparmioErroreSomma:

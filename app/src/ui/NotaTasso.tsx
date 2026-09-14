@@ -11,6 +11,11 @@
  * di ciò che il prodotto non fa: qui è al suo posto. Una cifra che chi legge
  * non può controllare è indistinguibile da una inventata, e fra nascondere il
  * buco e dichiararlo il progetto preferisce dichiararlo.
+ *
+ * In fondo, un collegamento solo (funzionalità 13): porta alla pagina che
+ * elenca TUTTI i numeri del sito con la loro provenienza, non solo questo.
+ * Un tocco, non un percorso dentro un menu — con lo stesso «Indietro» di
+ * ogni altra pagina per tornare qui senza perdere i due numeri scritti sopra.
  */
 
 import type { ReactElement } from 'react';
@@ -19,6 +24,7 @@ import {
   INFLAZIONE_DICHIARATA,
   periodoDaCompilare,
 } from '../core/index.ts';
+import { PERCORSO_FONTI } from './rotte.ts';
 import { Testo } from './Testo.tsx';
 
 export function NotaTasso(): ReactElement {
@@ -42,6 +48,12 @@ export function NotaTasso(): ReactElement {
 
       <p className="nota-riga nota-avvertenza">
         <Testo chiave="simulazioneRisparmioAvvertenza" />
+      </p>
+
+      <p className="nota-riga">
+        <a className="domanda-collegata" href={PERCORSO_FONTI}>
+          <Testo chiave="simulazioneRisparmioLinkFonti" />
+        </a>
       </p>
     </section>
   );
