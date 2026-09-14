@@ -1,7 +1,6 @@
 ---
 name: evidenza
 description: Esegue lo scenario di una funzionalità, serializza il risultato in presentation/evidence/, cattura gli screenshot con Playwright e rigenera il deck. Da lanciare dopo ogni funzionalità finita, non a fine giornata.
-disable-model-invocation: true
 ---
 
 # /evidenza — raccogli mentre accade

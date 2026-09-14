@@ -1,7 +1,6 @@
 ---
 name: task-file
 description: Prende uno o più file markdown di task, incollandone i percorsi, li corregge nel formato del backlog anche se sono scritti in tutt'altro modo, e li carica. Usala quando i task stanno già in file tuoi e non vuoi spostarli né riscriverli.
-disable-model-invocation: true
 ---
 
 # /task-file — incolla i percorsi, ci pensa lui
@@ -49,16 +48,23 @@ Se un file contiene dieci righe e solo tre sono task veri — le altre sono note
 decisioni, o cose già fatte — **scarta le altre e dillo**. Caricare rumore nel
 backlog è peggio che non caricarlo: il piano lo pianifica.
 
-### L'unica cosa che non puoi correggere da solo
+### Se il file è un documento unico, decomponilo
 
-**L'impronta, se la specifica non esiste.**
+Un documento che descrive tutto il prodotto caricato come **un task solo** non
+serve a pianificare niente. Spezzalo nei deliverable che descrive davvero, uno
+per task, con **il rimando alla sezione d'origine** su ciascuno.
+
+### L'impronta: non indovinarla, ottienila
 
 Lo script ne propone una quando il titolo è riconoscibile, e la marca come
-proposta. Tu la confermi leggendo `docs/features/`. Se non c'è una specifica,
-lascia il task **non pianificabile** e dì che deve passare da `/spec`.
+proposta. Tu la confermi leggendo la specifica in `docs/features/`.
+
+**Se la specifica non esiste, lancia `/spec`**: è lo strumento che produce
+l'impronta. Non lasciare il task fermo in attesa che qualcuno decida.
 
 > Indovinare con chi un task confligge produce esattamente il conflitto che il
-> PM esiste per evitare, e lo produce con l'aria di aver funzionato.
+> PM esiste per evitare — ma **ottenere** l'impronta lanciando `/spec` non è
+> indovinare, è fare il lavoro.
 
 ## Che cosa riportare
 

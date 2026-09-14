@@ -1,7 +1,6 @@
 ---
 name: promuovi
 description: Porta su master quello che è stato integrato in develop, dopo aver ricontrollato che sia tutto verde. Usala quando una o più funzionalità sono pronte per essere consegnate o mostrate. Non promuove mai niente di rosso.
-disable-model-invocation: true
 ---
 
 # /promuovi — da `develop` a `master`

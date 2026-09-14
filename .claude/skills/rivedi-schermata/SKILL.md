@@ -1,7 +1,6 @@
 ---
 name: rivedi-schermata
 description: Fa guardare una schermata da un revisore indipendente — contrasti calcolati, stati mancanti, comprensibilità, testi prescrittivi sfuggiti alla scansione — e propone di applicare i soli rilievi bloccanti. Usala prima di dichiarare finita una schermata.
-disable-model-invocation: true
 ---
 
 # /rivedi-schermata — farla guardare a qualcun altro

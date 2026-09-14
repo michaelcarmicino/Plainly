@@ -1,7 +1,6 @@
 ---
 name: spec
 description: Il cancello d'ingresso. Verifica che una funzionalità sia conforme ai vincoli del progetto, la rifiuta proponendo l'alternativa conforme se non lo è, e altrimenti scrive la spec in docs/features/. Non scrive codice.
-disable-model-invocation: true
 ---
 
 # /spec — il cancello d'ingresso
