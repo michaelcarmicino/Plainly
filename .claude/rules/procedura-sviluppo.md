@@ -74,6 +74,34 @@ appiattisce tutto in una sequenza indistinguibile.
 Dopo il merge, il branch della funzionalità si tiene finché la demo non è
 fatta: se qualcosa si rompe in integrazione, è la via di ritorno più veloce.
 
+### La promozione su `master`
+
+`develop` è l'integrazione, **`master` è ciò che si consegna**. Il passaggio
+fra i due non avviene da solo: è un atto esplicito.
+
+```
+/promuovi            controlla e unisce in locale
+/promuovi pubblica   unisce e pubblica su origin
+```
+
+Rilancia `tsc --noEmit`, `npm test` e `npm run build` **su develop**, e si
+ferma se uno solo è rosso. Unisce con `--no-ff`, mai con `reset` o `--force`.
+
+Si promuove quando una o più funzionalità sono pronte per essere consegnate o
+mostrate — non a ogni merge. Il motivo di tenere due branch è proprio questo:
+su `develop` un difetto è un problema interno, su `master` è qualcosa che
+qualcuno vede.
+
+**Se `master` ha commit che `develop` non ha**, `/promuovi` si rifiuta di
+procedere. Va prima riportato indietro:
+
+```bash
+git switch develop && git merge master
+```
+
+È il caso che si crea quando si committa direttamente su `master` — cosa che
+capita all'architetto per la configurazione, e che va riallineata subito.
+
 ## Due fasi per ogni intervento non banale
 
 1. **Proposta** — che cosa cambierà, in quali file, quali contratti tocca,
@@ -120,5 +148,10 @@ Un intervento è finito quando **tutti e cinque** sono veri:
 4. I file toccati stanno **tutti dentro la directory dell'agente incaricato**.
    Se ne è servito uno fuori, va segnalato all'architetto, non nascosto nel
    diff.
-5. La spec in `docs/features/` è aggiornata se l'implementazione si è
-   discostata, e l'evidenza per il deck è stata prodotta con `/evidenza`.
+5. **La documentazione funzionale è in fase 2.** Il file in `docs/features/`
+   ha la sezione `## Verificato` scritta al presente, i passi di «come si
+   prova» sono stati **eseguiti**, le divergenze fra previsto e realizzato
+   sono elencate con il motivo, lo stato è `implementato` e
+   `npm run docs:funzionali` è stato rigenerato.
+   Uno stato `implementato` senza fase 2 fa fallire `/verifica`: significa che
+   qualcuno ha dichiarato fatto qualcosa che nessuno ha controllato.

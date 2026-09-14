@@ -74,6 +74,34 @@ appiattisce tutto in una sequenza indistinguibile.
 Dopo il merge, il branch della funzionalità si tiene finché la demo non è
 fatta: se qualcosa si rompe in integrazione, è la via di ritorno più veloce.
 
+### La promozione su `master`
+
+`develop` è l'integrazione, **`master` è ciò che si consegna**. Il passaggio
+fra i due non avviene da solo: è un atto esplicito.
+
+```
+/promuovi            controlla e unisce in locale
+/promuovi pubblica   unisce e pubblica su origin
+```
+
+Rilancia `tsc --noEmit`, `npm test` e `npm run build` **su develop**, e si
+ferma se uno solo è rosso. Unisce con `--no-ff`, mai con `reset` o `--force`.
+
+Si promuove quando una o più funzionalità sono pronte per essere consegnate o
+mostrate — non a ogni merge. Il motivo di tenere due branch è proprio questo:
+su `develop` un difetto è un problema interno, su `master` è qualcosa che
+qualcuno vede.
+
+**Se `master` ha commit che `develop` non ha**, `/promuovi` si rifiuta di
+procedere. Va prima riportato indietro:
+
+```bash
+git switch develop && git merge master
+```
+
+È il caso che si crea quando si committa direttamente su `master` — cosa che
+capita all'architetto per la configurazione, e che va riallineata subito.
+
 ## Due fasi per ogni intervento non banale
 
 1. **Proposta** — che cosa cambierà, in quali file, quali contratti tocca,
