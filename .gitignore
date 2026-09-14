@@ -3,3 +3,10 @@ dist/
 .compat/
 test-results/
 playwright-report/
+
+# Il gitignore GLOBALE di questa macchina (~/.gitignore_global) esclude
+# .claude/. Qui dentro va invece versionata: hook, skill, agenti e rules
+# SONO il progetto, non configurazione personale. Le due righe seguenti
+# annullano l'esclusione globale solo per questo repository.
+!.claude/
+!app/.claude/

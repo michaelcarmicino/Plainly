@@ -183,4 +183,4 @@ Nessuna implementazione senza una specifica approvata in `docs/features/`.
 `develop` deve restare sempre verde. Dettagli in
 `.claude/rules/procedura-sviluppo.md`.
 
-Che cosa c'è in `.claude/` e perché: [`COME-LAVORIAMO.md`](COME-LAVORIAMO.md).
+Che cosa c'è in `.claude/` e perché: [`COME-LAVORARE.md`](COME-LAVORARE.md).

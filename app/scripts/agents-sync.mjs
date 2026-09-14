@@ -47,7 +47,16 @@ const AGENTI_COSTRUZIONE = [
 ];
 
 /** Skill visibili dalla radice del product developer. */
-const SKILL_DEVELOPER = ['spec', 'implementa', 'verifica', 'evidenza'];
+const SKILL_DEVELOPER = [
+  'spec',
+  'implementa',
+  'verifica',
+  'evidenza',
+  'avvia',
+  'guarda',
+  'diagnosi',
+  'annulla',
+];
 
 let symlink = 0;
 let copie = 0;
