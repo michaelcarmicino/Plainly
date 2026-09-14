@@ -48,15 +48,16 @@ const ROOT = resolve(join(dirname(fileURLToPath(import.meta.url)), '..', '..'));
  */
 
 /**
- * Radice dell'architetto: impianto e presentazione. Non toccano il prodotto:
- * lavorano su `agents/`, `.claude/`, `app/types/` e `presentation/`.
+ * `agents/` è il catalogo della **squadra che fa il prodotto**, ed è la
+ * cartella valutata: chi la legge vede chi ha costruito Plainly.
+ *
+ * Gli agenti di impianto e presentazione — architect, evidence-collector,
+ * deck-builder, demo-director — **non stanno lì**: sono attrezzatura nostra,
+ * non parte della squadra di prodotto, e vivono direttamente in
+ * `.claude/agents/`, che per loro è sorgente e non copia.
+ *
+ * Questo script quindi NON tocca `.claude/agents/`.
  */
-const AGENTI_IMPIANTO = [
-  '00-architect.md',
-  '06-evidence-collector.md',
-  '07-deck-builder.md',
-  '08-demo-director.md',
-];
 
 /**
  * Radice del product developer: gli agenti che **fanno il prodotto**, cioè
@@ -116,17 +117,15 @@ function pulisci(dir, attesi) {
   }
 }
 
-// --- 1. .claude/agents/ : impianto e presentazione -----------------------
+// --- 1. .claude/agents/ : sorgente propria, non si tocca -----------------
 const definizioni = readdirSync(join(ROOT, 'agents'))
   .filter((f) => /^\d\d-.+\.md$/.test(f))
   .sort();
 
 mkdirSync(join(ROOT, '.claude', 'agents'), { recursive: true });
-const impianto = AGENTI_IMPIANTO.filter((n) => definizioni.includes(n));
-for (const nome of impianto) {
-  collega(join(ROOT, 'agents', nome), join(ROOT, '.claude', 'agents', nome), 'file');
-}
-pulisci(join(ROOT, '.claude', 'agents'), impianto);
+const impianto = existsSync(join(ROOT, '.claude', 'agents'))
+  ? readdirSync(join(ROOT, '.claude', 'agents')).filter((f) => f.endsWith('.md'))
+  : [];
 
 // --- 2. app/.claude/agents/ : gli agenti che fanno il prodotto ----------
 mkdirSync(join(ROOT, 'app', '.claude', 'agents'), { recursive: true });

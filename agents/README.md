@@ -3,28 +3,39 @@
 Questa cartella è il **come**. Il prodotto in `app/` è la prova che il come
 ha funzionato.
 
-Undici agenti, nove attivi e uno deliberatamente no (02-data-ingest). Ogni agente ha una
-responsabilità in una frase, **una directory che possiede in esclusiva**, un
-elenco di directory che non deve toccare, una definition of done e una
-fascia oraria. Nient'altro.
+**Qui c'è solo la squadra che fa il prodotto**, cioè gli agenti che lavorano
+dentro `app/`. Nove definizioni: otto attive e una deliberatamente no.
+
+L'attrezzatura con cui gestiamo il progetto — `architect`,
+`evidence-collector`, `deck-builder`, `demo-director` — **non sta qui**: vive
+in `.claude/agents/`. Non ha costruito il prodotto, ha costruito il contorno, e
+mescolare le due cose rende illeggibile proprio ciò che questa cartella deve
+mostrare.
+
+Ogni agente ha una responsabilità in una frase, **una directory che possiede in
+esclusiva**, un elenco di directory che non deve toccare, una definition of
+done, e **un nome proprio**. Il nome si usa **solo parlando**: nel codice, nelle
+slide e nella traccia resta il nome di ruolo, che dice già che cosa fa.
 
 ---
 
 ## Mappa della squadra
 
-| Agente | Directory posseduta | Responsabilità | Fascia |
+| Persona | Agente | Directory posseduta | Responsabilità |
 | --- | --- | --- | --- |
-| [`00-architect`](00-architect.md) | `app/types/`, `app/fixtures/`, `app/scripts/`, `app/docs/`, `agents/`, `.claude/` | Contratti, perimetri, vincoli eseguibili, evidenza | 0:00–0:30 · 1:40–1:50 · 2:45–3:00 |
-| [`01-core-engine`](01-core-engine.md) | `app/src/core/` | Calcolo deterministico: pesi, aggregati, quadratura, proiezione | 0:30–1:40 · 1:50–2:45 |
-| [`02-data-ingest`](02-data-ingest.md) | `app/src/ingest/` | **NON ATTIVATO** — parsing di documenti reali | — |
-| [`03-ui-builder`](03-ui-builder.md) | `app/src/ui/` | Interfaccia leggibile in proiezione, testo tutto a registro | 0:30–1:40 · 1:50–2:45 |
-| [`04-guardrail-officer`](04-guardrail-officer.md) | `app/src/guardrails/`, `app/tests/` | «Spiega, non consiglia» reso eseguibile | 0:15–0:30 · 1:50–2:45 |
-| [`05-impact-analyst`](05-impact-analyst.md) | `app/src/assessment/` | Misura del miglioramento prima/dopo, con i limiti dichiarati | 1:50–2:45 · 2:45–3:15 |
-| [`06-evidence-collector`](06-evidence-collector.md) | `presentation/evidence/`, `presentation/screenshots/`, `app/tests/e2e/` | Raccoglie l'evidenza mentre accade | continuo, con 3 checkpoint |
-| [`07-deck-builder`](07-deck-builder.md) | `presentation/build-deck.ts`, `presentation/deck.html` | Genera il deck dalle evidenze | 1:50–2:45 · 3:40 |
-| [`08-demo-director`](08-demo-director.md) | `presentation/demo-script.md` | Copione a due voci, timing, risposte alla giuria | 2:45–3:40 · 3:40–4:00 |
-| [`09-doc-funzionale`](09-doc-funzionale.md) | `app/docs/features/`, `app/docs/FUNZIONALITA.md` | Documentazione funzionale in due fasi: al futuro mentre si costruisce, al presente dopo la verifica | **in parallelo** a ogni funzionalità |
-| [`10-pm`](10-pm.md) | `app/docs/backlog/`, `app/docs/BACKLOG.md` | Coordina più funzionalità in parallelo calcolando le ondate senza conflitti di directory | su richiesta, dalla root |
+| **Cora** | [`01-core-engine`](01-core-engine.md) | `app/src/core/` | Il calcolo: pesi, aggregati, quadratura, proiezione |
+| **Ivo** | [`02-data-ingest`](02-data-ingest.md) | `app/src/ingest/` | **NON ATTIVATO** — parsing di documenti reali |
+| **Ugo** | [`03-ui-builder`](03-ui-builder.md) | `app/src/ui/` | Le schermate e ogni parola rivolta all'utente |
+| **Greta** | [`04-guardrail-officer`](04-guardrail-officer.md) | `app/src/guardrails/`, `app/tests/` | «Spiega, non consiglia» reso eseguibile. Ha diritto di veto |
+| **Mira** | [`05-impact-analyst`](05-impact-analyst.md) | `app/src/assessment/` | La misura della comprensione, con i limiti dichiarati |
+| **Dafne** | [`09-doc-funzionale`](09-doc-funzionale.md) | `app/docs/features/` | La documentazione in due fasi: al futuro, poi al presente |
+| **Pia** | [`10-pm`](10-pm.md) | `app/docs/backlog/` | Orchestra più funzionalità, e conferma al posto della persona |
+| **Teo** | [`11-tester`](11-tester.md) | `app/tests/accettazione/`, `app/docs/test/` | I casi di prova, derivati dalla specifica, e il referto |
+| **Vera** | [`12-ux-reviewer`](12-ux-reviewer.md) | `app/docs/ux/` | Guarda le schermate e riporta. Non tocca il codice |
+
+Fuori da questa cartella, in `.claude/agents/`: **Arturo** (`architect`),
+**Eva** (`evidence-collector`), **Dino** (`deck-builder`), **Delia**
+(`demo-director`).
 
 ### Perché `doc-funzionale` può girare in parallelo
 

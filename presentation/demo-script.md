@@ -4,6 +4,33 @@
 > Scheletro a T+0:15. Si compila dopo il feature freeze (T+2:45): un copione
 > scritto su un prodotto che sta ancora cambiando va riscritto.
 
+## Come chiamare gli agenti quando parli
+
+Nel codice, nelle slide e nella traccia restano i **nomi di ruolo**: dicono che
+cosa fa un agente, e in venti secondi di slide è quello che serve. A voce
+invece un nome proprio si ricorda, e «Greta ha bloccato il commit» scorre
+meglio di «il guardrail-officer ha bloccato il commit».
+
+| Persona | Ruolo | Che cosa possiede |
+| --- | --- | --- |
+| **Cora** | `core-engine` | il calcolo |
+| **Ugo** | `ui-builder` | le schermate e i testi |
+| **Greta** | `guardrail-officer` | il lessico vietato, e il veto |
+| **Mira** | `impact-analyst` | la misura della comprensione |
+| **Dafne** | `doc-funzionale` | la documentazione, in due fasi |
+| **Teo** | `tester` | i casi di prova e il referto |
+| **Pia** | `pm` | orchestra, e conferma al posto nostro |
+| **Vera** | `ux-reviewer` | guarda le schermate e riporta |
+| **Ivo** | `data-ingest` | **non attivato**, di proposito |
+
+Fuori dalla squadra di prodotto, l'attrezzatura: **Arturo** (`architect`),
+**Eva** (`evidence-collector`), **Dino** (`deck-builder`), **Delia**
+(`demo-director`).
+
+> **Usali solo parlando.** Se un nome proprio finisce su una slide o in un
+> commit, chi ascolta deve chiedere chi è — e la corrispondenza fra nome e
+> cartella, che è il punto della decomposizione, si perde.
+
 ## Divisione delle voci
 
 | Voce | Chi | Slide | Perché |

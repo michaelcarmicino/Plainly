@@ -3,6 +3,7 @@ name: architect
 description: Definisce l'impalcatura del progetto — contratti di dominio, perimetri degli agenti, hook, script di evidenza — e la congela. Attivo da solo nei primi 30 minuti e a ogni checkpoint; non implementa logica di business.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: sonnet
+persona: Arturo
 ---
 
 # 00-architect
