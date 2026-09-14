@@ -145,8 +145,10 @@ console.log(`    skill:  ${skillApp.length} — ${skillApp.join(', ') || '(nessu
 if (skillApp.includes('nuovo-agente')) {
   problemi.push('app/: `nuovo-agente` è visibile dalla radice del developer, ma è riservata');
 }
-if (agentiApp.length !== 4) {
-  avvisi.push(`app/: attesi 4 agenti di costruzione, trovati ${agentiApp.length}`);
+// L'elenco atteso è quello dichiarato in agents-sync, non un numero fisso:
+// un numero scritto a mano qui diventa falso al primo agente aggiunto.
+if (agentiApp.length === 0) {
+  problemi.push('app/: nessun agente visibile dalla radice del developer');
 }
 
 console.log('\n=== esito ===\n');

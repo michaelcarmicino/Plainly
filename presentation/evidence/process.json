@@ -1,5 +1,5 @@
 {
-  "generatoIl": "2026-09-14T10:32:34.412Z",
+  "generatoIl": "2026-09-14T11:34:30.366Z",
   "agenti": [
     {
       "agente": "00-architect",
@@ -14,6 +14,9 @@
         ".claude/agents/06-evidence-collector.md",
         ".claude/agents/07-deck-builder.md",
         ".claude/agents/08-demo-director.md",
+        ".claude/agents/09-doc-funzionale.md",
+        ".claude/agents/10-pm.md",
+        ".claude/agents/11-tester.md",
         ".claude/hooks/benvenuto-developer.mjs",
         ".claude/hooks/contratti-congelati.mjs",
         ".claude/hooks/guardrail-dopo-modifica.mjs",
@@ -30,7 +33,9 @@
         ".claude/skills/implementa/SKILL.md",
         ".claude/skills/nuovo-agente/SKILL.md",
         ".claude/skills/nuovo-agente/template-agente.md",
+        ".claude/skills/pm/SKILL.md",
         ".claude/skills/prepara/SKILL.md",
+        ".claude/skills/promuovi/SKILL.md",
         ".claude/skills/spec/SKILL.md",
         ".claude/skills/spec/template.md",
         ".claude/skills/verifica/SKILL.md",
@@ -46,12 +51,17 @@
         "agents/06-evidence-collector.md",
         "agents/07-deck-builder.md",
         "agents/08-demo-director.md",
+        "agents/09-doc-funzionale.md",
+        "agents/10-pm.md",
+        "agents/11-tester.md",
         "agents/README.md",
         "agents/trace.md",
         "app/.claude/agents/01-core-engine.md",
         "app/.claude/agents/03-ui-builder.md",
         "app/.claude/agents/04-guardrail-officer.md",
         "app/.claude/agents/05-impact-analyst.md",
+        "app/.claude/agents/09-doc-funzionale.md",
+        "app/.claude/agents/10-pm.md",
         "app/.claude/rules/procedura-sviluppo.md",
         "app/.claude/rules/scrittura-e-accessibilita.md",
         "app/.claude/rules/standard-codice.md",
@@ -63,6 +73,7 @@
         "app/.claude/skills/guarda/SKILL.md",
         "app/.claude/skills/implementa/SKILL.md",
         "app/.claude/skills/prepara/SKILL.md",
+        "app/.claude/skills/promuovi/SKILL.md",
         "app/.claude/skills/spec/SKILL.md",
         "app/.claude/skills/spec/template.md",
         "app/.claude/skills/verifica/SKILL.md",
@@ -81,19 +92,24 @@
         "app/scripts/agents-sync.mjs",
         "app/scripts/agents-trace.mjs",
         "app/scripts/dev-server.mjs",
+        "app/scripts/docs-funzionali.mjs",
         "app/scripts/evolution-proof.mjs",
         "app/scripts/guarda.mjs",
         "app/scripts/mappa-agenti.mjs",
+        "app/scripts/pm-piano.mjs",
         "app/scripts/prepara.mjs",
+        "app/scripts/promuovi.mjs",
+        "app/scripts/test-referto.mjs",
         "app/scripts/verify-roots.mjs",
         "app/src/main.tsx",
         "app/tsconfig.json",
+        "app/tsconfig.tsbuildinfo",
         "app/types/contracts.ts",
         "app/vite.config.ts"
       ],
-      "commit": 6,
+      "commit": 13,
       "primoCommit": "be076c69 2026-09-14T11:18:34+02:00",
-      "ultimoCommit": "b45da286 2026-09-14T12:25:03+02:00"
+      "ultimoCommit": "b6f11719 2026-09-14T13:28:15+02:00"
     },
     {
       "agente": "01-core-engine",
@@ -166,9 +182,9 @@
         "presentation/evidence/process.json",
         "presentation/screenshots/.gitkeep"
       ],
-      "commit": 1,
+      "commit": 2,
       "primoCommit": "be076c69 2026-09-14T11:18:34+02:00",
-      "ultimoCommit": "be076c69 2026-09-14T11:18:34+02:00"
+      "ultimoCommit": "272f70d2 2026-09-14T12:41:13+02:00"
     },
     {
       "agente": "07-deck-builder",
@@ -196,20 +212,53 @@
       "agente": "09-doc-funzionale",
       "directoryPosseduta": "app/docs/features/",
       "fileToccati": [
+        "app/docs/FUNZIONALITA.md",
         "app/docs/features/TEMPLATE.md"
       ],
-      "commit": 1,
+      "commit": 2,
       "primoCommit": "35def0f8 2026-09-14T11:25:38+02:00",
-      "ultimoCommit": "35def0f8 2026-09-14T11:25:38+02:00"
+      "ultimoCommit": "272f70d2 2026-09-14T12:41:13+02:00"
+    },
+    {
+      "agente": "10-pm",
+      "directoryPosseduta": "app/docs/backlog/",
+      "fileToccati": [
+        "app/docs/BACKLOG.md",
+        "app/docs/backlog/TEMPLATE.md",
+        "app/docs/backlog/registro.md"
+      ],
+      "commit": 1,
+      "primoCommit": "9b866170 2026-09-14T13:11:10+02:00",
+      "ultimoCommit": "9b866170 2026-09-14T13:11:10+02:00"
+    },
+    {
+      "agente": "11-tester",
+      "directoryPosseduta": "app/tests/accettazione/",
+      "fileToccati": [
+        "app/docs/TEST.md",
+        "app/docs/test/TEMPLATE.md",
+        "app/tests/accettazione/.gitkeep"
+      ],
+      "commit": 1,
+      "primoCommit": "0b6af53b 2026-09-14T13:24:49+02:00",
+      "ultimoCommit": "0b6af53b 2026-09-14T13:24:49+02:00"
+    },
+    {
+      "agente": "12-ux-reviewer",
+      "directoryPosseduta": "app/docs/ux/",
+      "fileToccati": [],
+      "commit": 0,
+      "primoCommit": null,
+      "ultimoCommit": null
     }
   ],
-  "agentiAttivi": 10,
-  "commitTotali": 6,
+  "agentiAttivi": 12,
+  "commitTotali": 19,
   "durataPerFascia": {
     "0:00-0:30 architect da solo": 25,
-    "0:30-1:40 wave 1": 30,
-    "1:40-1:50 checkpoint e congelamento contratti": 0,
-    "1:50-2:45 wave 2": 0,
+    "0:30-1:40 wave 1": 62,
+    "1:40-1:50 checkpoint e congelamento contratti": 1,
+    "1:50-2:45 wave 2": 18,
     "2:45-4:00 feature freeze e consegna": 0
   },
   "nota": ""

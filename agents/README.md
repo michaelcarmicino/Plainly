@@ -3,7 +3,7 @@
 Questa cartella è il **come**. Il prodotto in `app/` è la prova che il come
 ha funzionato.
 
-Nove agenti, otto attivi e uno deliberatamente no. Ogni agente ha una
+Undici agenti, nove attivi e uno deliberatamente no (02-data-ingest). Ogni agente ha una
 responsabilità in una frase, **una directory che possiede in esclusiva**, un
 elenco di directory che non deve toccare, una definition of done e una
 fascia oraria. Nient'altro.
@@ -24,6 +24,7 @@ fascia oraria. Nient'altro.
 | [`07-deck-builder`](07-deck-builder.md) | `presentation/build-deck.ts`, `presentation/deck.html` | Genera il deck dalle evidenze | 1:50–2:45 · 3:40 |
 | [`08-demo-director`](08-demo-director.md) | `presentation/demo-script.md` | Copione a due voci, timing, risposte alla giuria | 2:45–3:40 · 3:40–4:00 |
 | [`09-doc-funzionale`](09-doc-funzionale.md) | `app/docs/features/`, `app/docs/FUNZIONALITA.md` | Documentazione funzionale in due fasi: al futuro mentre si costruisce, al presente dopo la verifica | **in parallelo** a ogni funzionalità |
+| [`10-pm`](10-pm.md) | `app/docs/backlog/`, `app/docs/BACKLOG.md` | Coordina più funzionalità in parallelo calcolando le ondate senza conflitti di directory | su richiesta, dalla root |
 
 ### Perché `doc-funzionale` può girare in parallelo
 
