@@ -1,0 +1,151 @@
+{
+  "generatoIl": "2026-09-14T12:09:40.438Z",
+  "durataPrevista": 480,
+  "totaleStimato": 467,
+  "slide": [
+    {
+      "n": 1,
+      "atto": "Il problema",
+      "archetipo": "AFFERMAZIONE",
+      "titolo": "Il totale lo paghi, il perché no",
+      "parole": 12,
+      "secondi": 23,
+      "consegnaDemo": null
+    },
+    {
+      "n": 2,
+      "atto": "Il problema",
+      "archetipo": "CONFRONTO",
+      "titolo": "Questo arriva a casa ogni tre mesi",
+      "parole": 19,
+      "secondi": 39,
+      "consegnaDemo": null
+    },
+    {
+      "n": 3,
+      "atto": "Il problema",
+      "archetipo": "NUMERO",
+      "titolo": "Una voce su sette resta inspiegata",
+      "parole": 15,
+      "secondi": 30,
+      "consegnaDemo": null
+    },
+    {
+      "n": 4,
+      "atto": "Come lo abbiamo costruito",
+      "archetipo": "AFFERMAZIONE",
+      "titolo": "Un agente, una cartella, nessun conflitto",
+      "parole": 11,
+      "secondi": 22,
+      "consegnaDemo": null
+    },
+    {
+      "n": 5,
+      "atto": "Come lo abbiamo costruito",
+      "archetipo": "SCHEMA",
+      "titolo": "Ogni cartella ha un proprietario solo",
+      "parole": 14,
+      "secondi": 33,
+      "consegnaDemo": null
+    },
+    {
+      "n": 6,
+      "atto": "Come lo abbiamo costruito",
+      "archetipo": "NUMERO",
+      "titolo": "Il lavoro è tracciato, non raccontato",
+      "parole": 14,
+      "secondi": 29,
+      "consegnaDemo": null
+    },
+    {
+      "n": 7,
+      "atto": "Come lo abbiamo costruito",
+      "archetipo": "CONFRONTO",
+      "titolo": "La stessa bolletta, riga per riga",
+      "parole": 15,
+      "secondi": 36,
+      "consegnaDemo": null
+    },
+    {
+      "n": 8,
+      "atto": "Come lo abbiamo costruito",
+      "archetipo": "NUMERO",
+      "titolo": "Il canone pesa più di quanto sembri",
+      "parole": 14,
+      "secondi": 29,
+      "consegnaDemo": null
+    },
+    {
+      "n": 9,
+      "atto": "Come lo abbiamo costruito",
+      "archetipo": "SCHEMA",
+      "titolo": "Le regole non sono scritte, sono eseguite",
+      "parole": 15,
+      "secondi": 34,
+      "consegnaDemo": null
+    },
+    {
+      "n": 10,
+      "atto": "Come lo abbiamo costruito",
+      "archetipo": "NUMERO",
+      "titolo": "Entrare costa due file",
+      "parole": 14,
+      "secondi": 29,
+      "consegnaDemo": null
+    },
+    {
+      "n": 11,
+      "atto": "La prova",
+      "archetipo": "AFFERMAZIONE",
+      "titolo": "Se scriviamo un consiglio, la build non passa",
+      "parole": 11,
+      "secondi": 22,
+      "consegnaDemo": null
+    },
+    {
+      "n": 12,
+      "atto": "La prova",
+      "archetipo": "CONSEGNA",
+      "titolo": "Guardate il portatile",
+      "parole": 9,
+      "secondi": 16,
+      "consegnaDemo": "Il guardrail che rompe la build"
+    },
+    {
+      "n": 13,
+      "atto": "La prova",
+      "archetipo": "NUMERO",
+      "titolo": "Tre divieti in una riga di testo",
+      "parole": 14,
+      "secondi": 29,
+      "consegnaDemo": null
+    },
+    {
+      "n": 14,
+      "atto": "La prova",
+      "archetipo": "NUMERO",
+      "titolo": "Dopo il freeze i contratti non si toccano",
+      "parole": 15,
+      "secondi": 30,
+      "consegnaDemo": null
+    },
+    {
+      "n": 15,
+      "atto": "La prova",
+      "archetipo": "NUMERO",
+      "titolo": "Chi legge capisce di più, e lo misuriamo",
+      "parole": 14,
+      "secondi": 29,
+      "consegnaDemo": null
+    },
+    {
+      "n": 16,
+      "atto": "La prova",
+      "archetipo": "CONFRONTO",
+      "titolo": "Quello che non fa",
+      "parole": 17,
+      "secondi": 37,
+      "consegnaDemo": null
+    }
+  ]
+}
