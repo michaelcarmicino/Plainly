@@ -3,59 +3,48 @@
  * Non contiene testo letterale: ogni stringa passa da testi.ts,
  * così il guardrail ha un punto unico da controllare.
  * Nessuna chiamata di rete, nessun font remoto.
+ *
+ * Questo file è solo il guscio: legge la rotta dall'hash e mostra la
+ * pagina corrispondente. Intestazione, navigazione e nota in fondo
+ * restano fuori dal cambio di pagina, così non si spostano mai.
  */
 
-import { t } from './testi.ts';
+import type { ReactElement } from 'react';
+import { Home } from './Home.tsx';
+import { Navigazione } from './Navigazione.tsx';
+import { PaginaLettura } from './PaginaLettura.tsx';
+import { PaginaMacrocategoria } from './PaginaMacrocategoria.tsx';
+import { useRotta, type Rotta } from './rotte.ts';
 import { Testo } from './Testo.tsx';
 
-function Sezione({
-  titolo,
-  children,
-}: {
-  titolo: string;
-  children?: React.ReactNode;
-}) {
-  return (
-    <section className="sezione">
-      <h2>{titolo}</h2>
-      {children ?? <p className="placeholder">{t('statoPlaceholder')}</p>}
-    </section>
-  );
+function pagina(rotta: Rotta): ReactElement {
+  switch (rotta.tipo) {
+    case 'home':
+      return <Home />;
+    case 'macrocategoria':
+      return <PaginaMacrocategoria id={rotta.id} />;
+    case 'lettura':
+      return <PaginaLettura />;
+  }
 }
 
-export function App() {
+export function App(): ReactElement {
+  const rotta = useRotta();
+
   return (
     <div className="app">
       <header className="intestazione">
-        <h1>{t('appTitolo')}</h1>
-        <p className="sottotitolo">{t('appSottotitolo')}</p>
+        <h1>
+          <Testo chiave="appTitolo" />
+        </h1>
+        <p className="sottotitolo">
+          <Testo chiave="appSottotitolo" />
+        </p>
       </header>
 
-      <main>
-        {/* TODO(scenario): il documento arriva da app/fixtures/ una volta
-            congelato lo scenario. Il core espone calcolaLettura(). */}
-        <Sezione titolo={t('sezioneDocumento')} />
-        <Sezione titolo={t('sezioneLettura')} />
-        <Sezione titolo={t('sezioneVerifica')}>
-          <p>
-            <Testo chiave="verificaIntro" />
-          </p>
-        </Sezione>
+      <Navigazione rotta={rotta} />
 
-        <Sezione titolo={t('sezioneLimiti')}>
-          <ul className="limiti">
-            <li>
-              <Testo chiave="limiteNoConsulenza" />
-            </li>
-            <li>
-              <Testo chiave="limiteNoParsing" />
-            </li>
-            <li>
-              <Testo chiave="limiteCampione" />
-            </li>
-          </ul>
-        </Sezione>
-      </main>
+      <main>{pagina(rotta)}</main>
 
       <footer className="pie">
         <Testo chiave="notaOffline" />

@@ -1,0 +1,90 @@
+/* Navigazione, icone ed elenchi — agente ui-builder.
+   File separato da styles.css e da stiliHome.css per restare entro le 150
+   righe. Stesse variabili e stesse combinazioni di contrasto già verificate
+   in testa a styles.css: testo bianco su --ink (19.6:1), --purple-light per
+   il testo secondario (7.0:1), --purple (3.2:1) solo per bordi e fondi.
+   Corpo minimo 1rem = 18px; bersagli di click minimo 44x44 px. */
+
+/* --- Stesso posto e stessa dimensione su ogni pagina -------------------- */
+
+.barra-navigazione {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+/* «Home» è sempre il primo bottone della riga: così non si sposta quando
+   «Indietro» compare o sparisce. */
+.barra-azioni {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.75rem;
+}
+
+.bottone-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--purple);
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--testo);
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1.3;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.percorso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+  list-style: none;
+}
+
+.percorso li + li::before {
+  /* separatore decorativo, non contenuto: sta nel CSS e non in testi.ts */
+  content: '\203A';
+  margin: 0 0.5rem;
+  color: var(--purple-light);
+}
+
+/* --- Icone: mai sole, sempre accanto al testo -------------------------- */
+
+.icona {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  color: var(--purple-light);
+}
+
+.bottone-nav .icona {
+  width: 22px;
+  height: 22px;
+}
+
+/* --- Accesso rapido ed elenco delle domande di un'area ------------------ */
+
+.accesso-rapido {
+  margin: 0 0 1.5rem;
+}
+
+.elenco-domande {
+  margin: 0 0 1.25rem;
+  padding-left: 1.25rem;
+  font-size: 1.0625rem;
+}
+
+.elenco-domande li + li {
+  margin-top: 0.6rem;
+}

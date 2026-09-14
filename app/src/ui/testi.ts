@@ -18,6 +18,47 @@ export const STRINGHE_UTENTE = {
   appSottotitolo:
     'Leggi un documento di spesa e capisci da dove viene ogni numero.',
 
+  // --- Home: le tre porte -------------------------------------------------
+  homeIntestazione:
+    'Da dove nasce la tua domanda? Qui sotto ci sono tre aree: dentro ognuna, le domande scritte con le parole di tutti i giorni.',
+  homeAccessoRapido:
+    'Se hai già una bolletta o una busta paga davanti, puoi leggerla voce per voce.',
+
+  // --- Navigazione, uguale su ogni pagina ---------------------------------
+  navHome: 'Pagina iniziale',
+  navIndietro: 'Indietro',
+  navPercorso: 'Dove ti trovi',
+
+  // Una sola stringa per tutte le aree: il numero arriva da
+  // contaAltreDomande() in contenutiHome.ts e non è scritto a mano.
+  areaBadge: 'altre {n} domande qui dentro',
+
+  // --- Area 1: il costo della vita ----------------------------------------
+  area1Titolo: 'Il costo della vita',
+  area1Domanda: 'Perché la bolletta è così alta questo mese?',
+  area1Altra1:
+    'Con gli stessi soldi della spesa, quanto porto a casa rispetto a un anno fa?',
+  area1Altra2: 'Quanto mi costa la casa ogni mese, tutto compreso?',
+  area1Altra3:
+    'Lo stipendio è uguale ma i prezzi no: di quanto si è allargata la differenza?',
+
+  // --- Area 2: il lavoro --------------------------------------------------
+  area2Titolo: 'Il lavoro',
+  area2Domanda: 'Il mio settore è a rischio nei prossimi anni?',
+  area2Altra1: 'Se perdo il lavoro, quanto prendo ogni mese e per quanto tempo?',
+  area2Altra2:
+    'Sulla busta paga c\'è un numero grande, sul conto ne arriva uno più piccolo: dove va la differenza?',
+  area2Altra3:
+    'Lavoro in proprio: quanto devo mettere da parte per tasse e contributi?',
+
+  // --- Area 3: il futuro --------------------------------------------------
+  area3Titolo: 'Il futuro',
+  area3Domanda: 'Quanto sarà la mia pensione?',
+  area3Altra1: 'Se metto via 50 € al mese, in dieci anni quanto diventano?',
+  area3Altra2: 'Quanto costa in tutto un mutuo, oltre ai soldi che la banca presta?',
+  area3Altra3:
+    'I risparmi fermi sul conto: che cosa succede loro mentre i prezzi salgono?',
+
   sezioneDocumento: 'Il documento',
   sezioneLettura: 'Che cosa dice, voce per voce',
   sezioneVerifica: 'Verifica di comprensione',

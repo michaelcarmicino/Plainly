@@ -8,8 +8,31 @@
 import { verificaTestoUtente } from '../guardrails/index.ts';
 import { t, type ChiaveStringaUtente } from './testi.ts';
 
-export function Testo({ chiave }: { chiave: ChiaveStringaUtente }) {
-  const testo = t(chiave);
+/**
+ * Sostituisce i segnaposto `{nome}` con un valore calcolato altrove.
+ * Serve alle stringhe che contengono un numero derivato — il badge delle
+ * aree — senza doverne scrivere una copia per ogni caso: nel registro
+ * resta una frase intera da scandire, e il numero non è mai scritto a mano.
+ */
+function applicaValori(
+  testo: string,
+  valori: Readonly<Record<string, string | number>> | undefined,
+): string {
+  if (valori === undefined) return testo;
+  return Object.entries(valori).reduce(
+    (acc, [nome, valore]) => acc.split(`{${nome}}`).join(String(valore)),
+    testo,
+  );
+}
+
+export function Testo({
+  chiave,
+  valori,
+}: {
+  chiave: ChiaveStringaUtente;
+  valori?: Readonly<Record<string, string | number>>;
+}) {
+  const testo = applicaValori(t(chiave), valori);
   const esito = verificaTestoUtente(testo);
 
   if (!esito.conforme) {
