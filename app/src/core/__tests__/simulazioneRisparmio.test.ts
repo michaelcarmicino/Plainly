@@ -29,11 +29,8 @@ describe('simulaRisparmio — il caso della specifica', () => {
   // 1.000.000 / 1,1040808032 =   905.730,81  -> 905.731 cent (9.057,31 €)
   // perdita                  = 1.000.000 - 905.731 = 94.269 cent (942,69 €)
   // 10.000 / 1,1040808032    =     9.057,31  ->   9.057 cent (90,57 € su 100)
-  const esito = simulaRisparmio({
-    risparmioCent: 1_000_000,
-    anni: 5,
-    inflazioneAnnuaBp: 200,
-  });
+  const ingresso = { risparmioCent: 1_000_000, anni: 5, inflazioneAnnuaBp: 200 };
+  const esito = simulaRisparmio(ingresso);
 
   it('calcola il valore reale al centesimo', () => {
     expect(valoreDi(esito).valoreRealeCent).toBe(905_731);
@@ -47,7 +44,7 @@ describe('simulaRisparmio — il caso della specifica', () => {
     expect(valoreDi(esito).poterePerCentoEuroCent).toBe(9_057);
   });
 
-  it('riporta l ingresso nel risultato, senza alterarlo', () => {
+  it('riporta i dati di ingresso nel risultato, senza alterarli', () => {
     const v = valoreDi(esito);
     expect([v.risparmioCent, v.anni, v.inflazioneAnnuaBp]).toEqual([1_000_000, 5, 200]);
   });
@@ -58,12 +55,7 @@ describe('simulaRisparmio — il caso della specifica', () => {
   });
 
   it('è deterministico: stesso ingresso, stesso risultato', () => {
-    const secondo = simulaRisparmio({
-      risparmioCent: 1_000_000,
-      anni: 5,
-      inflazioneAnnuaBp: 200,
-    });
-    expect(valoreDi(secondo)).toEqual(valoreDi(esito));
+    expect(valoreDi(simulaRisparmio({ ...ingresso }))).toEqual(valoreDi(esito));
   });
 });
 
@@ -71,14 +63,8 @@ describe('i due casi limite che la specifica nomina', () => {
   it('con anni = 0 il valore resta identico (moltiplicatore = 1)', () => {
     // (1,02)^0 = 1 esatto -> 1.000.000 / 1 = 1.000.000 cent, perdita 0,
     // e di ogni 100 € resta il valore di 100 € = 10.000 cent.
-    const v = calcolaSimulazioneRisparmio({
-      risparmioCent: 1_000_000,
-      anni: 0,
-      inflazioneAnnuaBp: 200,
-    });
-    expect([v.valoreRealeCent, v.perditaCent, v.poterePerCentoEuroCent]).toEqual([
-      1_000_000, 0, 10_000,
-    ]);
+    const v = calcolaSimulazioneRisparmio({ risparmioCent: 1_000_000, anni: 0, inflazioneAnnuaBp: 200 });
+    expect([v.valoreRealeCent, v.perditaCent, v.poterePerCentoEuroCent]).toEqual([1_000_000, 0, 10_000]);
   });
 
   it('anni = 0 resta aritmetica valida ma non è un ingresso digitabile', () => {
@@ -88,14 +74,10 @@ describe('i due casi limite che la specifica nomina', () => {
     expect(esito.ok === false && esito.errore).toBe('anni-fuori-intervallo');
   });
 
-  it('con inflazioneAnnuaBp = 0 non c erosione, per quanti anni passino', () => {
+  it('con inflazioneAnnuaBp = 0 nessuna erosione, per quanti anni passino', () => {
     // (1 + 0/10.000)^30 = 1^30 = 1 esatto -> valore identico, perdita 0.
-    const v = valoreDi(
-      simulaRisparmio({ risparmioCent: 1_000_000, anni: ANNI_MAX, inflazioneAnnuaBp: 0 }),
-    );
-    expect([v.valoreRealeCent, v.perditaCent, v.poterePerCentoEuroCent]).toEqual([
-      1_000_000, 0, 10_000,
-    ]);
+    const v = valoreDi(simulaRisparmio({ risparmioCent: 1_000_000, anni: ANNI_MAX, inflazioneAnnuaBp: 0 }));
+    expect([v.valoreRealeCent, v.perditaCent, v.poterePerCentoEuroCent]).toEqual([1_000_000, 0, 10_000]);
   });
 });
 
