@@ -108,3 +108,17 @@ di doverlo costruire, e **la riga non è nell'impronta di nessuno dei due**.
 Da sciogliere prima di implementare la `08`: o entra nell'impronta della `08`, o
 resta un limite dichiarato di entrambe. Trovato da `doc-funzionale` leggendo le
 due specifiche insieme — nessuna delle due sbaglia da sola.
+
+## Trappola nel passaggio delle riesportazioni — da evitare, non da scoprire
+
+`src/core/letturaBolletta.ts` importa `verificaQuadratura` e `pesoInBp` da
+`./index.ts`, perché oggi vivono lì. Funziona (sono `function` hoisted, usate
+solo dentro corpi di funzione), **ma diventa un import circolare nel momento in
+cui il PM aggiunge la riesportazione di `letturaBolletta` in `index.ts`** — cioè
+nel passaggio unico che il PM fa fuori dalle ondate.
+
+Soluzione pulita, da fare **prima** di quel passaggio: estrarre `verificaQuadratura`
+e `pesoInBp` in un file foglia di `src/core/`. Serve comunque anche alla `04`,
+che avrà lo stesso bisogno.
+
+Segnalato da `core-engine` chiudendo la 05, prima che il problema esistesse.
