@@ -103,19 +103,140 @@ la suite generale non fa.*
 ## Referto
 
 *Scritto da `tester` in **fase 2**, dopo aver implementato ed ESEGUITO i casi
-qui sopra in `tests/accettazione/13-tabella-fonti.test.ts`. Finché questa
-sezione non esiste, la fase 2 non è stata fatta e la funzionalità non è
-finita.*
+qui sopra. Il codice (`src/core/registroFonti.ts`, `src/ui/PaginaFonti.tsx`,
+`RigaRegistroFonte.tsx`, `testiFonti.ts`, `dataInLettere.ts`, `motiviFonti.ts`)
+è stato letto solo ora, in fase 2 — mai in fase 1.
+Diviso in **quattro file**, non uno solo, per restare sotto le 150 righe per
+file (`standard-codice.md`, che si applica anche a `tests/`):
+`tests/accettazione/13-tabella-fonti-dati.test.ts` (percorso nominale e
+registro/predicati), `-formattazione.test.ts` (errori sui tre campi, data in
+lettere, formato del valore), `-pagina.test.ts` (markup, colore, navigazione),
+`-conformita.test.ts` (lessico, identificatori, rete).
+
+`npm test` completo: **12 file di test passati, 1 con 2 test falliti su 11**
+(il file `-formattazione.test.ts`, per il difetto E-02 qui sotto) — nessuna
+regressione sui file preesistenti. `35` dei `37` test nuovi sono verdi.
 
 | ID | Atteso | Ottenuto | Esito | File di test |
 | --- | --- | --- | --- | --- |
+| C-01 | `Esito` con `ok:true` e la riga identica alla specifica: valore 200, unita `punti-base`, fonte `ISTAT`, indicatore `indice NIC`, periodo `null`, dataInserimento `2026-09-14` | Corrispondenza esatta, campo per campo | passato | `13-tabella-fonti-dati.test.ts` |
+| C-02 | `ok:true`, valore **200** | Come atteso | passato | `13-tabella-fonti-dati.test.ts` |
+| C-03 | `false`, perché `periodo` è `null` mentre `fonte` e `dataInserimento` non sono vuote | Come atteso; verificato anche che i due campi non mancanti non sono vuoti, nello stesso test | passato | `13-tabella-fonti-dati.test.ts` |
+| C-04 | Array di lunghezza **1** con l'id `inflazione-nic` | Come atteso | passato | `13-tabella-fonti-dati.test.ts` |
+| C-05 | I due valori sono uguali, **200**, per confronto strutturale (non due letterali scritti a mano) | `INFLAZIONE_DICHIARATA.valoreBp` e il campo `valore` della riga del registro coincidono | passato | `13-tabella-fonti-dati.test.ts` |
+| CL-01 | `true` quando i tre campi sono tutti presenti | Come atteso, su una riga costruita nel test | passato | `13-tabella-fonti-dati.test.ts` |
+| CL-02 | `[]` su registro vuoto, non un errore | Come atteso | passato | `13-tabella-fonti-dati.test.ts` |
+| CL-03 | Array di lunghezza **1**, solo la riga incompleta | Come atteso | passato | `13-tabella-fonti-dati.test.ts` |
+| CL-04 | Entrambe le righe duplicate compaiono (lunghezza **2**): nessuna deduplicazione | Come atteso: il filtro opera su tutte le righe, non su un indice per chiave | passato | `13-tabella-fonti-dati.test.ts` |
+| CL-05 | `ok:false` con un codice, mai un `throw` | `ok:false`, codice `id-sconosciuto` (elemento di `MOTIVI_ERRORE_FONTE`) | passato | `13-tabella-fonti-dati.test.ts` |
+| CL-06 | `ok:false` con un codice | Come CL-05 | passato | `13-tabella-fonti-dati.test.ts` |
+| CL-07 | `ok:false`, mai un numero convertito | `valoreBpDiRiga` su una riga `centesimi` fallisce | passato | `13-tabella-fonti-dati.test.ts` |
+| CL-08 | Per lettera della specifica, nessun controllo fra `inizio` e `fine`: resta `true` | `true`, confermato — non è un difetto, è la lettera della specifica (segnalato in fase 1) | passato | `13-tabella-fonti-dati.test.ts` |
+| CL-09 | La riga dichiara il periodo mancante con una frase esplicita, in rosa, non un trattino | Il markup della pagina reale contiene il testo di `fontiPeriodoMancante`, la classe `riga-fonte-mancante`, `ISTAT` e `2,00%` | passato | `13-tabella-fonti-dati-pagina.test.ts` |
+| CL-10 | — | **Non coperto**, vedi sotto | non coperto | — |
+| CL-11 | Giorno 14, mese settembre (nono), anno 2026 in cifre piene; nessuno spostamento di un mese | `dataInLettere` corretto su gennaio, settembre e dicembre: nessun off-by-one (il codice fa `MESI[Number(mese)-1]`) | passato | `13-tabella-fonti-dati-formattazione.test.ts` |
+| CL-12 | — | **Non coperto**, vedi sotto | non coperto | — |
+| CL-13 | Nessuna rotellina; le righe sono già presenti al primo render | Come atteso | passato | `13-tabella-fonti-dati-pagina.test.ts` |
+| CL-14 | Riga in centesimi tramite `formattaEuro`, riga in punti base tramite `formattaPercentuale`, secondo il campo `unita` | `1.234,56 €` e `2,00%`, come atteso | passato | `13-tabella-fonti-dati-formattazione.test.ts` |
+| E-01 | — | **Non coperto**, vedi sotto | non coperto | — |
+| E-02 | Nessuna schermata bianca, nessuna eccezione, per qualunque `dataInserimento` | **Fallito su due input su tre.** Vedi «Fallimenti» | fallito | `13-tabella-fonti-dati-formattazione.test.ts` |
+| E-03 | `false` | Come atteso | passato | `13-tabella-fonti-dati-formattazione.test.ts` |
+| E-04 | `false` | Come atteso | passato | `13-tabella-fonti-dati-formattazione.test.ts` |
+| E-05 | Stesso trattamento di un id qualunque non trovato | Stesso codice `id-sconosciuto` per `''` e per un id ignoto qualsiasi | passato | `13-tabella-fonti-dati-formattazione.test.ts` |
+| E-06 | Testo leggibile, non solo colore; corpo ≥16px; contrasto ≥4,5:1 | Il testo è nel markup; `.riga-fonte-mancante` non riduce il corpo (eredita la base, 18px); contrasto **#FF50A0** su **#0a0014** ricalcolato a mano (WCAG), **~6,75:1**, ben oltre la soglia | passato | `13-tabella-fonti-dati-pagina.test.ts` |
+| CF-01 | `tests/lessico-ui.test.ts` verde (richiamo) | `verificaInsieme(STRINGHE_FONTI)` restituisce `[]`; la suite generale resta verde nella corsa completa | passato | `13-tabella-fonti-dati-conformita.test.ts` |
+| CF-02 | Nessuna radice vietata sui 7 identificatori elencati | Come atteso | passato | `13-tabella-fonti-dati-conformita.test.ts` |
+| CF-03 | `ISTAT` e `indice NIC` letterali, invariati | Come atteso (già confermato anche da C-01) | passato | `13-tabella-fonti-dati-conformita.test.ts` |
+| CF-04 | Nessun altro elemento della pagina usa il rosa | **Scope dichiarato**: in `src/ui/stiliFonti.css` (il foglio proprio di questa funzionalità) `--rose`/`#FF50A0` compare in un solo blocco, `.riga-fonte-mancante`. Non ricontrollati gli usi globali preesistenti e non decorativi (`:focus-visible` su tutto il sito, `.violazione-guardrail`): restano materia di rilettura umana | passato (scope dichiarato) | `13-tabella-fonti-dati-pagina.test.ts` |
+| CF-05 | Funziona per intero, offline | **Scope dichiarato**: nessuna chiamata di rete nei 6 file sorgente della funzionalità (verifica statica). La build reale a Wi-Fi spento (passo 11 della specifica) non è rieseguita qui | passato (scope dichiarato) | `13-tabella-fonti-dati-conformita.test.ts` |
+| CF-06 | Nessun test in più: dichiarazione che C-03, E-03, E-04, CL-01 insieme coprono i tre campi nei due versi | I quattro casi sono tutti passati: l'AND dei tre campi è confermato in entrambe le direzioni | passato (aggregazione) | n/a — aggregazione di C-03, E-03, E-04, CL-01 |
+| CF-07 | I quattro stati individuati, anche quando non eseguibili | Vuoto: CL-09 passato (dati reali) + CL-10 non coperto (registro a zero righe). In caricamento: CL-13 passato. Errore: E-01 non coperto. Dati lunghi: CL-12 non coperto. Tutti e quattro identificati, nessuno omesso | passato (aggregazione) | n/a — aggregazione di CL-09, CL-10, CL-13, CL-12, E-01 |
+| CF-08 | Corpo ≥16px, contrasto ≥4,5:1, aree cliccabili ≥44px, focus visibile, nessuna informazione solo-hover, ordine di tabulazione coerente | **Parziale.** Verificato in automatico: nessun `outline: none` in `stiliFonti.css`; `.bottone-nav` ha `min-height`/`min-width` di 44px; il testo della riga rosa è nel markup statico (`renderToStaticMarkup`, nessun hover simulato), quindi non dipende dal passaggio del mouse; contrasto della riga rosa ricalcolato in E-06. **Non verificato**: contrasto di ogni altro testo, misura reale dei bersagli in un browser, ordine di tabulazione con tastiera reale — vedi «Non coperti» | passato (parziale) | `13-tabella-fonti-dati-pagina.test.ts` |
+| CF-09 | Stessa posizione delle altre pagine | La struttura di classi di `Navigazione` per la rotta `fonti` è identica a quella per `valore-risparmi` | passato | `13-tabella-fonti-dati-pagina.test.ts` |
+
+**Totale: 30 passati (di cui 3 con scope o aggregazione dichiarati), 1 fallito, 3 non coperti.**
 
 ### Fallimenti
 
 *Che cosa è fallito, **con quale input**, e se è bloccante. Non si corregge il
 codice: si riporta.*
 
+- **E-02 — `dataInLettere('')` lancia un'eccezione.** Input: stringa vuota.
+  `''.split('-')` restituisce `['']` (un solo elemento): `giorno` resta
+  `undefined`, e `giorno.replace(/^0/, '')` lancia
+  `TypeError: Cannot read properties of undefined (reading 'replace')`.
+  La specifica (E-02, sopra) promette solo il minimo garantito dalla
+  filosofia del progetto — «nessuna schermata bianca, nessuna eccezione» —
+  e qui viene meno.
+- **E-02 — `dataInLettere('ieri')` lancia la stessa eccezione, per lo stesso
+  motivo.** Input: `'ieri'`. Nessun trattino nella stringa: `'ieri'.split('-')`
+  restituisce `['ieri']`, stesso esito di sopra.
+- **Non fallito, per completezza**: `dataInLettere('2026-13-40')` (mese e
+  giorno fuori intervallo) **non** lancia: mostra `'40 13 2026'`, seguendo la
+  clausola già scritta nel commento della funzione («se il mese non è uno dei
+  dodici attesi, si mostra il numero così com'è»). Solo l'assenza di un
+  secondo trattino fa fallire la funzione, non un valore fuori intervallo.
+
+  **Classificazione: non bloccante per la funzionalità 13 così com'è oggi.**
+  `dataInLettere` riceve sempre `riga.dataInserimento` dal registro reale, che
+  ha una sola riga scritta a mano e già verificata nella forma `AAAA-MM-GG`
+  da un test esistente di `core-engine`
+  (`src/core/__tests__/registroFonti.test.ts`, «la data di inserimento è
+  sempre nella forma AAAA-MM-GG»): con i dati di oggi il crash non è
+  raggiungibile dall'app in esecuzione.
+  **Ma è un difetto reale da correggere prima che 08 o 10 aggiungano righe**:
+  la specifica dichiara esplicitamente che ogni riga futura arriva scritta a
+  mano da una persona, ed è esattamente il tipo di errore di battitura (una
+  data lasciata vuota per sbaglio, o un valore non ancora compilato) che
+  romperebbe l'intera pagina invece di mostrare — come richiesto dallo stato
+  «Errore» della specifica — una frase al posto del dato che non torna.
+
+- **Osservazione, non un fallimento**: leggendo `esitoTestoValore`
+  (`src/ui/motiviFonti.ts`) per costruire E-01, risulta che il suo ramo
+  `unita-non-punti-base` non è mai raggiungibile con una `RigaFonte` tipizzata
+  correttamente — chiama `valoreBpDiRiga` solo quando `unita !== 'centesimi'`,
+  e su un tipo a due soli valori questo implica sempre `unita === 'punti-base'`,
+  quindi quel ramo ha sempre successo in quel punto. Non è un difetto (nessuna
+  riga incoerente può mai raggiungere lo schermo per questa via): è la ragione
+  di fondo per cui E-01 è classificato **non coperto** più sotto, e vale la
+  pena dirlo esplicitamente perché non è solo un limite del test, è una
+  proprietà del codice.
+
 ### Non coperti
 
 *Ogni caso non implementabile, **con il motivo**. Un buco dichiarato vale più
 di un test finto che passa, e alimenta i limiti dichiarati del prodotto.*
+
+- **CL-10 — registro a zero righe, come stato della pagina.** `PaginaFonti()`
+  non accetta nessun parametro e importa `REGISTRO_FONTI` direttamente da
+  `src/core/index.ts`; `RigaRegistroFonte` accetta solo un `id: string`,
+  risolto contro lo stesso registro. Non esiste, oggi, alcun punto
+  d'iniezione per svuotare il registro dalla pagina senza toccare `src/`
+  (fuori dal mio perimetro) o senza montare un mock di modulo — scelta
+  scartata perché equivarrebbe a costruire uno scenario che nessun percorso
+  reale raggiunge. La funzione pura sottostante, `righeConProvenienzaIncompleta([])`,
+  è già verificata in CL-02.
+- **CL-12 — trenta righe, nomi di fonte lunghi, importi a sette cifre.**
+  Stesso motivo di perimetro di CL-10. In più: `src/core/__tests__/registroFonti.test.ts`
+  (di `core-engine`) oggi non costruisce un registro a trenta righe né valori
+  a sette cifre — la tenuta del layout con dati numerosi o lunghi resta un
+  buco reale, non solo un limite di questo perimetro.
+- **E-01 — riga con unità e valore incoerenti, mostrata a schermo.** Nessuna
+  delle due funzioni di rendering accetta una riga costruita: `RigaRegistroFonte`
+  prende solo un `id`, risolto contro il registro reale (oggi una sola riga,
+  coerente). In più — vedi l'osservazione sopra, in «Fallimenti» — il codice
+  di `esitoTestoValore` rende il ramo d'errore strutturalmente irraggiungibile
+  con dati tipizzati correttamente. Verificabile solo forzando un tipo non
+  valido (`as unknown as RigaFonte`), cioè inventando esattamente la riga
+  finta che il mandato del tester vieta di costruire per far passare un caso.
+- **CF-08 (parte) — accessibilità non misurabile da markup statico.** Il
+  contrasto di ogni testo della pagina (oltre alla riga rosa, già verificata
+  in E-06), la dimensione reale dei bersagli in un browser vero, e l'ordine
+  di tabulazione con una tastiera reale non sono ottenibili da
+  `renderToStaticMarkup`: richiedono un browser reale. Restano alla rilettura
+  umana di `guardrail-officer`, come previsto da `scrittura-e-accessibilita.md`.
+- **CF-04 e CF-05 (parte) — verifica sull'intera pagina, non solo sul file
+  della funzionalità.** Entrambi limitati per scope, come indicato nella
+  tabella sopra: non è stata riverificata l'assenza di rosa decorativo nei
+  meccanismi globali del sito (`:focus-visible`, `.violazione-guardrail`, che
+  precedono questa funzionalità), né la build reale a Wi-Fi spento.

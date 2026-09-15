@@ -3,34 +3,29 @@
 > **File generato.** Si rigenera con `npm run test:referto`. Le fonti sono i
 > file in `docs/test/`, scritti dall'agente `tester`.
 >
-> Ultima generazione: 2026-09-14T13:21:59.102Z
+> Ultima generazione: 2026-09-15T08:11:27.145Z
 
 ## Quadro d'insieme
 
 | | |
 | --- | --- |
-| **Casi totali** | 0 |
-| **Passati** | 0 |
-| **Falliti** | 0 |
-| **Non coperti** | 0 |
-| **Da eseguire** | 0 |
+| **Casi totali** | 149 |
+| **Passati** | 39 |
+| **Falliti** | 3 |
+| **Non coperti** | 6 |
+| **Da eseguire** | 101 |
 
+> **3 casi falliti.** Il dettaglio, con l'input che li produce, è nei referti collegati qui sotto.
+> **6 casi non coperti**, dichiarati con il motivo. Sono le cose che sappiamo di non aver verificato, e alimentano i limiti dichiarati.
 
 ## Per funzionalità
 
 | Funzionalità | Referto | Casi | Passati | Falliti | Non coperti | Da eseguire |
 | --- | --- | --- | --- | --- | --- | --- |
-| *(nessuna lista di casi)* | — | 0 | 0 | 0 | 0 | 0 |
+| [02 — casi di prova per «Il catalogo delle domande vere, e che cosa il sito sa rispondere»](test/02-catalogo-domande.md) | sì | 31 | 1 | 1 | 2 | 27 |
+| [07 — casi di prova per «Quanto valgono davvero i miei soldi fra qualche anno»](test/07-valore-dei-risparmi.md) | sì | 50 | 2 | 0 | 0 | 48 |
+| [13 — casi di prova per «Da dove vengono i numeri di questo sito»](test/13-tabella-fonti-dati.md) | sì | 68 | 36 | 2 | 4 | 26 |
 
-
-## Nessuna lista ancora
-
-La prima compare quando `/spec` viene confermata: l'agente `tester` scrive
-`docs/test/NN-nome.md` in parallelo allo sviluppo, derivando i casi dalla
-**specifica** e non dal codice.
-
-Le funzionalità implementate **prima** che questo agente esistesse non hanno
-una lista, e non è un errore: la copertura dichiarata vale in avanti.
 
 ## Come si legge
 
