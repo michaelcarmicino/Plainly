@@ -1,0 +1,121 @@
+/* La schermata «la rata del mutuo», parte 2: la scala delle ipotesi e il
+   confine dichiarato. Agente ui-builder. Parte 1 in stiliRataMutuo.css, dove
+   sono annotati i contrasti. Importato SOLO da PaginaRataMutuo.tsx. */
+
+.scala-ipotesi {
+  margin-bottom: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--purple-dark);
+}
+
+.ipotesi-titolo {
+  margin: 0 0 0.6rem;
+  font-size: 1.25rem;
+  color: var(--purple-light);
+}
+
+.ipotesi-intro {
+  margin: 0 0 1rem;
+  max-width: 62ch;
+  font-size: 1.0625rem;
+}
+
+.ipotesi-elenco {
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.ipotesi-riga {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--purple-dark);
+  font-size: 1.0625rem;
+}
+
+.ipotesi-etichetta {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+/* Numeri: cifre tabulari, allineati a destra, come impone design.md. */
+.ipotesi-tasso,
+.ipotesi-rata,
+.ipotesi-scarto {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.ipotesi-nota-taglio {
+  grid-column: 1 / -1;
+  font-size: 0.9375rem;
+  color: var(--purple-light);
+}
+
+.ipotesi-non-previsione {
+  margin: 0 0 0.6rem;
+  max-width: 62ch;
+  font-size: 1.0625rem;
+  padding-left: 0.7rem;
+  border-left: 3px solid var(--purple);
+}
+
+/* Viola chiaro, non rosa: il rosa in questa pagina è riservato al blocco
+   «che cosa questa pagina non fa», e solo lì. */
+.ipotesi-periodo-mancante {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 0.9375rem;
+  color: var(--purple-light);
+}
+
+.provenienza-mutuo {
+  margin-bottom: 1.5rem;
+}
+
+.provenienza-riga {
+  margin: 0 0 0.7rem;
+  max-width: 68ch;
+  font-size: 1rem;
+}
+
+.limiti-mutuo {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border: 1px solid var(--rose);
+  border-radius: 10px;
+}
+
+.limiti-mutuo-titolo {
+  margin: 0 0 0.6rem;
+  font-size: 1.25rem;
+  color: var(--rose);
+}
+
+.limiti-mutuo-elenco {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--rose);
+}
+
+.limiti-mutuo-elenco li {
+  margin-bottom: 0.5rem;
+  max-width: 66ch;
+}
+
+/* Sotto i 768px l'etichetta va a capo su una riga propria: i tre numeri
+   restano allineati a destra e con cifre tabulari, come impone design.md
+   («i numeri restano allineati a destra e tabulari» anche nel caso di dati
+   lunghi o numerosi) — qui NON si passa a text-align: left. */
+@media (max-width: 767px) {
+  .ipotesi-riga {
+    grid-template-columns: auto auto auto;
+  }
+  .ipotesi-etichetta {
+    grid-column: 1 / -1;
+  }
+}

@@ -91,3 +91,27 @@ export {
   type DueQuoteBolletta,
   type LetturaBolletta,
 } from './letturaBolletta.ts';
+
+export {
+  traduciCostoInEuro,
+  calcolaCostoFoglio,
+  MOTIVI_RIFIUTO_COSTO,
+  COSTO_BP_MIN,
+  COSTO_BP_MAX,
+  type IngressoCostoFoglio,
+  type RisultatoCostoFoglio,
+  type MotivoRifiutoCosto,
+} from './costoFoglio.ts';
+
+export {
+  mesiCoperti,
+  calcolaMesiCoperti,
+  MOTIVI_RIFIUTO_MESI_COPERTI,
+  GIORNI_PER_MESE,
+  SPESE_MENSILI_MIN_CENT,
+  SPESE_MENSILI_MAX_CENT,
+  RISPARMI_MAX_CENT,
+  type MotivoRifiutoMesiCoperti,
+  type IngressoMesiCoperti,
+  type RisultatoMesiCoperti,
+} from './mesiCoperti.ts';

@@ -18,9 +18,13 @@
  * spread: il registro da scandire resta UN oggetto solo.
  */
 
+import { STRINGHE_BOLLETTA } from './testiBolletta.ts';
 import { STRINGHE_CATALOGO } from './testiCatalogo.ts';
 import { STRINGHE_FONTI } from './testiFonti.ts';
+import { STRINGHE_RATA_MUTUO } from './testiRataMutuo.ts';
 import { STRINGHE_SIMULAZIONE } from './testiSimulazione.ts';
+import { STRINGHE_FOGLIO } from './testiFoglio.ts';
+import { STRINGHE_MESI_COPERTI } from './testiMesiCoperti.ts';
 import { STRINGHE_SPIEGAZIONE } from './testiSpiegazione.ts';
 
 export const STRINGHE_UTENTE = {
@@ -113,6 +117,10 @@ export const STRINGHE_UTENTE = {
   ...STRINGHE_FONTI,
   ...STRINGHE_CATALOGO,
   ...STRINGHE_SPIEGAZIONE,
+  ...STRINGHE_FOGLIO,
+  ...STRINGHE_BOLLETTA,
+  ...STRINGHE_MESI_COPERTI,
+  ...STRINGHE_RATA_MUTUO,
 } as const satisfies Record<string, string>;
 
 export type ChiaveStringaUtente = keyof typeof STRINGHE_UTENTE;

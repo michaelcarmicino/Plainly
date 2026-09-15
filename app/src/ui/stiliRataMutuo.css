@@ -1,0 +1,102 @@
+/* La schermata «la rata del mutuo» — agente ui-builder. Funzionalità 10.
+   Importato SOLO da PaginaRataMutuo.tsx: nessun @import, nessun font remoto.
+
+   Contrasti (fondo #050008, riquadri #0a0014), stessi di stiliSimulazione.css:
+     #ffffff su #0a0014 -> 20.5:1   corpo, le due cifre, messaggi di errore
+     #BE82FF su #050008 ->  7.7:1   occhielli, etichette, titoli minori
+     #FF50A0 su #0a0014 ->  6.7:1   SOLO il blocco «che cosa non fa»
+     #a100ff            ->  3.2:1   mai testo: solo bordi e riempimenti
+   Corpo minimo 1rem = 18px. Campi e bersagli di click minimo 44px.
+
+   LE DUE RATE SONO IDENTICHE: .rata-riquadro è l'UNICA classe dei due
+   riquadri, senza modificatori per «fermo» o «mobile». Non aggiungere una
+   variante colorata o ingrandita per l'una o per l'altra: è il punto in cui
+   questa schermata smetterebbe di essere conforme. */
+
+.rata-mutuo {
+  max-width: 60rem;
+}
+
+.rate-affiancate {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.rata-riquadro {
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--purple-dark);
+  border-left: 4px solid var(--purple);
+  border-radius: 10px;
+  background: var(--ink);
+}
+
+.rata-etichetta {
+  margin: 0 0 0.4rem;
+  font-size: 1.0625rem;
+  color: var(--purple-light);
+}
+
+/* Stessa dimensione, stesso colore, stesso peso per le due rate: resta su
+   una riga sola anche a sette cifre, il corpo scende con la larghezza. */
+.rata-cifra {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.375rem, 4.6vw, 2.5rem);
+  line-height: 1.15;
+  white-space: nowrap;
+  color: var(--testo);
+}
+
+.rata-durata {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.rate-in-attesa {
+  min-height: 14rem;
+  padding: 1.5rem;
+  border: 1px solid var(--purple-dark);
+  border-left: 4px solid var(--purple);
+  border-radius: 10px;
+  background: var(--ink);
+}
+
+.rata-attesa {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 1.0625rem;
+}
+
+.rata-segnaposto {
+  display: block;
+  max-width: 20ch;
+  height: clamp(1.375rem, 4.6vw, 2.5rem);
+  margin-top: 1rem;
+  border-bottom: 3px dashed var(--purple);
+}
+
+.rata-differenza {
+  margin-bottom: 1.75rem;
+}
+
+.differenza-frase {
+  margin: 0 0 0.5rem;
+  max-width: 62ch;
+  font-size: 1.125rem;
+}
+
+.differenza-nota {
+  margin: 0.5rem 0 0;
+  max-width: 62ch;
+  font-size: 1rem;
+  padding-left: 0.7rem;
+  border-left: 3px solid var(--purple);
+}
+
+@media (max-width: 767px) {
+  .rate-affiancate {
+    grid-template-columns: 1fr;
+  }
+}

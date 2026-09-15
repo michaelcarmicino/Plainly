@@ -1,0 +1,196 @@
+/* La pagina «il foglio prima di firmare» — agente ui-builder. Funzionalità 12.
+   .occhiello, .simulazione-titolo, .simulazione-intro, .campi, .campo,
+   .limiti-schermata, .limiti-titolo, .limiti, .cifra sono già definiti in
+   stiliSimulazione.css / stiliRisultato.css / styles.css e restano validi
+   qui: non si ridefiniscono due volte.
+
+   Contrasti usati qui (fondo #050008, riquadri #0a0014):
+     #ffffff su #0a0014 -> 20.5:1   corpo, cifre, testo dei riquadri
+     #BE82FF su #050008 ->  7.7:1   occhiello, etichette, titolo dei limiti
+     #FF50A0 su #0a0014 ->  6.7:1   SOLO le voci del blocco dei limiti
+   Corpo minimo 1rem = 18px. Bersagli di click minimo 44px. */
+
+.foglio {
+  max-width: 60rem;
+}
+
+/* --- Il facsimile a riquadri -------------------------------------------- */
+
+.foglio-facsimile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1.5rem 0 1rem;
+}
+
+.riquadro-foglio {
+  border: 1px solid var(--purple-dark);
+  border-left: 4px solid var(--purple);
+  border-radius: 10px;
+  background: var(--ink);
+  padding: 0.85rem 1.1rem;
+}
+
+.riquadro-foglio-etichetta {
+  margin: 0;
+  max-width: 68ch;
+  overflow-wrap: break-word;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--testo);
+}
+
+.riquadro-foglio-bottone {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--testo);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.riquadro-foglio-icona {
+  flex: 0 0 auto;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--purple-light);
+}
+
+.riquadro-foglio-contenuto {
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--purple-dark);
+}
+
+.foglio-riquadro-testo {
+  margin: 0 0 0.75rem;
+  max-width: 66ch;
+  font-size: 1.0625rem;
+}
+
+.foglio-riquadro-testo:last-child {
+  margin-bottom: 0;
+}
+
+/* La riga dei sette numeri: TESTO, non un'immagine. Nessuno segnato, nessuno
+   colorato — è l'unica deroga dichiarata al principio dei semafori. */
+.foglio-scala-sette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1rem;
+}
+
+.foglio-scala-numero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid var(--purple-dark);
+  border-radius: 8px;
+  font-size: 1.125rem;
+  color: var(--testo);
+}
+
+.foglio-facsimile-nota {
+  margin: 0 0 2rem;
+  max-width: 66ch;
+  font-size: 1rem;
+  color: var(--purple-light);
+}
+
+/* --- Il risultato: il numero grande è l'anno ---------------------------- */
+
+.foglio-risultato {
+  min-height: 19rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--purple-dark);
+  border-left: 4px solid var(--purple);
+  border-radius: 10px;
+  background: var(--ink);
+}
+
+.foglio-risultato-cifra {
+  margin: 0.2rem 0 0.9rem;
+  font-size: clamp(1.5rem, 6.2vw, 3.25rem);
+  line-height: 1.15;
+  white-space: nowrap;
+  color: var(--testo);
+}
+
+.foglio-risultato-segnaposto {
+  display: block;
+  max-width: 11ch;
+  height: clamp(1.5rem, 6.2vw, 3.25rem);
+  margin-top: 1.1rem;
+  border-bottom: 3px dashed var(--purple);
+}
+
+.foglio-risultato-frase {
+  margin: 0 0 0.7rem;
+  max-width: 62ch;
+  font-size: 1.125rem;
+}
+
+.foglio-risultato-mese,
+.foglio-risultato-paragone {
+  margin: 0 0 0.7rem;
+  max-width: 62ch;
+  font-size: 1.0625rem;
+}
+
+.foglio-risultato-nota {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 1rem;
+}
+
+.foglio-risultato-attesa {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 1.0625rem;
+}
+
+.foglio-fonte {
+  margin: 0 0 1.5rem;
+  max-width: 68ch;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--purple-dark);
+  font-size: 1rem;
+}
+
+/* Rosa: è il colore di ciò che il prodotto non fa. .limiti-titolo (riuso)
+   resta viola chiaro: solo le voci sono rosa. */
+.foglio-non-fa {
+  color: var(--rose);
+}
+
+@media (max-width: 767px) {
+  .riquadro-foglio {
+    padding: 0.75rem 0.9rem;
+  }
+
+  .foglio-risultato {
+    min-height: 24rem;
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 384px) {
+  .foglio-risultato {
+    min-height: 28rem;
+  }
+}

@@ -1,0 +1,213 @@
+/* La guida alla bolletta della luce — agente ui-builder. Funzionalità 05.
+   .occhiello, .limiti-schermata, .limiti-titolo, .limiti e .cifra sono già
+   definiti in styles.css / stiliFonti.css e restano validi qui.
+   Contrasti su fondo #050008, riquadri #0a0014 (stessa formula WCAG):
+     #ffffff su #0a0014 -> 20,4:1   corpo, valori, spiegazioni
+     #BE82FF su #0a0014 ->  7,0:1   occhiello, sottotitoli
+     #FF50A0 su #0a0014 ->  6,5:1   SOLO il bordo dell'avviso di quadratura
+   Corpo minimo 1rem = 18px. Bersagli di click minimo 44px. */
+
+.bolletta { max-width: 60rem; }
+
+.bolletta-titolo {
+  margin: 0 0 1rem;
+  max-width: 40ch;
+  font-size: clamp(1.5rem, 3.4vw, 2.125rem);
+  letter-spacing: -0.015em;
+  color: var(--testo);
+}
+
+.bolletta-intro {
+  margin: 0 0 1.5rem;
+  max-width: 66ch;
+}
+
+/* Testo bianco a corpo pieno: l'errore non si affida al solo bordo colorato. */
+.bolletta-errore {
+  margin: 0 0 1.5rem;
+  max-width: 66ch;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--purple-dark);
+  border-left: 4px solid var(--rose);
+  border-radius: 10px;
+  background: var(--ink);
+  color: var(--testo);
+}
+
+.bolletta-vuoto { max-width: 60ch; }
+
+/* --- Il totale, il numero più grande della schermata --------------------- */
+
+.bolletta-totale {
+  margin: 0 0 1.75rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--purple-dark);
+  border-left: 4px solid var(--purple);
+  border-radius: 10px;
+  background: var(--ink);
+}
+
+.bolletta-totale-etichetta {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  color: var(--purple-light);
+}
+
+.bolletta-totale-valore {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 2.75rem);
+  font-weight: 700;
+}
+
+.bolletta-totale-kwh {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+  color: var(--purple-light);
+}
+
+.bolletta-sottotitolo {
+  margin: 0 0 1rem;
+  color: var(--purple-light);
+}
+
+/* --- L'elenco delle voci: ogni riga un riquadro, non una colonna --------- */
+
+.elenco-bolletta {
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.elenco-bolletta > li + li { margin-top: 1rem; }
+
+.riga-bolletta {
+  border: 1px solid var(--purple-dark);
+  border-left: 4px solid var(--purple);
+  border-radius: 10px;
+  background: var(--ink);
+  overflow: hidden;
+}
+
+.riga-bolletta-bottone {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 44px;
+  padding: 1rem 1.25rem;
+  border: none;
+  background: transparent;
+  color: var(--testo);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* Etichetta e importo: l'importo resta ancorato a destra anche quando
+   l'etichetta va a capo su più righe (CL-10, etichetta lunghissima). */
+.riga-bolletta-riga1 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.35rem 1.5rem;
+}
+
+.riga-bolletta-etichetta {
+  flex: 1 1 18rem;
+  max-width: 62ch;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  overflow-wrap: break-word;
+}
+
+.riga-bolletta-importo {
+  flex: 0 0 auto;
+  text-align: right;
+  font-size: 1.25rem;
+}
+
+.riga-bolletta-riga2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.riga-bolletta-segno {
+  flex: 0 0 auto;
+  width: 1.5rem;
+  font-size: 1.25rem;
+  color: var(--purple-light);
+  text-align: center;
+}
+
+.riga-bolletta-nota-tocco {
+  font-size: 0.9375rem;
+  color: var(--purple-light);
+}
+
+.riga-bolletta-pannello {
+  padding: 0 1.25rem 1.25rem;
+  border-top: 1px solid var(--purple-dark);
+}
+
+.riga-bolletta-pannello[hidden] { display: none; }
+
+.riga-bolletta-spiegazione,
+.riga-bolletta-peso,
+.riga-bolletta-dipendenza {
+  max-width: 66ch;
+  margin: 0.85rem 0 0;
+}
+
+/* --- La barra delle due parti del totale --------------------------------- */
+
+.due-quote { margin: 0 0 1.75rem; }
+
+.due-quote-titolo {
+  margin: 0 0 1rem;
+  color: var(--purple-light);
+}
+
+.due-quote-barra {
+  display: flex;
+  height: 1.5rem;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--purple-dark);
+  margin-bottom: 1rem;
+}
+
+.due-quote-barra-energia { background: var(--purple); }
+.due-quote-barra-resto { background: var(--purple-dark); }
+
+.due-quote-cifre {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 2rem;
+  margin: 0 0 1rem;
+}
+
+.due-quote-voce { margin: 0; min-width: 14rem; }
+
+.due-quote-voce dt {
+  font-size: 1rem;
+  color: var(--purple-light);
+  margin: 0 0 0.25rem;
+}
+
+.due-quote-valore {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+.due-quote-paragone {
+  max-width: 66ch;
+  margin: 0;
+}
+
+@media (max-width: 767px) {
+  .riga-bolletta-importo { font-size: 1.125rem; }
+  .due-quote-valore { font-size: 1.1875rem; }
+}
