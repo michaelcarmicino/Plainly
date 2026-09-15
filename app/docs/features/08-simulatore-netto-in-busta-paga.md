@@ -390,3 +390,222 @@ Legame **non bloccante** con `13` (tabella delle fonti come sorgente unica):
 `fiscoDichiarato.ts` è il secondo modulo di provenienza del progetto dopo
 `inflazioneDichiarata.ts`, e insieme sono ciò che quella tabella dovrà leggere.
 Il `13` non deve esistere perché questo parta.
+
+---
+
+## Previsto
+
+*Scritto da `doc-funzionale` in fase 1, dalla sola specifica, mentre il codice
+viene costruito. **Tutto al futuro**: nulla qui è ancora verificato.*
+
+> Stato: **in sviluppo** · fase 1 scritta il 2026-09-15, dalla sola specifica.
+> La fase 2 — rilettura del codice e dei test, esecuzione dei passi qui sotto e
+> riscrittura al presente sotto «Verificato» — non è ancora stata fatta.
+
+### Cosa farà
+
+Chi digiterà quanto guadagna lordo al mese e quante mensilità riceve in un
+anno vedrà comparire, subito e senza attese, quanto gli resterà davvero: il
+numero grande sarà il netto mensile — con 2.000 € lordi e 13 mensilità,
+**1.398,47 €** — insieme al netto annuo, più piccolo, e a una barra che
+scomporrà la differenza in tre pezzi visibili tutti insieme: quanto andrà ai
+contributi, quanto all'imposta sul reddito, quanto resterà sul conto.
+Accanto comparirà il paragone «su ogni 100 € scritti come lordo, 69,92 €
+arrivano sul tuo conto», e — in corpo leggibile, non in una nota a piè di
+pagina — la frase che dichiara che questo numero è una stima calcolata così,
+non la busta paga vera.
+
+### Per chi
+
+La persona con il cedolino in mano che vede due numeri molto diversi — il
+lordo in alto, il netto arrivato sul conto — senza sapere che cosa sia
+successo in mezzo. Le servirà nel momento in cui arriva la busta paga, o
+quando qualcuno le proporrà un lordo — un colloquio, un rinnovo, un
+passaggio di livello — e dovrà tradurlo nella cifra mensile che si confronta
+con l'affitto e con la spesa di tutti i giorni.
+
+Le servirà anche arrivando dalla guida che spiega il cedolino voce per voce
+(funzionalità 04): dopo aver letto le singole trattenute sul proprio
+documento, potrà digitare qui gli stessi due numeri e rifare il conto sul
+proprio caso.
+
+### Come si proverà
+
+Sono i **criteri di accettazione**: finché anche uno solo di questi passi non
+dà il risultato atteso, la funzionalità non è finita. I comandi vanno
+eseguiti da `app/`.
+
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (chi non usa Claude
+   Code ottiene lo stesso risultato con `npm run prepara`, che esegue
+   `node scripts/prepara.mjs`). Serve solo la prima volta.
+   *Risultato atteso:* lo script dirà «Ambiente già pronto», oppure elencherà
+   i passi che ha installato, e il suo controllo di salute — `tsc --noEmit` e
+   poi `npm test` — finirà senza errori.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia` (che esegue
+   `node scripts/dev-server.mjs start`). Mai `npm run dev` a mano: è un
+   processo che non termina e lascia la sessione appesa.
+   *Risultato atteso:* lo script riporterà l'indirizzo `http://localhost:5173`.
+
+3. **Raggiungere la schermata, continuando dalla guida al cedolino.** Aprire
+   quell'indirizzo e arrivare — dalla home, area «Il lavoro» — alla guida che
+   spiega il cedolino voce per voce (funzionalità 04); da lì toccare l'invito
+   a rifare il conto sul proprio caso: è il collegamento che la specifica
+   della 04 dichiara **ancora assente oggi**, con la promessa esplicita di
+   aggiungerlo «quando 08 sarà pronta».
+   *Risultato atteso:* si aprirà, con un tocco solo dalla guida, una
+   schermata dedicata a un concetto solo — dove finisce il lordo.
+   **Attenzione**: quel collegamento non è fra i file che la specifica di
+   questa funzionalità dichiara di toccare (non cita `PaginaBustaPaga.tsx` né
+   `catalogoDomande.ts`). Se all'apertura della guida 04 il collegamento non
+   comparisse ancora, è un punto da segnalare in fase 2 come divergenza — non
+   un motivo per inventare un altro percorso di prova: tutti i passi
+   successivi restano verificabili aprendo la schermata dal suo indirizzo,
+   qualunque esso sia.
+
+4. **Lo stato vuoto, prima di digitare niente.** Osservare la schermata
+   appena aperta, senza scrivere nei due campi.
+   *Risultato atteso:* comparirà quali due numeri servono — il lordo
+   mensile e le mensilità — e dove si leggono sulla propria busta paga, non
+   «nessun risultato». La barra non comparirà vuota né a zero: al suo posto
+   una frase che spiega che cosa mostrerà una volta compilati i campi.
+
+5. **Lo stato «in caricamento» non sposterà il layout.** Osservare la
+   schermata nell'istante esatto in cui si apre.
+   *Risultato atteso:* nessuna rotellina che gira e sparisce: il calcolo è
+   immediato e locale, quindi lo stato esisterà solo come spazio già
+   riservato. Il riquadro del risultato e la barra occuperanno già il loro
+   posto da vuoti, così quando compariranno i numeri il resto della
+   schermata non si sposterà.
+
+6. **Digitare il caso di riferimento.** Scrivere **2000** (il lordo
+   mensile, in euro) nel primo campo e **13** (le mensilità) nel secondo.
+   *Risultato atteso:* senza attese comparirà **1.398,47 €** come numero
+   grande — il netto mensile — e sotto, più piccolo, **18.180,16 €** come
+   netto annuo, insieme al paragone «su ogni 100 € scritti come lordo, 69,92 €
+   arrivano sul tuo conto».
+
+7. **La barra e la quadratura — il criterio più importante di tutti.**
+   Leggere i tre pezzi della barra e, con una calcolatrice qualunque,
+   sommare i tre importi in euro scritti accanto a ciascuno.
+   *Risultato atteso:* tre pezzi — contributi, imposta sul reddito, quello
+   che resta — ciascuno con etichetta, percentuale e importo **sempre
+   scritti**, mai visibili solo al passaggio del mouse: **9,19%** ai
+   contributi (2.389,40 €), **20,89%** all'imposta (5.430,44 €), **69,92%**
+   che resta (18.180,16 €). Sommando i tre importi si otterrà **esattamente**
+   26.000,00 € — il lordo annuo, 2.000 × 13 — senza un centesimo di scarto:
+   è la sottrazione che la persona potrà rifare su un foglio.
+
+8. **L'avvertenza che questo numero non è la busta paga vera.** Cercare,
+   sulla stessa schermata, la frase che dichiara i limiti del calcolo.
+   *Risultato atteso:* comparirà in corpo leggibile — della stessa
+   dimensione del resto del testo, almeno 16 px, **non** in una nota a piè
+   di pagina — e dirà che il calcolo lascia fuori le detrazioni per lavoro
+   dipendente e le addizionali regionali e comunali: le due cose tirano in
+   direzioni opposte (le detrazioni alzerebbero il netto, le addizionali lo
+   abbasserebbero), e per questo la cifra sarà presentata come una stima —
+   «un netto calcolato così, con queste due cose lasciate fuori» — non come
+   «il tuo netto».
+
+9. **Da dove vengono le aliquote usate.** Cercare, vicino al risultato, la
+   riga che dichiara le aliquote e le soglie con cui è stato fatto il
+   calcolo.
+   *Risultato atteso:* comparirà la fonte attesa per ciascun dato — Agenzia
+   delle Entrate per l'IRPEF, INPS per i contributi — insieme a una
+   dichiarazione esplicita che l'anno d'imposta a cui questi valori si
+   riferiscono non è ancora stato confermato da nessuno: le aliquote non
+   saranno presentate come un fatto già verificato, sullo stesso schema già
+   usato per il tasso di inflazione della funzionalità 07, dove quel flag è
+   tuttora falso.
+
+10. **Lo stato di errore.** Cancellare il valore digitato nel campo delle
+    mensilità e scrivere **15** (fuori dall'intervallo 12–14 ammesso).
+    *Risultato atteso:* comparirà una frase in linguaggio umano — sul
+    modello di «controlla questo numero, sembra troppo alto», mai «errore di
+    validazione» — il numero grande non mostrerà una cifra calcolata su un
+    dato che non va, e il **2000** digitato nell'altro campo resterà dov'è,
+    senza sparire.
+
+11. **Dati lunghi.** Cancellare e riscrivere **99000** come lordo mensile
+    (99.000 €, sotto la soglia massima di 100.000 €) con **14** mensilità:
+    un lordo annuo a sette cifre, 1.386.000 €.
+    *Risultato atteso:* la griglia non si romperà, il numero grande non
+    andrà a capo in un punto illeggibile, e le tre etichette della barra
+    resteranno leggibili e affiancate al proprio importo anche dovendo
+    andare a capo.
+
+12. **Da tastiera e a finestra stretta come un telefono.** Restringere la
+    finestra sotto i 768 px di larghezza e rifare i passi 6-8; poi, senza
+    toccare il mouse, premere Tab più volte fino a raggiungere i due campi e
+    i collegamenti della schermata.
+    *Risultato atteso:* nessuna scritta scenderà sotto i 16 px, il contrasto
+    fra testo e fondo resterà leggibile (almeno 4,5:1), nessun bersaglio —
+    campi, collegamenti — sarà più piccolo di 44×44 px, e ogni elemento che
+    riceve il focus da tastiera avrà un contorno visibile, mai un `outline`
+    rimosso senza un sostituto altrettanto evidente.
+
+13. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire la stessa schermata servita
+    da un server locale qualunque.
+    *Risultato atteso:* la build finirà senza errori, e rifacendo i passi
+    6-9 si leggerà esattamente lo stesso risultato — **1.398,47 €**, la
+    stessa barra, la stessa avvertenza — senza che parta una sola richiesta
+    fuori dal computer: le aliquote sono scritte nel codice, non lette da
+    qualche parte in rete.
+
+### Limiti previsti
+
+- **Non dirà a nessuno che cosa farne.** Niente su quanto chiedere di
+  aumento, su come ridurre le trattenute, su quale inquadramento o regime
+  fiscale avere. Si fermerà a mostrare dove va il lordo digitato — una
+  sottrazione scomposta in tre pezzi — non un'indicazione su come cambiarla.
+- **Non metterà a confronto il regime da lavoratore dipendente con quello da
+  partita IVA in regime forfettario.** Se un giorno rientrerà, sarà una
+  specifica a sé, con i due conti mostrati fianco a fianco senza che nessuno
+  dei due venga indicato come l'opzione buona, e con il coefficiente di
+  redditività digitato dalla persona, mai fisso: oggi mancano comunque,
+  dichiarate con il loro anno d'imposta, le altre grandezze che
+  servirebbero — coefficiente, imposta sostitutiva, aliquota della Gestione
+  Separata.
+- **Non prenderà le aliquote IRPEF, gli scaglioni né l'aliquota contributiva
+  INPS dalla rete**, né a runtime né in fase di build: sono dati che nessuno
+  di noi può inventare. Entreranno nel codice come parametri dichiarati in un
+  modulo a parte, `fiscoDichiarato.ts`, insieme alla loro fonte attesa —
+  Agenzia delle Entrate / Legge di Bilancio per l'IRPEF, circolare INPS per i
+  contributi — e a un flag, `annoImpostaDichiarato`, che partirà `false`.
+  Finché resterà falso, la schermata lo dirà apertamente invece di
+  presentare 23% / 33% / 43% e 9,19% / 10,19% come aliquote già verificate:
+  sono, per ora, valori di prova presi da un documento interno, non da una
+  circolare controllata. È lo stesso schema già usato per il tasso di
+  inflazione della funzionalità 07, dove quel flag è tuttora falso — e con
+  la funzionalità 13 esiste ora un registro unico delle fonti che è il luogo
+  naturale in cui questi valori finiranno una volta confermati: è quel
+  passaggio, non l'implementazione di questo calcolo, a fermare la demo
+  dall'avere qui numeri già verificati.
+- **Non includerà le detrazioni per lavoro dipendente né le addizionali
+  regionali e comunali**, e lo dichiarerà a schermo in corpo leggibile: sono
+  due omissioni che tirano in direzioni opposte, e per questo il risultato
+  non sarà presentato come «il tuo netto» ma come una stima calcolata così.
+- **Non spalmerà correttamente la tredicesima.** Il netto mensile sarà una
+  media fra le mensilità digitate, mentre nella busta vera il mese della
+  tredicesima è tassato a parte — e la schermata lo dichiarerà.
+- **Non tratterà casi diversi da un lavoratore dipendente del settore
+  privato**: niente pubblico impiego, part-time a orario variabile, premi,
+  straordinari, fringe benefit, bonus o trattenute personali.
+- **Non chiederà né conserverà dati personali.** Le due cifre digitate
+  resteranno nella pagina, non finiranno nell'indirizzo del browser né
+  saranno salvate da nessuna parte.
+- **Non leggerà un documento vero.** I due numeri si digiteranno a mano.
+  Leggere il cedolino riga per riga resta il compito della guida —
+  funzionalità 04 — a cui questa schermata si collega ma che non sostituisce.
+
+---
+
+## Verificato
+
+*Scritto da `doc-funzionale` in fase 2, al termine di `/implementa`, dopo aver
+letto codice e test ed **eseguito** i passi qui sopra. **Tutto al presente**:
+solo ciò che è stato confermato.*
+
+*Finché questa sezione non esiste, la funzionalità non è riconciliata e
+`/verifica` non la accetta come `implementato`.*

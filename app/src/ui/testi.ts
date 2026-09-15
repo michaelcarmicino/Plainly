@@ -21,6 +21,7 @@
 import { STRINGHE_CATALOGO } from './testiCatalogo.ts';
 import { STRINGHE_FONTI } from './testiFonti.ts';
 import { STRINGHE_SIMULAZIONE } from './testiSimulazione.ts';
+import { STRINGHE_SPIEGAZIONE } from './testiSpiegazione.ts';
 
 export const STRINGHE_UTENTE = {
   appTitolo: 'Plainly',
@@ -111,6 +112,7 @@ export const STRINGHE_UTENTE = {
   ...STRINGHE_SIMULAZIONE,
   ...STRINGHE_FONTI,
   ...STRINGHE_CATALOGO,
+  ...STRINGHE_SPIEGAZIONE,
 } as const satisfies Record<string, string>;
 
 export type ChiaveStringaUtente = keyof typeof STRINGHE_UTENTE;

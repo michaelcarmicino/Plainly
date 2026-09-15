@@ -327,3 +327,238 @@ girare in parallelo con nessun altro che tocchi `src/core/`, `src/ui/` o
 `tests/`** — fra i task aperti, almeno `08-simulatore-netto-in-busta-paga` e
 `10-simulatore-rata-mutuo-fisso-variabile` ricadranno lì. Il piano lo calcola
 `npm run pm:piano` dalle impronte dichiarate, non a intuito.
+
+---
+
+## Previsto
+
+*Scritto da `doc-funzionale` in fase 1, dalla sola specifica, mentre il codice
+viene costruito. **Tutto al futuro**: nulla qui è ancora verificato.*
+
+> Stato: **in sviluppo** · fase 1 scritta il 2026-09-15, dalla sola specifica.
+> La fase 2 — rilettura del codice e dei test, esecuzione dei passi qui sotto e
+> riscrittura al presente sotto «Verificato» — non è ancora stata fatta.
+
+### Cosa farà
+
+Chi scriverà due numeri — quanto spende in un mese per le spese fisse e quanto
+ha da parte — vedrà comparire una cifra sola, grande: per quanti mesi e giorni
+quella cifra copre quelle spese, se da un certo momento in poi non entrasse più
+niente sul conto. Con 1.200 € di spese al mese e 3.100 € da parte comparirà
+**2 mesi e 17 giorni**, e subito sotto la scomposizione che permette di rifare
+il conto a mano: due mesi pagati per intero — 2.400,00 € — più altri 700,00 €
+che restano, cioè 17 giorni del mese successivo. Il conto si fermerà sempre al
+giorno pieno per difetto: non dichiarerà mai una copertura più lunga di quella
+che la divisione dà davvero.
+
+La schermata dirà per quanti mesi durano quei soldi, con l'ipotesi scritta in
+chiaro accanto al risultato — non in una nota a piè di pagina — e si fermerà
+lì: non dirà se quel numero è poco o tanto, non userà nessun colore di
+giudizio e non proporrà nessun traguardo da raggiungere.
+
+### Per chi
+
+Una persona con un lavoro che potrebbe non esserci fra sei mesi — un contratto
+a termine in scadenza, una partita IVA con un cliente solo, un'azienda che ha
+annunciato tagli. Ha qualcosa da parte e non sa dire quanto le durerebbe:
+l'ansia è generica — «non so se basterebbe» — e in quella forma non si può né
+misurare né mettere giù.
+
+Le servirà nel momento in cui arriva la notizia che il reddito potrebbe
+fermarsi, o nel momento tranquillo in cui guarda il conto e la domanda le
+passa per la testa da sola — prima che succeda qualcosa, perché dopo nessuno
+apre un sito per fare una divisione. Dopo, al posto di «non so se basterebbe»,
+avrà una cifra riferita a sé — «con 1.200 € di spese al mese e 3.100 € da
+parte, quei soldi coprono 2 mesi e 17 giorni» — che potrà rifare su un foglio
+ogni volta che vorrà.
+
+### Come si proverà
+
+Sono i **criteri di accettazione**: finché anche uno solo di questi passi non
+dà il risultato atteso, la funzionalità non è finita. I comandi vanno eseguiti
+da `app/`.
+
+Il caso di riferimento è quello già verificato a mano nella specifica: **1.200 €
+di spese fisse al mese, 3.100 € da parte** → 2 mesi e 17 giorni, con un residuo
+di 700,00 € nell'ultimo mese. Lo stesso caso che il test unitario bloccherà e
+che finirà nello screenshot della demo: la slide mostrerà la cifra che il test
+dimostra.
+
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (chi non usa Claude
+   Code ottiene lo stesso risultato con `npm run prepara`, che esegue
+   `node scripts/prepara.mjs`). Serve solo la prima volta.
+   *Risultato atteso:* lo script dirà «Ambiente già pronto», oppure elencherà
+   i passi che ha installato, e il suo controllo di salute — `tsc --noEmit` e
+   poi `npm test` — finirà senza errori. Se fallisce, ci si fermerà qui.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia` (che esegue
+   `node scripts/dev-server.mjs start`). Mai `npm run dev` a mano: è un
+   processo che non termina e lascia la sessione appesa.
+   *Risultato atteso:* lo script riporterà l'indirizzo `http://localhost:5173`.
+
+3. **Arrivare alla schermata navigando, non scrivendo l'indirizzo a mano.**
+   Aprire quell'indirizzo, entrare nell'area «Il futuro» e aprire la nuova
+   domanda nella sua lista di argomenti.
+   *Risultato atteso:* si aprirà la pagina all'indirizzo
+   `#/quanti-mesi-bastano`. Se la voce nuova non comparirà nella lista
+   dell'area «Il futuro» e vi si potrà arrivare solo scrivendo l'indirizzo a
+   mano nella barra, il passo non sarà superato: andrà segnalato come
+   divergenza in fase 2, non aggirato.
+
+4. **Lo stato vuoto — prima di digitare qualunque cosa.** Guardare la
+   schermata appena aperta, senza toccare i campi.
+   *Risultato atteso:* **nessun numero grande inventato e nessuno zero** al
+   posto del risultato, e **nessuna frase che anticipi un giudizio** su quello
+   che comparirà. Al loro posto una frase che dirà quali due cifre servono —
+   le spese fisse di un mese e quanto si ha da parte — e dove scriverle.
+
+5. **Il caso verificato a mano.** Digitare le spese mensili e i risparmi del
+   caso di riferimento — 1.200 € e 3.100 €.
+   *Risultato atteso:* comparirà **2 mesi e 17 giorni** come numero grande —
+   il più grande della schermata. Accanto si leggerà l'ipotesi in chiaro, non
+   in una nota a piè di pagina: «se da domani non entrasse più niente sul
+   conto». Sotto, la scomposizione che permette di rifare il conto a mano: due
+   mesi pagati per intero — **2.400,00 €** — più **700,00 €** che restano,
+   cioè altri 17 giorni. Si leggeranno anche la convenzione dichiarata — «un
+   mese contato come 30 giorni; i conti si fermano sempre al giorno pieno» —
+   la frase che dice che il numero non viene da nessuna fonte esterna ma solo
+   dalle due cifre digitate, e l'avvertenza standard già usata nelle altre
+   simulazioni del sito.
+
+6. **Niente da parte — un risultato, non un errore.** Lasciare le spese
+   mensili come al passo 5 e cambiare i risparmi in `0`.
+   *Risultato atteso:* comparirà **0 giorni** come risultato valido, con la
+   frase che spiega il conto — non un messaggio d'errore, non un campo che si
+   rifiuta, non un tono che lasci intendere che zero sia sbagliato. Rifiutarlo
+   come errore di validazione sarebbe un giudizio mascherato da controllo:
+   dire a chi non ha nulla da parte che il suo numero «non va bene» non
+   sarebbe un controllo, sarebbe un verdetto. È una differenza voluta rispetto
+   alla funzionalità «quanto valgono davvero i miei risparmi» (07), dove una
+   somma a zero viene invece rifiutata perché lì non c'è nessuna erosione da
+   mostrare: qui zero da parte è una situazione reale che qualcuno può
+   trovarsi a leggere, e la schermata la tratterà come tale.
+
+7. **L'errore in linguaggio umano.** Nel campo delle spese mensili scrivere
+   `0`, oppure una cifra chiaramente troppo bassa per essere le spese fisse di
+   un mese, oppure del testo al posto di un numero.
+   *Risultato atteso:* comparirà un messaggio scritto come lo direbbe una
+   persona, mai «errore di validazione nel campo input». Il numero grande non
+   mostrerà un risultato calcolato su una divisione per zero o su un dato che
+   non va, e quello che resterà digitato nel campo dei risparmi **non andrà
+   perso**: correggere un campo non dovrà costare quello già scritto
+   nell'altro.
+
+8. **Nessun giudizio in vista — il criterio più delicato di tutti.** Con il
+   caso del passo 5 ancora a schermo, guardare l'intera pagina: colori,
+   titoli, ogni frase.
+   *Risultato atteso:* nessun elemento colorato di verde, giallo o rosso — né
+   in generale nessun colore usato per comunicare un verdetto — e nessuna
+   parola come «abbastanza», «sufficiente», «obiettivo», «traguardo»,
+   «dovresti avere», o «tre mesi» / «sei mesi» usate come soglia da
+   raggiungere. In nessun punto comparirà l'espressione «fondo di emergenza».
+   La pagina dirà per quanti mesi durano quei soldi e non dirà se è poco o
+   tanto.
+
+9. **Lo stato «in caricamento» non deve far saltare il layout.** Guardare
+   dove si trova il riquadro del risultato prima di digitare, poi digitare i
+   valori del passo 5 e guardare dove si trova dopo.
+   *Risultato atteso:* sarà nello stesso posto. Il calcolo è immediato e tutto
+   locale: nessuna rotellina che gira per un istante e sparisce.
+
+10. **Dati lunghi — il caso che rompe le griglie.** Digitare `500` nelle
+    spese mensili e `999999` nei risparmi.
+    *Risultato atteso:* comparirà **1.999 mesi e 29 giorni** su una riga
+    leggibile, senza spezzare «1.999» da «mesi» andando a capo a metà, e senza
+    barra di scorrimento orizzontale. Le cifre resteranno tabulari e allineate
+    a destra dove compaiono in una tabella.
+
+11. **Da tastiera e a finestra stretta come un telefono.** Restringere la
+    finestra sotto i 768 px di larghezza — quanto misura lo schermo di un
+    telefono tenuto in verticale — e rifare il passo 5; poi, senza toccare il
+    mouse, premere Tab più volte per compilare i due campi e raggiungere ogni
+    collegamento della pagina.
+    *Risultato atteso:* i campi e il risultato si impileranno senza testo
+    tagliato, nessuna scritta scenderà sotto i 16 px, ogni testo si leggerà
+    con un contrasto di almeno 4,5:1 sul fondo — mai un grigio slavato — e
+    nessun bersaglio da toccare sarà più piccolo di 44×44 px, cioè del
+    polpastrello di un dito. Con Tab il focus attraverserà i campi nell'ordine
+    in cui si leggono e a ogni passaggio si vedrà un contorno netto attorno
+    all'elemento che lo ha; nessuna informazione — l'ipotesi, la
+    scomposizione, l'avvertenza — sarà disponibile solo passando il mouse
+    sopra qualcosa.
+
+12. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire la schermata dalla cartella
+    `dist/`.
+    *Risultato atteso:* la build finirà senza errori, e rifacendo il passo 5
+    il risultato sarà lo stesso — 2 mesi e 17 giorni — **senza che parta una
+    sola richiesta fuori dal computer**. Questa è l'unica funzionalità del
+    sito che non dipende da nessuna costante esterna da dichiarare: non c'è un
+    tasso, non c'è una fonte, quindi non c'è niente da aggiornare né alcun
+    blocco aperto legato ai dati. Il caso del doppio clic diretto su
+    `dist/index.html` è un difetto già noto e registrato in `01-landing-page`,
+    passo 8: qui si verifica solo che questa schermata non aggiunga nuove
+    richieste di rete, non lo si risolve.
+
+### Limiti previsti
+
+- **Non dirà se i mesi calcolati sono pochi o tanti.** Nessuna soglia, nessun
+  obiettivo, nessun «tre mesi» o «sei mesi» presentati come traguardo da
+  raggiungere: sarebbero insieme una raccomandazione personalizzata e un
+  numero senza nessuna fonte che lo dichiari.
+- **Non userà il semaforo verde/giallo/rosso**, pur essendo il pattern che le
+  regole di scrittura del sito prescrivono di solito per tradurre un numero in
+  un giudizio immediato. È una **deroga dichiarata, non una dimenticanza**:
+  qui il semaforo classificherebbe la situazione personale di chi legge — «va
+  bene» / «attenzione» / «preoccupante» — che è esattamente il giudizio che
+  questo prodotto non dà.
+- **Non si chiamerà, in nessun punto** — schermata, indirizzo, testo del
+  codice — **«fondo di emergenza»**: è il nome respinto dal cancello
+  d'ingresso della specifica, non una scelta di stile evitata per gusto.
+- **Non proporrà un traguardo** e non calcolerà quanto manca per
+  raggiungerlo: «ti mancano 4.500 € per arrivare a sei mesi» sarebbe un
+  consiglio travestito da sottrazione.
+- **Non farà digitare un traguardo scelto dalla persona**: sarebbe un secondo
+  concetto nella stessa schermata, e la regola del sito è un concetto per
+  schermata. Se servirà, sarà un'altra specifica e un altro branch.
+- **Non chiederà perché le entrate potrebbero fermarsi** e non distinguerà
+  fra le cause: la divisione resterà identica in ogni caso, senza profilare
+  né drammatizzare chi la usa.
+- **Non nominerà prodotti finanziari** — conti, depositi, fondi, titoli,
+  polizze — e non dirà dove tenere quei soldi.
+- **Non calcolerà l'inflazione** su quella cifra: incrociarla con la
+  funzionalità «quanto valgono davvero i miei risparmi» raddoppierebbe i
+  concetti in una schermata sola.
+- **Non sarà una previsione.** Presupporrà che le spese restino quelle
+  digitate e che non entri più nessuna entrata, e le due ipotesi
+  compariranno scritte a schermo, non in una nota a piè di pagina.
+- **Non leggerà nessun documento.** I due numeri si digiteranno a mano, e la
+  funzionalità non toccherà `src/ingest/`.
+- **Non conserverà né trasmetterà le due cifre da nessuna parte.**
+  Resteranno nello stato della pagina e non finiranno nell'indirizzo, per la
+  stessa ragione già valida nella «07»: un importo nell'hash resterebbe nella
+  cronologia del browser senza che nessuno l'abbia deciso.
+
+---
+
+## Verificato
+
+*Scritto da `doc-funzionale` in fase 2, al termine di `/implementa`, dopo aver
+letto codice e test ed **eseguito** i passi qui sopra. **Tutto al presente**:
+solo ciò che è stato confermato.*
+
+> **Non ancora compilata.** Il codice di questa funzionalità è in costruzione
+> proprio ora: non c'è niente da verificare, e scrivere qui qualcosa
+> significherebbe dichiarare fatto ciò che nessuno ha controllato.
+>
+> Questa sezione si riempie in **fase 2**, al termine di `/implementa`,
+> aprendo i file di `src/core/` e `src/ui/`, leggendo
+> `src/core/__tests__/mesiCoperti.test.ts`,
+> `tests/lessico-mesi-coperti.test.ts` e
+> `tests/accettazione/09-mesi-coperti.test.ts`, e **rieseguendo davvero** i
+> dodici passi scritti sopra. Conterrà «Cosa fa», «Come si prova», «Limiti» e
+> «Divergenze fra previsto e realizzato», tutto al presente, e solo allora lo
+> stato passerà a `implementato`.
+>
+> Finché questa sezione resta vuota, `/verifica` non accetta la funzionalità
+> come `implementato`.

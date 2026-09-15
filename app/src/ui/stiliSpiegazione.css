@@ -1,0 +1,119 @@
+/* Il contenitore riusabile delle pagine di spiegazione — agente ui-builder.
+   Funzionalità 03. .occhiello, .limiti-schermata, .limiti-titolo, .limiti,
+   .nota-riga e .cifra sono già definiti in stiliSimulazione.css / stiliRisultato.css
+   / styles.css e restano validi qui: non si ridefiniscono due volte.
+
+   Contrasti (fondo #050008, riquadri #0a0014), stessa formula WCAG del
+   resto del sito:
+     #ffffff su #050008 e su #0a0014 -> 20.4:1 / 20.5:1  corpo, cifra, frasi
+     #BE82FF su #050008 ->  7.0:1   titoli di blocco (riuso di .limiti-titolo)
+     #FF50A0 su #050008 ->  6.5:1   SOLO le voci del blocco 8 (.spiegazione-non-fa)
+   Corpo minimo 1rem = 18px. Bersagli di click minimo 44px. */
+
+.spiegazione {
+  max-width: 60rem;
+}
+
+.spiegazione-titolo {
+  margin: 0 0 1.25rem;
+  max-width: 40ch;
+  font-size: clamp(1.5rem, 3.4vw, 2.125rem);
+  letter-spacing: -0.015em;
+  color: var(--testo);
+}
+
+.spiegazione-immagine {
+  margin: 0 0 0.85rem;
+  max-width: 66ch;
+}
+
+.spiegazione-nome-tecnico {
+  margin: 0 0 1.5rem;
+  max-width: 66ch;
+  font-weight: 700;
+}
+
+/* --- Blocchi 5 e 6: il numero, il suo paragone, la sua provenienza ------ */
+
+.spiegazione-esempio {
+  margin: 0 0 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--purple-dark);
+  border-left: 4px solid var(--purple);
+  border-radius: 10px;
+  background: var(--ink);
+}
+
+.spiegazione-esempio + .spiegazione-fonte {
+  margin-top: -0.75rem;
+}
+
+.spiegazione-cifra {
+  margin: 0.2rem 0 0.9rem;
+  font-size: clamp(1.5rem, 6.2vw, 3.25rem);
+  line-height: 1.15;
+  text-align: right;
+  white-space: nowrap;
+  color: var(--testo);
+}
+
+.spiegazione-esempio-frase,
+.spiegazione-esempio-paragone {
+  margin: 0 0 0.7rem;
+  max-width: 62ch;
+  font-size: 1.0625rem;
+}
+
+.spiegazione-fonte {
+  margin: 0 0 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--purple-dark);
+}
+
+/* --- Blocco 7: dove porta questa pagina, al più due rimandi ------------- */
+
+.spiegazione-passi {
+  margin: 0 0 1.5rem;
+}
+
+.elenco-passi {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.elenco-passi > li + li {
+  margin-top: 0.85rem;
+}
+
+.passo-collegato {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding: 0.6rem 0.9rem;
+  border: 2px solid var(--purple);
+  border-radius: 8px;
+  color: var(--testo);
+  text-decoration: none;
+}
+
+.icona-passo {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  color: var(--purple-light);
+}
+
+/* --- Blocco 8: i confini, sempre in rosa --------------------------------
+   .limiti-titolo (riuso) resta viola chiaro: solo le voci sono rosa — è il
+   colore di ciò che questa pagina non fa, non del titolo che le introduce. */
+.spiegazione-non-fa {
+  color: var(--rose);
+}
+
+@media (max-width: 767px) {
+  .spiegazione-esempio {
+    padding: 1.25rem;
+  }
+}
