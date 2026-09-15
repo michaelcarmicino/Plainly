@@ -194,3 +194,26 @@ sono corretti da soli.
 aggiungendo le righe dei dati fiscali al registro. Tutto dentro `src/core/`,
 nessun contratto coinvolto. Va fatto quando `src/core/` è libero — e prima di
 dichiarare finita la 08, altrimenti il difetto entra in consegna.
+
+## Due schermate esistono e non sono raggiungibili
+
+`03` e `05` sono verdi e complete, ma **non si raggiungono navigando**: ci si
+arriva solo scrivendo l'indirizzo.
+
+Manca in entrambi i casi la riga in `src/ui/catalogoDomande.ts` che porta la
+domanda da `stato: 'in-arrivo'` a `'con-schermata'` con il percorso:
+- `area1Altra1` → la pagina della `03`
+- `area1Domanda` → la pagina della `05`
+
+Nessuno dei due `ui-builder` l'ha scritta, e per un motivo dichiarato: `ui-builder`
+della `03` l'ha **provata e annullata** perché rompe **cinque test** in file di
+`tester` e `guardrail-officer` (`tests/catalogo.test.ts`, `02-catalogo-domande-errori`,
+`02-catalogo-domande-limite`), che assumono «costo della vita» come area senza
+schermate. Quei test non sono sbagliati: descrivono lo stato di ieri.
+
+**Non è un dettaglio.** Una pagina che nessuno può raggiungere non è una
+funzionalità consegnata, e la demo della `03` promette un percorso a tre tocchi.
+Il `tester` della `03` l'ha classificata bloccante, oltre i 44 casi previsti.
+
+**Da fare in un passaggio coordinato**: due righe in `catalogoDomande.ts` e
+l'aggiornamento dei cinque test. Serve che `src/ui/` e `tests/` siano liberi.

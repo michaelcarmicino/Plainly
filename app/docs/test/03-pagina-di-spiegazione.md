@@ -149,18 +149,198 @@ suite generale non fa da sola.*
 
 *Scritto da `tester` in **fase 2**, dopo aver implementato in
 `tests/accettazione/` ed **eseguito** i casi qui sopra (i casi **[tipo]** con
-`tsc --noEmit`, gli altri con `vitest`). Finché questa sezione è vuota, la
-fase 2 non è stata fatta e la funzionalità non è finita.*
+`tsc --noEmit`, gli altri con `vitest`). Il codice (`contenutiSpiegazione.ts`,
+`PaginaSpiegazione.tsx`, `BloccoEsempioSpiegazione.tsx`, `spiegazioneEsempio.ts`,
+`testiSpiegazione.ts`, e per i casi di percorso `Navigazione.tsx`,
+`catalogoDomande.ts`, `rotte.ts`, `schermate/registro.ts`) è stato letto solo
+ora, in fase 2 — mai in fase 1.
+
+Diviso in **sette file**, non uno solo, per restare sotto le 150 righe
+(`standard-codice.md`): `03-pagina-di-spiegazione.test.ts` (percorso
+nominale, C-01..C-07), `-limite.test.ts` (CL-09..CL-13), `-limite-2.test.ts`
+(CL-14..CL-17), `-errori.test.ts` (E-01..E-07), `-conformita.test.ts`
+(CF-01..CF-06), `-conformita-2.test.ts` (CF-08..CF-10) e `-tipi.ts` — quest'ultimo
+**non** eseguito da vitest (il suo nome non finisce in `.test.ts`, e
+`vite.config.ts` include solo quel pattern): lo controlla `tsc --noEmit`,
+perché `tsconfig.json` include `tests` per intero. Un ottavo file,
+`-scoperte.test.ts`, copre due difetti trovati scrivendo i test ma **non**
+previsti dai 44 casi (vedi in fondo a questa sezione).
+
+`npx tsc --noEmit`: **0 errori** sui file di questa funzionalità (i 9 casi
+[tipo] — CL-01..CL-08, CL-18 — compilano come atteso: ogni `@ts-expect-error`
+copre un errore reale, verificato spostando il commento sulla riga esatta
+dove TypeScript lo segnala quando non coincide con l'inizio dell'oggetto).
+
+`npm test` sull'intera suite: **4 file falliti su 43, 8 test falliti su 368,
+351 passati, 9 todo preesistenti**. Tre file falliti appartengono a
+`03`: `03-pagina-di-spiegazione.test.ts` (1 fallito su 7: C-07),
+`03-pagina-di-spiegazione-scoperte.test.ts` (2 falliti su 2: entrambi fuori
+dai 44 casi, vedi sotto). **Gli altri cinque test falliti, in due file, non
+sono di questa funzionalità**: `tests/lessico-ui.test.ts` (stringhe
+prescrittive in `src/ui/RigaVoceBolletta.tsx` e `src/ui/testiRataMutuo.ts`) e
+`src/ui/schermate/__tests__/registro.test.ts` (chiavi mancanti per le
+schermate «bolletta» e «foglio-prima-di-firmare») falliscono per il lavoro in
+corso di un altro agente su `src/ui/` in parallelo a questa verifica —
+segnalato, non toccato, come da mandato («se qualcosa fallisce su file che non
+sono della 03, segnalalo e non fermarti»).
+
+**Totale sui 44 casi: 43 passati, 1 fallito (C-07), 0 non coperti.**
 
 | ID | Atteso | Ottenuto | Esito | File di test |
 | --- | --- | --- | --- | --- |
+| C-01 | `parseRotta('#/spiegazione/inflazione-spesa')` dà la pagina, non la home | `{ tipo: 'schermata', id: 'inflazione-spesa' }` (forma della 14, non quella ipotizzata in fase 1 — stesso adeguamento già fatto da 02 su E-02, intento invariato) | passato | `03-pagina-di-spiegazione.test.ts` |
+| C-02 | Blocchi 1 e 2 nell'ordine, titolo identico all'elenco | Corrispondenza esatta, confrontata fra due rendering (pagina e area), non due letture della stessa costante | passato | `03-pagina-di-spiegazione.test.ts` |
+| C-03 | Immagine (blocco 3) prima del nome tecnico (blocco 4) | `indexOf` conferma l'ordine su ogni rendering | passato | `03-pagina-di-spiegazione.test.ts` |
+| C-04 | 98,04 € dal core, non da un letterale; frase, paragone, fonte, avvertenza insieme | `calcolaSimulazioneRisparmio` dà `valoreRealeCent:9804, perditaCent:196`; tutti e quattro i testi presenti, con `{valore}`/`{perdita}` sostituiti dal valore calcolato | passato | `03-pagina-di-spiegazione.test.ts` |
+| C-05 | Blocco 8 non vuoto, sempre ultimo | 2 voci in `.limiti.spiegazione-non-fa`, dopo l'avvertenza | passato | `03-pagina-di-spiegazione.test.ts` |
+| C-06 | Blocco 7 assente (non vuoto: assente) quando `passi:[]` | Nessuna traccia di `spiegazioneTitoloPassi` né di `spiegazione-passi` | passato | `03-pagina-di-spiegazione.test.ts` |
+| C-07 | Tre gradini — Home › Il costo della vita › la domanda — nessuno cliccabile | **2 gradini**, non 3: manca «Il costo della vita». Vedi Fallimenti | **fallito** | `03-pagina-di-spiegazione.test.ts` |
+| CL-01 [tipo] | Senza `nonFa`, non compila | `tsc` rifiuta: proprietà mancante | passato | `03-pagina-di-spiegazione-tipi.ts` |
+| CL-02 [tipo] | `nonFa: []`, non compila | `tsc` rifiuta: `[]` non è la tupla non vuota | passato | `03-pagina-di-spiegazione-tipi.ts` |
+| CL-03 [tipo] | Senza `immagine`, non compila | `tsc` rifiuta: proprietà mancante | passato | `03-pagina-di-spiegazione-tipi.ts` |
+| CL-04 [tipo] | `immagine: []`, non compila | `tsc` rifiuta: `[]` non è la tupla non vuota | passato | `03-pagina-di-spiegazione-tipi.ts` |
+| CL-05 [tipo] | `nomeTecnico` come lista, non compila | `tsc` rifiuta: il tipo è `ChiaveStringaUtente \| null` | passato | `03-pagina-di-spiegazione-tipi.ts` |
+| CL-06 [tipo] | `esempio` senza `paragone`, non compila | `tsc` rifiuta: proprietà mancante | passato | `03-pagina-di-spiegazione-tipi.ts` |
+| CL-07 [tipo] | `esempio` senza `fonte`, non compila | `tsc` rifiuta: proprietà mancante | passato | `03-pagina-di-spiegazione-tipi.ts` |
+| CL-08 [tipo] | `esempio` senza `avvertenza`, non compila | `tsc` rifiuta: proprietà mancante | passato | `03-pagina-di-spiegazione-tipi.ts` |
+| CL-09 | Un blocco facoltativo (`nomeTecnico`): 5,6,7 assenti, 1,2,3,4,8 presenti | Corrispondenza esatta | passato | `03-pagina-di-spiegazione-limite.test.ts` |
+| CL-10 | Tutti e tre insieme, ordine 1-2-3-4-5/6-7-8 | Corrispondenza esatta, 2 passi verso rotte reali (home, fonti) | passato | `03-pagina-di-spiegazione-limite.test.ts` |
+| CL-11 | Domanda più lunga come titolo, nessun troncamento | **98 caratteri, non 103** (fase 1 non aveva letto il codice — vedi Divergenze); nessun `…`, `max-width` in `ch` ≤70, nessun `text-overflow`/`nowrap` | passato (con divergenza registrata) | `03-pagina-di-spiegazione-limite.test.ts` |
+| CL-12 | Stessa domanda sull'ultimo gradino, mai troncata | Nessun `…`, `.percorso` senza `text-overflow`/`nowrap` | passato | `03-pagina-di-spiegazione-limite.test.ts` |
+| CL-13 | `nonFa` a una voce | Esattamente 1 `<li>` nel blocco 8 | passato | `03-pagina-di-spiegazione-limite.test.ts` |
+| CL-14 | `nonFa` a sei voci | Esattamente 6 `<li>`, `.limiti li + li{margin-top}` presente | passato | `03-pagina-di-spiegazione-limite-2.test.ts` |
+| CL-15 | Importo a sette cifre, allineato a destra, cifre tabulari | `196.078.431` cent → `1.960.784,31 €`; `.spiegazione-cifra{text-align:right;white-space:nowrap}`, `.cifra{font-variant-numeric:tabular-nums}` | passato | `03-pagina-di-spiegazione-limite-2.test.ts` |
+| CL-16 | «Il lavoro»: nessuna domanda con pagina, nessun link, nessuna eccezione | Nessun `.domanda-collegata`, placeholder presente, nessuna eccezione | passato | `03-pagina-di-spiegazione-limite-2.test.ts` |
+| CL-17 | `id` assente/vuoto → home | `#/spiegazione/` e `#/spiegazione` → entrambi `{tipo:'home'}` | passato | `03-pagina-di-spiegazione-limite-2.test.ts` |
+| CL-18 [tipo, migrato da struttura] | Terzo elemento in `passi`, non compila | `tsc` rifiuta: `PassiSuccessivi` è un'unione di tuple 0/1/2, non un array libero — vedi Divergenze | passato (migrato) | `03-pagina-di-spiegazione-tipi.ts` |
+| E-01 | `id` sconosciuto → home, nessuna eccezione | `{tipo:'home'}`, nessun `throw` | passato | `03-pagina-di-spiegazione-errori.test.ts` |
+| E-02 | `percorso` è `string` (non un'unione chiusa): caso a runtime, non di tipo | Confermato — vedi Divergenze. Sulle istanze reali (`passi:[]`) il ciclo è vacuo; un percorso inventato non compare fra le rotte reali | passato | `03-pagina-di-spiegazione-errori.test.ts` |
+| E-03 | Ingresso non valido → riga condivisa, non un numero, nessuna eccezione | **Raggiungibile per davvero** (non è rimasto fuori dalla copertura): `risparmioCent:0` → `'somma-a-zero'` → `ok:false` — vedi Divergenze | passato | `03-pagina-di-spiegazione-errori.test.ts` |
+| E-04 | Ogni pagina reale risponde a una domanda della propria area; una costruita fuori area viene rilevata | Corrispondenza esatta | passato | `03-pagina-di-spiegazione-errori.test.ts` |
+| E-05 | Nessun duplicato reale; due istanze costruite con la stessa domanda lo sono | Corrispondenza esatta | passato | `03-pagina-di-spiegazione-errori.test.ts` |
+| E-06 | Il paragone reale è diverso dalla frase; un controfattuale identico verrebbe rilevato | Confermato — la correzione post-fase-1 (commit `3fc47f9`) regge | passato | `03-pagina-di-spiegazione-errori.test.ts` |
+| E-07 | Messaggio sostitutivo leggibile, linguaggio umano, non solo un'icona | Testo presente, nessun `<svg>`, nessuna parola tecnica («errore», «invalid»...) | passato | `03-pagina-di-spiegazione-errori.test.ts` |
+| CF-01 | 15 stringhe nuove conformi al lessico | `verificaInsieme` → `[]`, 15 chiavi confermate | passato | `03-pagina-di-spiegazione-conformita.test.ts` |
+| CF-02 | Nessun identificatore con radice vietata | Corrispondenza esatta sui 7 identificatori | passato | `03-pagina-di-spiegazione-conformita.test.ts` |
+| CF-03 | Il numero è la stessa chiamata al core, non un letterale | Corrispondenza esatta | passato | `03-pagina-di-spiegazione-conformita.test.ts` |
+| CF-04 | Il periodo non è dichiarato come certo | `periodoDaCompilare` vero, `periodoMancante` vero, riga condivisa presente | passato | `03-pagina-di-spiegazione-conformita.test.ts` |
+| CF-05 | Rosa solo sul blocco 8 | Solo `.spiegazione-non-fa` in `stiliSpiegazione.css`; le classi riusate non lo introducono | passato | `03-pagina-di-spiegazione-conformita.test.ts` |
+| CF-06 | Nessuna chiamata di rete nei 5 file | Nessun `fetch`/XHR/`import()` | passato | `03-pagina-di-spiegazione-conformita.test.ts` |
+| CF-07 | `src/core/` e `types/` non compaiono nel diff | **Verificato a occhio** (dichiarato dalla specifica stessa, non con vitest): `git show --stat` su `3106942` e `3fc47f9` — solo `app/src/ui/*` (più `docs/` non di questo agente nel primo commit, fuori da `src/core`/`types/`) | passato | n/a — verificato con `git show --stat 3106942 3fc47f9` |
+| CF-08 | I quattro stati, tutti individuati | Vuoto→CL-16, CL-01/CL-03[tipo]. In caricamento→nessun hook asincrono nel contenitore. Errore→E-01, E-03. Dati lunghi→CL-11, CL-14, CL-15 | passato (aggregazione) | `03-pagina-di-spiegazione-conformita-2.test.ts` (parte automatizzabile) + rimandi |
+| CF-09 | Corpo, interlinea, contrasto, larghezza, bersagli, niente hover-only, focus, tabulazione | Tutte le parti automatizzabili confermate (18px, 1.6 interlinea, contrasto rosa/viola ≥4,5:1 ricalcolato, `max-width` ≤70ch, `.passo-collegato` ≥44px con icona+testo, nessun `:hover`, nessun `outline:none`, nessun `tabIndex` positivo). **Non automatizzabile**: posizione sopra la piega — dichiarato già in fase 1, resta alla rilettura umana | passato (parziale) | `03-pagina-di-spiegazione-conformita-2.test.ts` |
+| CF-10 | La navigazione non cambia posizione | Stessa struttura di classi fra `inflazione-spesa` e `fonti` | passato | `03-pagina-di-spiegazione-conformita-2.test.ts` |
+| CF-11 | Nessun troncamento della domanda, richiamo | Richiama CL-11/CL-12, entrambi passati — non ripetuto | passato | n/a — richiama CL-11/CL-12 |
+| CF-12 | Un'istanza senza confini non è dichiarabile, richiamo | Richiama CL-01/CL-02, entrambi passati — non ripetuto | passato | n/a — richiama CL-01/CL-02 |
 
 ### Fallimenti
 
 *Che cosa è fallito, **con quale input**, e se è bloccante. Non si corregge il
 codice: si riporta.*
 
+- **C-07 — il percorso mostra due gradini, non tre. BLOCCANTE.** Input:
+  `renderToStaticMarkup(createElement(Navigazione, { rotta: { tipo:
+  'schermata', id: 'inflazione-spesa' }, passo: 'area1Altra1' }))`. Atteso:
+  «Pagina iniziale › Il costo della vita › Con gli stessi soldi della spesa,
+  quanto porto a casa rispetto a un anno fa?» (3 `<li>`). Ottenuto: «Pagina
+  iniziale › Con gli stessi soldi della spesa...» (2 `<li>`), il gradino
+  dell'area non compare mai. Causa: `Navigazione.tsx` (funzionalità 14),
+  `passoCorrente()` per `rotta.tipo === 'schermata'` restituisce **solo**
+  `passo` (un singolo `ChiaveStringaUtente`), mai una coppia
+  area+domanda — il breadcrumb per qualunque schermata ha sempre e solo 2
+  gradini, per costruzione. La specifica della `03` (sezione «Il percorso, e
+  il perché di un gradino in più») richiede esplicitamente 3 gradini per
+  questa pagina. Non è un difetto introdotto da `03`: `Navigazione.tsx`
+  appartiene alla `14` (registro delle schermate) e non è stato esteso per
+  gestire un secondo livello di percorso. Riguarda ogni pagina di
+  spiegazione futura (11, 12, le voci di 04/05/06), non solo l'istanza di
+  oggi. Non corretto: fuori dal mio perimetro (`src/`) e non è compito del
+  tester deciderne la soluzione — segnalato a `ui-builder`.
+
+  **Aggiornamento — già triagato dal pm.** `docs/backlog/registro.md`,
+  sezione «Il breadcrumb a due gradini — non una regressione» (commit
+  `ea8a990`), registra che `guardrail-officer` e `tester` hanno trovato
+  **indipendentemente** lo stesso scostamento, e chiarisce che **non è una
+  regressione della 14**: anche il commit precedente a quel refactor aveva
+  già solo due gradini — è uno scostamento fra ciò che la specifica `03`
+  promette e la navigazione preesistente, mai stato a tre livelli. Resta
+  bloccante per la promessa della `03`; la correzione (far imparare
+  all'area il proprio livello, o ritirare la promessa) è una decisione di
+  squadra, non mia.
+
+### Oltre i 44 casi — due scoperte, non previste in fase 1
+
+*`tests/accettazione/03-pagina-di-spiegazione-scoperte.test.ts`. Emerse
+scrivendo i test, leggendo `catalogoDomande.ts` per E-04/E-05: non sono
+identificativi della lista sopra, e sono riportate come fallimenti reali, non
+come casi mancanti.*
+
+- **La domanda di riferimento non è ancora un link nell'elenco della sua
+  area. BLOCCANTE.** Input: `domandeDiArea('costo-della-vita').find(v =>
+  v.chiave === 'area1Altra1')`. Atteso (specifica `03`, sezione «Conflitti di
+  pianificazione» — «vince il catalogo» — e doc-funzionale, passo 3: «sarà...
+  una delle prime dell'elenco a diventare un collegamento cliccabile»): stato
+  `con-schermata`, con `percorso: '#/spiegazione/inflazione-spesa'`. Ottenuto:
+  stato ancora `'in-arrivo'`. Conseguenza diretta, verificata in un secondo
+  test: `renderToStaticMarkup(createElement(PaginaMacrocategoria, { id:
+  'costo-della-vita' }))` non contiene
+  `href="#/spiegazione/inflazione-spesa"` — l'intera area «Il costo della
+  vita» mostra ancora la nota «nessuna domanda ha ancora una schermata»
+  (`areaNessunaSchermata`), sebbene la schermata esista davvero e sia
+  raggiungibile per indirizzo diretto (C-01, verde). La pagina di
+  riferimento **non è raggiungibile dal percorso a tre tocchi** che la
+  specifica promette come dimostrazione («in demo, dieci secondi»): lo è
+  solo digitando l'indirizzo a mano. Causa: `catalogoDomande.ts` (di `02`)
+  non è stato aggiornato da questa funzionalità — la riga che sposta
+  `area1Altra1` a `con-schermata` non è mai stata scritta, nonostante `02`
+  fosse già entrata prima di `03` (l'ordine che la specifica stessa dichiara
+  «vince il catalogo»). Confermato che `03` non ha toccato
+  `catalogoDomande.ts` (CF-07: il file non compare nei commit `3106942` /
+  `3fc47f9`). Non corretto: `catalogoDomande.ts` non è nel mio perimetro —
+  segnalato a `ui-builder`.
+
 ### Non coperti
 
 *Ogni caso non implementabile, **con il motivo**. Un buco dichiarato vale più
 di un test finto che passa, e alimenta i limiti dichiarati del prodotto.*
+
+Nessuno dei 44 casi è stato marcato non coperto. Due casi che la nota
+introduttiva segnalava come possibilmente non implementabili si sono rivelati
+implementabili per davvero, ed è registrato come divergenza qui sotto: E-03
+(l'errore del core è raggiungibile con un ingresso costruito) e CL-18 (non è
+più un caso di struttura, è migrato a un caso di tipo). L'unica parte
+davvero non automatizzabile è dentro CF-09 (il posizionamento sopra la
+piega), già dichiarata non coperta in fase 1 e confermata tale qui, ma non
+vale come caso a sé: è una frazione di un caso perlopiù coperto.
+
+### Divergenze fra fase 1 e fase 2
+
+*La nota introduttiva di questo documento elencava quattro punti aperti.
+Ecco come si sono chiusi, e due divergenze in più trovate scrivendo i test.*
+
+1. **CL-18 è migrato da caso di struttura a caso di tipo.** `ui-builder` ha
+   dichiarato `passi: PassiSuccessivi`, un'unione di tuple di lunghezza 0, 1,
+   2 — non l'array libero che la specifica mostrava. Un terzo elemento non
+   compila: miglioramento, non difetto. Spostato in `03-pagina-di-spiegazione
+   -tipi.ts`.
+2. **E-02 è la forma a runtime**, come anticipato in una delle due ipotesi:
+   `PassoSuccessivo.percorso` è `string`, non un'unione chiusa sulle rotte —
+   scelta deliberata (commento nel codice: dalla `14` le schermate si
+   scoprono a runtime, un elenco chiuso richiederebbe manutenzione a mano).
+3. **E-03 è raggiungibile**, contrariamente al sospetto che fosse il caso più
+   probabile da marcare non coperto: `calcolaEsempio` accetta qualunque
+   `EsempioNumerico` costruito, e un ingresso con `risparmioCent: 0` fa
+   rifiutare `simulaRisparmio` con `'somma-a-zero'`. Non è un'istanza finta:
+   è lo stesso meccanismo che varrebbe per un'istanza futura scritta male.
+4. **CL-11/CL-12: 98 caratteri, non 103.** La fase 1 stimava la lunghezza di
+   `area2Altra2` senza leggere il codice (per mandato). Il conteggio reale è
+   98 — resta comunque la più lunga delle diciotto domande dichiarate oggi
+   (la seconda è `area3Altra5`, 96). Non cambia l'esito del caso, solo il
+   numero nel commento.
+5. **E-06 ora è verificabile davvero**, come segnalato nell'istruzione di
+   fase 2: il commit `3fc47f9` ha sostituito il paragone che ripeteva
+   `{valore}` con `{perdita}` — un campo diverso dello stesso `Esito`. Il
+   test include un controfattuale (`paragone: frase`) per dimostrare che
+   l'assegno tornerebbe a fallire se la correzione venisse persa.
+6. **Due scoperte non previste** (percorso a tre gradini mai raggiungibile
+   dall'elenco, catalogo non aggiornato) — vedi sopra.
