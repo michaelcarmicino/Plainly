@@ -36,7 +36,7 @@ export const STRINGHE_FONTI = {
 
   // --- I quattro stati: vuoto, righe da completare, riga rotta ------------
   fontiVuoto:
-    'Qui compariranno i numeri usati in questo sito, uno per uno, con chi li dice e da quando. Al momento non ce n\'è ancora nessuno da mostrare.',
+    'Qui compariranno i numeri usati in questo sito, uno per uno: chi li dice e da quando. Li aggiunge una persona a mano, un numero alla volta — al momento non ce n\'è ancora nessuno da mostrare.',
   fontiNessunaCompleta:
     'Per nessuno dei numeri qui sotto la provenienza è ancora completa: a ciascuno manca almeno un pezzo, indicato riga per riga.',
   fontiErroreRiga:
@@ -48,5 +48,5 @@ export const STRINGHE_FONTI = {
   // --- Il confine, dichiarato a schermo ------------------------------------
   fontiLimitiTitolo: 'Che cosa questa pagina non fa',
   fontiLimiteAggiornamento:
-    'Questa pagina non aggiorna niente da sola: ogni numero cambia solo quando una persona lo scrive di nuovo a mano. Al posto di una cadenza promessa trovi la data in cui ciascun numero è stato scritto qui.',
+    'Questa pagina non aggiorna niente da sola: ogni numero cambia solo quando una persona lo scrive di nuovo a mano. Al posto di una data fissata in anticipo per il prossimo aggiornamento, trovi la data in cui ciascun numero è stato scritto qui.',
 } as const satisfies Record<string, string>;

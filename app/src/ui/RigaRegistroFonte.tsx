@@ -13,9 +13,10 @@
  *
  * La riga arriva per id, non già come oggetto in mano: passa da `fonteDi`,
  * come il valore passa da `esitoTestoValore` (che a sua volta passa da
- * `valoreBpDiRiga`). Un id sconosciuto o un'unità incoerente non fanno
- * sparire la riga: restano al loro posto, con una frase da persona al posto
- * del dato che non torna.
+ * `valoreBpDiRiga`) e la data scritta a mano da `dataInLettere`. Un id
+ * sconosciuto, un'unità incoerente o una data non leggibile non fanno
+ * sparire la riga né la pagina intera: restano al loro posto, con una frase
+ * da persona al posto del dato che non torna.
  */
 
 import type { ReactElement } from 'react';
@@ -43,6 +44,10 @@ export function RigaRegistroFonte({ id }: { id: string }): ReactElement {
   // Mai a confronto di stringhe scritte qui: la riga dichiara da sola,
   // tramite i suoi campi, se manca ancora qualcosa da poter controllare.
   const provenienzaDaCompletare = !provenienzaCompleta(riga);
+  // null quando dataInserimento non ha la forma attesa: un errore di
+  // battitura su una riga scritta a mano, non raggiungibile con il registro
+  // di oggi ma possibile appena 08 e 10 ne aggiungono altre.
+  const dataScritta = dataInLettere(riga.dataInserimento);
 
   return (
     <article className="riga-fonte">
@@ -96,7 +101,11 @@ export function RigaRegistroFonte({ id }: { id: string }): ReactElement {
       </div>
 
       <p className="riga-fonte-inserito">
-        <Testo chiave="fontiInserito" valori={{ data: dataInLettere(riga.dataInserimento) }} />
+        {dataScritta === null ? (
+          <Testo chiave="fontiErroreRiga" />
+        ) : (
+          <Testo chiave="fontiInserito" valori={{ data: dataScritta }} />
+        )}
       </p>
     </article>
   );
