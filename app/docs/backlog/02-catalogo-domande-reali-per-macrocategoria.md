@@ -1,5 +1,5 @@
 id: 02-catalogo-domande-reali-per-macrocategoria
-stato: da-fare
+stato: fatto
 directory: src/ui/, src/guardrails/, tests/
 dipende-da:
 note: impronta ricavata da docs/features/02-catalogo-domande-reali-per-macrocategoria.md
