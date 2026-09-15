@@ -27,7 +27,7 @@ const STATI = {
 };
 
 /** Estrae il corpo di una sezione `### Titolo` fino alla successiva. */
-function sezione(testo, titolo) {
+function sezione(testo, titolo, { prefissoConsentito = false } = {}) {
   // `\Z` NON è un token di regex in JavaScript: nella stringa costruita da
   // questo template diventa il carattere letterale 'Z', e con il flag 'i'
   // anche 'z' minuscola — quindi il testo veniva troncato alla prima 'z'
@@ -36,7 +36,27 @@ function sezione(testo, titolo) {
   // resta da leggere, e funziona invariata sotto il flag 'm'. Il flag 'i' è
   // stato tolto perché non serve: i titoli passati qui sotto compaiono nei
   // file sorgente sempre con la stessa capitalizzazione (verificato).
-  const re = new RegExp(`^###\\s+${titolo}\\s*$([\\s\\S]*?)(?=^###\\s|^##\\s|(?![\\s\\S]))`, 'm');
+  //
+  // `prefissoConsentito` esiste per una sola chiamata, «Divergenze»: il
+  // titolo del template è «Divergenze fra previsto e realizzato», ma la
+  // scheda 01 fu scritta «Divergenze» da sola, prima che la convenzione si
+  // fissasse — con match esatto quella sezione non veniva mai trovata per
+  // nessuna scheda che seguisse il template. Le altre sezioni restano a
+  // match esatto di proposito: «Limiti» sciolto da «previsti» comparirebbe
+  // come prefisso anche di intestazioni che non c'entrano (es. «Limiti dei
+  // campi digitati» nella 10), e un match troppo permissivo pescherebbe il
+  // contenuto sbagliato.
+  //
+  // Il suffisso usa `[ \t]`, non `\s`: `\s` include l'a-capo, e una prima
+  // stesura di questo fix — scartata prima di applicarla, durante la verifica
+  // su contenuto vero — lasciava che il gruppo opzionale mangiasse la riga
+  // vuota dopo il titolo e iniziasse a consumare la prima riga del corpo come
+  // se fosse ancora dentro l'intestazione.
+  const suffisso = prefissoConsentito ? '(?:[ \\t]+\\S[^\\n]*)?' : '';
+  const re = new RegExp(
+    `^###\\s+${titolo}${suffisso}\\s*$([\\s\\S]*?)(?=^###\\s|^##\\s|(?![\\s\\S]))`,
+    'm',
+  );
   const m = testo.match(re);
   return m ? m[1].trim() : '';
 }
@@ -50,7 +70,16 @@ function leggiFunzionalita() {
       const percorso = join(FEATURES, file);
       const testo = readFileSync(percorso, 'utf8').replace(/\r\n/g, '\n');
       const titolo = (testo.match(/^#\s+(.+)$/m) ?? [, file.replace(/\.md$/, '')])[1].trim();
-      const stato = (testo.match(/Stato:\s*\*\*(.+?)\*\*/i) ?? [, 'in sviluppo'])[1]
+      // Senza `g` questo prendeva SEMPRE il primo «Stato: **...**» del file:
+      // quello scritto da `/spec` in cima («proposta», «approvata»), mai
+      // quello che `doc-funzionale` aggiunge più in basso sotto «Previsto» o
+      // «Verificato». Risultato: ogni scheda restava «in sviluppo» per
+      // sempre anche a fase 2 conclusa — l'indice contava «implementate: 0»
+      // con la 01 già implementata da tempo. Le righe «Stato:» si aggiungono
+      // in ordine di avanzamento (spec, poi Previsto, poi Verificato):
+      // l'ultima nel file è sempre la più avanzata.
+      const statiTrovati = [...testo.matchAll(/Stato:\s*\*\*(.+?)\*\*/gi)];
+      const stato = (statiTrovati.length ? statiTrovati[statiTrovati.length - 1][1] : 'in sviluppo')
         .trim()
         .toLowerCase();
 
@@ -70,7 +99,7 @@ function leggiFunzionalita() {
         perChi: sezione(blocco, 'Per chi') || sezione(testo, 'Per chi'),
         comeSiProva: sezione(blocco, 'Come si prova') || sezione(testo, 'Come si proverà'),
         limiti: sezione(blocco, 'Limiti') || sezione(testo, 'Limiti previsti'),
-        divergenze: sezione(testo, 'Divergenze'),
+        divergenze: sezione(testo, 'Divergenze', { prefissoConsentito: true }),
         modificato: statSync(percorso).mtime,
       };
     });
