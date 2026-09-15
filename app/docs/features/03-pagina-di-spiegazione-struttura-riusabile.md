@@ -655,22 +655,385 @@ nel passo 15, segnalati come tali invece di far finta che si vedano a schermo.
 letto codice e test ed **eseguito** i passi qui sopra. **Tutto al presente**:
 solo ciò che è stato confermato.*
 
-*Finché questa sezione non esiste, la funzionalità non è riconciliata e
-`/verifica` non la accetta come `implementato`.*
+> Stato: **implementato** · fase 2 eseguita il 2026-09-15 (16:00-16:14) aprendo
+> `src/ui/contenutiSpiegazione.ts`, `PaginaSpiegazione.tsx`,
+> `BloccoEsempioSpiegazione.tsx`, `spiegazioneEsempio.ts`, `testiSpiegazione.ts`,
+> `stiliSpiegazione.css`, `schermate/03-spiegazione-inflazione-spesa.ts`,
+> `catalogoDomande.ts`, `Navigazione.tsx`, `rotte.ts` e `testi.ts`, e
+> **rieseguendo** i 15 passi di fase 1 con un browser vero pilotato (Chromium
+> via Playwright, non a occhio): server di sviluppo, markup prodotto da
+> `renderToStaticMarkup`, build di produzione servita da un server locale su
+> loopback, e apertura diretta di `dist/index.html`.
+>
+> **Undici passi su quindici danno il risultato atteso alla lettera. Due non lo
+> danno per un difetto reale ma non di questa scheda, uno lo dà solo in parte
+> per una svista di fase 1, e il quindicesimo (i criteri non verificabili a
+> schermo) è ora confermato da test dedicati che non esistevano quando la fase
+> 1 è stata scritta.** Dettaglio passo per passo sotto «Come si prova», causa e
+> classificazione in «Divergenze».
+>
+> **Un fatto rilevante per chi legge questa scheda oggi:** mentre eseguivo
+> questa riconciliazione, `guardrail-officer` ha scritto
+> `tests/spiegazione.test.ts` e `tests/spiegazione-css.test.ts`, e `tester` ha
+> scritto `tests/accettazione/03-pagina-di-spiegazione*.test.ts` e
+> `tests/accettazione/03-pagina-di-spiegazione-tipi.ts` — **in parallelo**, non
+> prima. Alla chiusura di questa scheda (2026-09-15 16:14) questi file
+> risultano **non ancora committati** (`git status` li mostra `??`). Ne ho letto
+> il contenuto e ne ho rieseguito i test perché sono uno dei fatti osservabili
+> sul codice in questo momento, ma la lacuna che descrivevano — nessun test
+> automatico per questa funzionalità — è reale ed è durata dall'apertura del
+> primo commit di `03` fino a questo momento, non da prima. Il referto del
+> `tester` (`docs/test/03-pagina-di-spiegazione.md`, sezione «Referto») è
+> ancora vuoto a questa data: la sua fase 2 non è la mia, e non la dichiaro qui.
 
 ### Cosa fa
 
-«…»
+Toccando `#/spiegazione/inflazione-spesa` compare una pagina intera, non più
+testo morto. In cima, in maiuscolo con lettere spaziate, «IL COSTO DELLA VITA»
+(la classe `.occhiello` applica `text-transform: uppercase` al testo dichiarato
+«Il costo della vita»); subito sotto, come titolo, esattamente la stessa
+domanda già letta nell'elenco dell'area — «Con gli stessi soldi della spesa,
+quanto porto a casa rispetto a un anno fa?», carattere per carattere, confermato
+confrontando il markup con la costante `area1Altra1` di `testi.ts`.
+
+Poi tre frasi sul carrello della spesa, **e solo dopo di loro** — mai prima,
+confermato sul DOM del browser, sul markup prodotto da `renderToStaticMarkup` e
+da un'asserzione dedicata di `tests/spiegazione.test.ts` che confronta le
+posizioni nel markup reso, non l'ordine dei campi dichiarati — la frase «Quella
+differenza ha un nome: si chiama inflazione.». Il componente impone quest'ordine
+per costruzione: nessun punto del codice permette a un'istanza di invertirlo.
+
+Poi un numero solo, **98,04 €**, allineato a destra con cifre tabulari
+(`font-variant-numeric: tabular-nums`, misurato con `getComputedStyle`), e
+accanto il suo paragone: «Fra le due cifre c'è una differenza di 1,96 €: i
+100 € sono ancora tutti lì, ma portano a casa meno roba di prima.» — un numero
+diverso dalla cifra grande, non una sua ripetizione (la specifica lo richiedeva
+esplicitamente dopo un difetto trovato e corretto il giorno stesso, commit
+`3fc47f9`). Il numero non è scritto a mano: `spiegazioneEsempio.ts` lo chiede a
+`simulaRisparmio` del core con l'ingresso fisso (10.000 cent, 1 anno, 200 bp) e
+stampa la risposta con `formattaEuro`.
+
+Subito sotto, la fonte: il conto parte da un aumento dei prezzi del 2,00%
+l'anno, dichiarato come «un valore medio scritto a mano dentro il sito e non
+preso da internet»; una riga onesta dice che il periodo su cui è calcolata
+quella media non è ancora stato stabilito (stesso comportamento della
+schermata dei risparmi, `07`, perché la fonte è la stessa costante
+`INFLAZIONE_DICHIARATA`); un'ultima riga avverte che non è una previsione. In
+nessun punto della pagina compare la parola «ISTAT» — vedi «Divergenze», punto
+4.
+
+In fondo, sempre come ultimo blocco della pagina (`.spiegazione.lastElementChild
+=== .limiti-schermata`, confermato via DOM), due righe in rosa `#FF50A0`
+dicono che cosa questa pagina non fa. Passata in rassegna ogni riga di testo
+della pagina per colore computato, quel rosa compare **soltanto** lì — nessun
+titolo, bordo o sfondo lo usa altrove — confermato sia a runtime (Playwright)
+sia staticamente su `stiliSpiegazione.css` (`tests/spiegazione-css.test.ts`,
+nuovo).
+
+L'istanza di riferimento non dichiara alcun rimando (`passi: []`): il blocco 7
+non compare affatto, non come sezione vuota.
+
+Oggi, però, **questa pagina si raggiunge solo scrivendo l'indirizzo a mano**:
+dall'elenco della sua area la domanda resta testo semplice con la nota «La
+schermata che risponde a questa domanda non c'è ancora.», perché
+`catalogoDomande.ts` non è stato aggiornato a `stato: 'con-schermata'`. Il
+percorso di navigazione mostra due gradini, non tre. Entrambi i fatti sono
+divergenze dal previsto — vedi sotto — e non sono stati corretti qui: non è
+questo il file dell'agente che li deve correggere.
 
 ### Come si prova
 
-«…»
+I 15 passi di fase 1, eseguiti il 2026-09-15 da `app/` con un browser pilotato
+(Playwright/Chromium), non a occhio. Accanto a ciascuno, ciò che è successo
+davvero.
+
+1. **Preparare l'ambiente.** Non ho rilanciato `/prepara` da zero (il server
+   era già attivo, come dichiarato nel compito): ho verificato l'equivalente
+   sostanziale, `npx tsc --noEmit` e `npm test`, più volte durante questa
+   riconciliazione. Risultato in «Divergenze», punto 3: non sempre verde, e il
+   motivo non è mai un file di questa funzionalità. ✅ (con la nota)
+
+2. **Avviare l'applicazione.** `node scripts/dev-server.mjs status` risponde
+   «attivo · http://localhost:5173 · pid 580»: non ho dovuto avviarlo. ✅
+
+3. **Dalla home alla domanda, non alla pagina direttamente — questo passo non
+   dà il risultato atteso.** Dalla home, il click sulla card «Il costo della
+   vita» porta davvero a `#/costo-della-vita` (href `#/costo-della-vita`,
+   confermato). Ma nell'elenco dell'area la domanda **non è un collegamento**:
+   resta un paragrafo di testo con sotto la nota «La schermata che risponde a
+   questa domanda non c'è ancora.» — la stessa frase che compare per ogni
+   domanda ancora senza pagina. Navigando invece direttamente all'indirizzo
+   `#/spiegazione/inflazione-spesa`, la pagina si apre correttamente. ❌ per la
+   lettera del passo («toccare la domanda» apre la pagina); ✅ per la
+   sostanza (la pagina esiste e funziona, raggiunta per indirizzo). Causa e
+   classificazione in «Divergenze», punto 2.
+
+4. **Il percorso in cima, di tre gradini — questo passo non dà il risultato
+   atteso.** La barra di navigazione mostra **due** gradini — «Pagina
+   iniziale» e, come corrente, la domanda stessa — non tre: manca il gradino
+   intermedio con il nome dell'area. Confermato leggendo `Navigazione.tsx`
+   (per `rotta.tipo === 'schermata'` il gradino corrente è solo `passoSchermata`,
+   senza un livello per l'area) e sulla barra resa a schermo. **Ora anche
+   confermato da un test automatico**, comparso durante questa stessa
+   riconciliazione: `tests/accettazione/03-pagina-di-spiegazione.test.ts`,
+   caso C-07, fallisce con `expected 2 to be 3`, e il commento del test stesso
+   lo classifica: «difetto reale del codice (non del test): riportato nel
+   referto come bloccante, non corretto qui». ❌. Causa in «Divergenze», punto
+   1.
+
+5. **I primi due blocchi.** Confermato: `.occhiello` mostra «IL COSTO DELLA
+   VITA» (maiuscolo per CSS, testo dichiarato «Il costo della vita»);
+   `.spiegazione-titolo` mostra, carattere per carattere, la stessa domanda
+   già letta nell'elenco. ✅
+
+6. **L'immagine prima del nome tecnico — il criterio più importante di
+   tutti.** Confermato in tre modi indipendenti: sul DOM del browser
+   (`compareDocumentPosition`, l'ultima frase-immagine precede il nome
+   tecnico), sul markup prodotto da `renderToStaticMarkup` (stessa
+   posizione relativa, verificato anche eseguendo il componente con
+   `vite-node`), e da `tests/spiegazione.test.ts`
+   («per ogni pagina con nomeTecnico, l'ultima immagine precede sempre il
+   nome tecnico»). Mai il nome tecnico compare per primo. ✅
+
+7. **Il numero e il suo paragone.** Confermato: «98,04 €», `text-align:
+   right`, `font-variant-numeric: tabular-nums`; accanto, il paragone
+   «Fra le due cifre c'è una differenza di 1,96 €…» — un numero diverso, non
+   una ripetizione. ✅
+
+8. **Da dove viene quel numero — confermato, con una precisazione rispetto
+   a fase 1.** La riga sulla fonte, l'avvertenza «non è una previsione», e la
+   dichiarazione onesta che il periodo della media non è ancora stabilito
+   compaiono tutte. **Non compare, però, la parola «ISTAT»**, che la fase 1
+   dava per attesa: né questa pagina né la schermata analoga dei risparmi
+   (`07`, stessa fonte `INFLAZIONE_DICHIARATA`) la nominano in quel punto — dicono
+   solo che è «un valore scritto a mano dentro il sito, non preso da
+   internet». Il nome della fonte compare, letteralmente, solo nella pagina
+   dedicata «da dove vengono i numeri» (`13`). ✅ per la sostanza (fonte,
+   periodo, avvertenza dichiarati); imprecisione di fase 1 in «Divergenze»,
+   punto 4.
+
+9. **Il blocco dei limiti, sempre in fondo e sempre in rosa.** Confermato: due
+   voci, colore computato `rgb(255, 80, 160)` = `#FF50A0`, ultimo blocco
+   della pagina (`lastElementChild`); nessun altro elemento di testo della
+   pagina usa quel colore (verificato interrogando ogni nodo foglia dentro
+   `.spiegazione`), confermato anche staticamente su `stiliSpiegazione.css`
+   da `tests/spiegazione-css.test.ts`, comparso durante questa
+   riconciliazione. ✅
+
+10. **Il ritorno.** «Indietro» riporta a `#/costo-della-vita`, la stessa
+    posizione di navigazione delle altre pagine. ✅
+
+11. **Nessuna attesa, nessun salto di layout.** Aprendo direttamente
+    l'indirizzo con `waitUntil: 'commit'` (il minimo che Playwright permette),
+    la cifra «98,04 €» è già presente al primo controllo: nessuna rotellina,
+    nessun ricalcolo successivo. ✅
+
+12. **Da tastiera e a 375 px.** Nessuno scorrimento orizzontale
+    (`scrollWidth` = `innerWidth` = 375); il contenuto (occhiello, titolo,
+    cifra, numero di voci del blocco 8) è identico al disegno desktop;
+    nessuna scritta sotto i 16 px (misurate 18 px, 18,9 px, 19,125 px — tutte
+    sopra il minimo). Con solo Tab si raggiungono, in sequenza, «Pagina
+    iniziale» e «Indietro» — i due soli elementi cliccabili di questa
+    istanza, dato `passi: []` — ciascuno con un contorno di 3 px `#FF50A0`
+    ben visibile (`:focus-visible`, regola globale del sito). ✅
+
+13. **Con il Wi-Fi spento — questo passo non dà il risultato atteso alla
+    lettera.** `npm run build` finisce senza errori (`index.html` 0,50 kB,
+    CSS 9,97 kB, JS 183,99 kB). Servita da un server locale — verificato sia
+    con il server di sviluppo sia con un piccolo server statico scritto per
+    l'occasione su `127.0.0.1:4321` — la build funziona in modo identico:
+    stesso contenuto (occhiello, titolo, cifra, paragone, numero di voci del
+    blocco 8), **zero richieste diverse da quelle verso l'host che la
+    serve**. **Aperta con un doppio clic reale su `dist/index.html`, cioè
+    `file://`, la pagina resta bianca**: `<script type="module"
+    crossorigin>` e `<link rel="stylesheet" crossorigin>` vengono bloccati
+    dal browser sotto l'origine `null` di `file://` (confermato leggendo
+    gli eventi `console`/`requestfailed`: «Access to script… blocked by CORS
+    policy… origin 'null'»). **Non è un difetto nuovo**: è lo stesso,
+    identico problema già trovato e registrato in `01-landing-page` (passo
+    8), e ritrovato identico in `02`, `07`, `09`, `13`. ❌ per la lettera del
+    passo; ✅ per la sostanza che il passo voleva provare (funziona offline,
+    zero richieste di rete). Causa in «Divergenze», punto 5.
+
+14. **Nessuna regressione sulle domande senza pagina.** L'area «Il lavoro»
+    mostra ancora le sue sei voci, tutte con la nota «in arrivo» invariata:
+    l'arrivo di questa pagina non ne cambia una. ✅
+
+15. **Ciò che nessun clic può dimostrare — verificato leggendo il codice e
+    (novità rispetto a fase 1) da test comparsi durante questa stessa
+    riconciliazione.**
+    - **Blocco 7 assente quando `passi: []`.** Confermato a schermo (nessuna
+      sezione, non una sezione vuota) e ora anche da
+      `tests/spiegazione.test.ts` indirettamente tramite il vincolo 5⇔6; il
+      caso specifico «passi vuoto» resta confermato leggendo
+      `BloccoPassi` in `PaginaSpiegazione.tsx` (`if (passi.length === 0)
+      return null;`).
+    - **Esempio `null` → blocchi 5 e 6 assenti.** Non più solo una lettura
+      del tipo: `tests/spiegazione.test.ts` lo esercita a runtime («senza
+      esempio (esempio: null), non compaiono né la cifra né la fonte») e
+      passa.
+    - **Stato «errore» (`ok: false`) → nessuna cifra, blocco fonte
+      assente.** Esercitato a runtime da `tests/spiegazione.test.ts»
+      («con un esempio che il core rifiuta…»), che passa: `BloccoEsempio`
+      mostra la riga condivisa «Qualcosa in questo conto non torna…» al
+      posto del numero, `BloccoFonte` non stampa nulla (`renderToStaticMarkup`
+      restituisce `''`).
+    - **Caso «dati lunghi» (103 caratteri, sei voci, importo a sette
+      cifre).** Non esercitato dall'istanza di riferimento. Il `tester` ha
+      scritto, durante questa stessa finestra di tempo,
+      `tests/accettazione/03-pagina-di-spiegazione-limite.test.ts` e
+      `…-limite-2.test.ts`; quest'ultimo, al momento di chiudere questa
+      scheda, non compila ancora (`tsc --noEmit` segnala una proprietà
+      `nonFa` mancante) — è un file evidentemente ancora in scrittura. Non
+      verificato da questa scheda: resta un caso di struttura CSS
+      dichiarata (`stiliSpiegazione.css`), non messo alla prova con
+      un'istanza reale a sette cifre.
+    - **Le due tuple non vuote (`immagine`, `nonFa`) e i due campi singolari
+      (`nomeTecnico`, `esempio`).** Confermati leggendo i tipi in
+      `contenutiSpiegazione.ts`, e ora anche da
+      `tests/accettazione/03-pagina-di-spiegazione-tipi.ts` (CL-01…CL-08),
+      che con `@ts-expect-error` dimostra che `tsc --noEmit` rifiuta
+      un'istanza priva di uno di questi campi o con una tupla vuota — file
+      apparso durante questa riconciliazione, eseguito con successo
+      (nessun errore residuo sui suoi otto casi).
+    - **L'ordine «immagine prima del nome tecnico» deciso dal componente.**
+      Confermato sul markup reso (punto 6 qui sopra), non sull'ordine dei
+      campi dichiarati.
+    - **In più, non previsto da fase 1: «al massimo due passi» è ora un
+      vincolo di TIPO**, non solo un test a runtime. `contenutiSpiegazione.ts`
+      dichiara `PassiSuccessivi` come unione chiusa di tuple di lunghezza 0,
+      1, 2 — un miglioramento rispetto a quanto la specifica descriveva
+      («un array libero, verificato da un test»), confermato anche dal caso
+      CL-18 del `tester`. Resta invece un test a runtime, non un vincolo di
+      tipo, che ogni `percorso` dichiarato sia una rotta realmente
+      registrata: imporlo nel tipo richiederebbe l'elenco a mano che la
+      funzionalità 14 ha eliminato — confermato leggendo il commento su
+      `PassoSuccessivo` in `contenutiSpiegazione.ts`.
 
 ### Limiti
 
-«…»
+- **Non scrive i contenuti delle altre pagine.** Consegna il contenitore
+  (`PaginaSpiegazione.tsx`, `contenutiSpiegazione.ts`) e una sola istanza,
+  quella sull'inflazione: confermato, `PAGINE_SPIEGAZIONE` ha un solo
+  elemento.
+- **Non è una ricerca interna e non ha un campo di domanda libera.**
+  Confermato: il titolo è la chiave `domanda`, letta da `testi.ts`, mai un
+  valore digitato.
+- **Non prende niente dalla rete.** Confermato al passo 13: zero richieste
+  diverse da quelle verso l'host che serve la pagina, sia in sviluppo sia
+  dalla build.
+- **Non aggiunge nessuna funzione al core e non tocca `types/`.** Confermato:
+  `spiegazioneEsempio.ts` chiama `simulaRisparmio`, già scritta per la `07`;
+  nessun file di questa funzionalità è sotto `src/core/` o `types/` (`git
+  show --stat` sui due commit di questa funzionalità, `3106942` e
+  `3fc47f9`, mostra solo file sotto `src/ui/` e due file di `docs/`).
+- **Non riscrive le dodici domande della `01`.** Confermato: `domanda:
+  'area1Altra1'` legge una chiave già esistente in `testi.ts`, non ne
+  dichiara una nuova.
+- **Non risolve il periodo mancante del tasso d'inflazione.** Confermato:
+  stessa dichiarazione esplicita già presente nella schermata dei risparmi,
+  perché la fonte è la stessa costante `INFLAZIONE_DICHIARATA`
+  (`periodoDaCompilare` resta vero).
+- **Non decide da sola l'ordine fra `02` e `03`: qui vince il catalogo, ma
+  il catalogo non è stato aggiornato.** La `02` è già entrata (esiste
+  `catalogoDomande.ts`, con `domandeDiArea` già usato da
+  `PaginaMacrocategoria.tsx`): per la regola di risoluzione dichiarata nella
+  specifica, la `03` avrebbe dovuto scrivere `stato: 'con-schermata'` e
+  `percorso` sulla voce `area1Altra1`. Non l'ha fatto — vedi «Divergenze»,
+  punto 2 — quindi oggi questo non è (solo) un limite previsto ma anche una
+  divergenza: la pagina esiste ma non è raggiungibile dal catalogo.
+- **Il collegamento fra domanda e pagina, quando esisterà nel catalogo, non
+  aggiungerà un secondo modo di navigare**: resterà sempre un tocco sulla
+  stessa voce dell'elenco, non un percorso alternativo.
 
 ### Divergenze fra previsto e realizzato
 
-«Ogni scostamento, con il motivo. Si segnalano, non si appianano: riscrivere la
-previsione per farla combaciare con il risultato rende inutile l'esercizio.»
+1. **Il percorso di navigazione ha due gradini, non tre.** La fase 1 (e la
+   specifica) prevedevano «Pagina iniziale › Il costo della vita › la
+   domanda». `Navigazione.tsx`, per una rotta di tipo `'schermata'`, mostra
+   solo il gradino corrente (`passoSchermata`, risolto dal registro) accanto
+   a «Pagina iniziale»: manca un livello per il nome dell'area. **Confermato
+   da un test automatico** apparso durante questa stessa riconciliazione
+   (`tests/accettazione/03-pagina-di-spiegazione.test.ts`, C-07,
+   `expected 2 to be 3`), il cui stesso commento lo classifica «difetto
+   reale del codice (non del test)… bloccante». **Non corretto qui**:
+   `Navigazione.tsx` non è dentro il perimetro di questo agente (`docs/`), e
+   la specifica lo elencava fra gli «innesti minimi» di `03-ui-builder` — chi
+   ha costruito la funzionalità non l'ha esteso a un terzo gradino.
+
+2. **Il collegamento «domanda → pagina» nel catalogo non è stato scritto.**
+   La specifica, alla sezione «Conflitti di pianificazione», stabiliva che se
+   la `02` fosse entrata prima (ed è entrata: `catalogoDomande.ts` esiste ed
+   è usato da `PaginaMacrocategoria.tsx`), la `03` avrebbe dovuto scrivere
+   `stato: 'con-schermata'` e `percorso: '#/spiegazione/inflazione-spesa'`
+   sulla voce `area1Altra1`. La voce, confermato leggendo
+   `catalogoDomande.ts`, è rimasta `{ chiave: 'area1Altra1', area:
+   'costo-della-vita', stato: 'in-arrivo' }`. Conseguenza osservabile: dalla
+   home la domanda resta testo con la nota «La schermata che risponde a
+   questa domanda non c'è ancora.» — la stessa di una domanda senza
+   nessuna pagina — mentre una pagina vera esiste e funziona a un indirizzo
+   diretto. **Non corretto qui**: `catalogoDomande.ts` è sotto `src/ui/`, non
+   sotto `docs/`.
+
+3. **Il file di test promesso dalla specifica non esisteva quando questa
+   fase 2 è iniziata, ed è comparso mentre la scrivevo.** La sezione «Come
+   si dimostra che ha funzionato» della specifica promette
+   `tests/spiegazione.test.ts`, assegnato a `guardrail-officer`. All'inizio
+   di questa riconciliazione (`npm test`, 15:55) la suite contava 195 test
+   in 25 file: **nessuno** relativo a questa funzionalità. Rieseguendo la
+   stessa suite alle 16:03 e alle 16:10, comparivano
+   `tests/spiegazione.test.ts`, `tests/spiegazione-css.test.ts` (di
+   `guardrail-officer`) e `tests/accettazione/03-pagina-di-spiegazione*.test.ts`
+   più `…-tipi.ts` (di `tester`) — tutti non ancora committati
+   (`git status`, 2026-09-15 16:14, li mostra `??`). Il vuoto descritto è
+   reale ed è durato dall'apertura della funzionalità fino a questo momento;
+   non lo dichiaro chiuso perché non lo era quando ho iniziato a verificare,
+   e perché i file più recenti (`…-limite-2.test.ts`) non compilano ancora a
+   questa data. **Non è un difetto di questa scheda**: è cronaca di ciò che
+   ho osservato, riportata perché chi legge deve saperlo senza cercare
+   altrove.
+
+4. **Imprecisione di fase 1: la fonte non nomina «ISTAT» in questa
+   pagina.** Il passo 8 di fase 1 prevedeva che comparisse «la fonte —
+   ISTAT, la stessa già letta sotto il simulatore dei risparmi». Verificato
+   che né questa pagina né quella dei risparmi (`07`) nominano «ISTAT» in
+   quel punto: entrambe dicono solo che il tasso è «un valore scritto a mano
+   dentro il sito, non preso da internet» (`spiegazioneInflazioneSpesaFonte`,
+   `simulazioneRisparmioFonte`). «ISTAT» compare, come stringa letterale,
+   solo nella pagina dedicata `13` e nel registro `registroFonti.ts`. Non è
+   un difetto della `03`: è che fase 1 attribuiva a questa pagina un
+   dettaglio testuale che la specifica non prometteva e che nessuna delle
+   due pagine analoghe realizza.
+
+5. **Passo 13 — «con il Wi-Fi spento» non dà, alla lettera, il risultato
+   previsto.** Un doppio clic reale su `dist/index.html` produce una pagina
+   bianca: gli attributi `type="module" crossorigin` generati dalla build
+   sono bloccati dal browser sotto l'origine `null` di `file://`. **Non è un
+   difetto nuovo**: è lo stesso, identico problema già trovato e registrato
+   in `01-landing-page` (passo 8) e ritrovato in `02`, `07`, `09`, `13`. La
+   causa vive nella configurazione di build (`vite.config.ts` e l'HTML
+   generato), fuori da `src/ui/` — fuori dal perimetro di questa
+   funzionalità e di questo agente. Servita da un server locale, anche solo
+   di loopback, la stessa build funziona in modo identico al server di
+   sviluppo, con zero richieste esterne.
+
+6. **Un fallimento non riprodotto, trovato e chiarito durante questa stessa
+   verifica.** La prima volta che ho eseguito l'intera suite dopo la
+   comparsa di `tests/spiegazione.test.ts`, un'asserzione sull'ordine dei
+   blocchi 3→4 è fallita (`expected [] to equal ['inflazione-spesa']`).
+   Rieseguendo lo stesso file in isolamento (7/7 verdi) e di nuovo l'intera
+   suite subito dopo (di nuovo verde su questo file), e confrontando
+   indipendentemente il markup prodotto da `renderToStaticMarkup` (via
+   `vite-node`) con il DOM del browser — entrambi mostrano l'ordine
+   corretto — attribuisco il fallimento al carico concorrente di più agenti
+   sulla stessa macchina nello stesso istante (più processi `vitest`/`tsc`
+   in esecuzione insieme), non a un difetto del codice di questa
+   funzionalità. Registrato per trasparenza: non ha richiesto nessuna
+   correzione, perché non c'era niente da correggere.
+
+7. **Nessuna divergenza sui restanti passi**, né su «Cosa farà», né sui
+   limiti previsti diversi da quelli elencati sopra: il numero di
+   riferimento, il suo paragone, l'ordine dei blocchi 1-2-3-4-5/6-8, il
+   blocco 8 sempre presente e sempre in rosa, la tenuta a 375 px e da
+   tastiera, e l'assenza di regressioni sulle altre aree corrispondono, alla
+   lettera, a quanto la fase 1 prevedeva.

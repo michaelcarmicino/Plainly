@@ -5,7 +5,7 @@
 > Le fonti sono i file in `docs/features/`, scritti dall'agente
 > `doc-funzionale`.
 >
-> Ultima generazione: 2026-09-15T10:47:34.100Z
+> Ultima generazione: 2026-09-15T14:18:42.129Z
 
 **Come si legge il tempo verbale.** Ciò che è scritto al **futuro** è previsto
 e non ancora verificato; ciò che è al **presente** è stato confermato leggendo
@@ -18,7 +18,7 @@ reale.
 | --- | --- | --- |
 | ● | implementato | [01 — «La landing page: tre porte e una navigazione che non cambia mai»](#01-la-landing-page-tre-porte-e-una-navigazione-che-non-cambia-mai) |
 | ● | implementato | [02 — «Il catalogo delle domande vere, e che cosa il sito sa rispondere»](#02-il-catalogo-delle-domande-vere-e-che-cosa-il-sito-sa-rispondere) |
-| ◌ | in sviluppo | [03 — «La pagina che risponde a una domanda: il contenitore, non il contenuto»](#03-la-pagina-che-risponde-a-una-domanda-il-contenitore-non-il-contenuto) |
+| ● | implementato | [03 — «La pagina che risponde a una domanda: il contenitore, non il contenuto»](#03-la-pagina-che-risponde-a-una-domanda-il-contenitore-non-il-contenuto) |
 | ◌ | in sviluppo | [04 — «Sulla busta paga c'è un numero grande, sul conto ne arriva uno più piccolo: dove va la differenza?»](#04-sulla-busta-paga-c-un-numero-grande-sul-conto-ne-arriva-uno-pi-piccolo-dove-va-la-differenza) |
 | ◌ | in sviluppo | [05 — «Ho consumato poco e la bolletta è alta: che cosa sto pagando?»](#05-ho-consumato-poco-e-la-bolletta-alta-che-cosa-sto-pagando) |
 | ◌ | in sviluppo | [06 — «Sul 730 c'è scritto che mi tornano 665 €: da dove esce quel numero?»](#06-sul-730-c-scritto-che-mi-tornano-665-da-dove-esce-quel-numero) |
@@ -29,8 +29,9 @@ reale.
 | ◌ | in sviluppo | [11 — «Quanto costa in tutto un mutuo, oltre ai soldi che la banca presta»](#11-quanto-costa-in-tutto-un-mutuo-oltre-ai-soldi-che-la-banca-presta) |
 | ◌ | in sviluppo | [12 — «Il foglio che ti danno prima di firmare»](#12-il-foglio-che-ti-danno-prima-di-firmare) |
 | ● | implementato | [13 — «Da dove vengono i numeri di questo sito»](#13-da-dove-vengono-i-numeri-di-questo-sito) |
+| ◌ | in sviluppo | [14 — Registro delle schermate](#14-registro-delle-schermate) |
 
-**Totali** — in sviluppo: 10 · implementate: 3 · verificate: 0
+**Totali** — in sviluppo: 10 · implementate: 4 · verificate: 0
 
 ---
 
@@ -478,11 +479,62 @@ invece di una lettura a occhio.
 ---
 
 ## 03 — «La pagina che risponde a una domanda: il contenitore, non il contenuto»
-**Stato:** ◌ in sviluppo  
+**Stato:** ● implementato  
 **Origine:** [`docs/features/03-pagina-di-spiegazione-struttura-riusabile.md`](features/03-pagina-di-spiegazione-struttura-riusabile.md)
 ### Cosa fa
 
-«…»
+Toccando `#/spiegazione/inflazione-spesa` compare una pagina intera, non più
+testo morto. In cima, in maiuscolo con lettere spaziate, «IL COSTO DELLA VITA»
+(la classe `.occhiello` applica `text-transform: uppercase` al testo dichiarato
+«Il costo della vita»); subito sotto, come titolo, esattamente la stessa
+domanda già letta nell'elenco dell'area — «Con gli stessi soldi della spesa,
+quanto porto a casa rispetto a un anno fa?», carattere per carattere, confermato
+confrontando il markup con la costante `area1Altra1` di `testi.ts`.
+
+Poi tre frasi sul carrello della spesa, **e solo dopo di loro** — mai prima,
+confermato sul DOM del browser, sul markup prodotto da `renderToStaticMarkup` e
+da un'asserzione dedicata di `tests/spiegazione.test.ts` che confronta le
+posizioni nel markup reso, non l'ordine dei campi dichiarati — la frase «Quella
+differenza ha un nome: si chiama inflazione.». Il componente impone quest'ordine
+per costruzione: nessun punto del codice permette a un'istanza di invertirlo.
+
+Poi un numero solo, **98,04 €**, allineato a destra con cifre tabulari
+(`font-variant-numeric: tabular-nums`, misurato con `getComputedStyle`), e
+accanto il suo paragone: «Fra le due cifre c'è una differenza di 1,96 €: i
+100 € sono ancora tutti lì, ma portano a casa meno roba di prima.» — un numero
+diverso dalla cifra grande, non una sua ripetizione (la specifica lo richiedeva
+esplicitamente dopo un difetto trovato e corretto il giorno stesso, commit
+`3fc47f9`). Il numero non è scritto a mano: `spiegazioneEsempio.ts` lo chiede a
+`simulaRisparmio` del core con l'ingresso fisso (10.000 cent, 1 anno, 200 bp) e
+stampa la risposta con `formattaEuro`.
+
+Subito sotto, la fonte: il conto parte da un aumento dei prezzi del 2,00%
+l'anno, dichiarato come «un valore medio scritto a mano dentro il sito e non
+preso da internet»; una riga onesta dice che il periodo su cui è calcolata
+quella media non è ancora stato stabilito (stesso comportamento della
+schermata dei risparmi, `07`, perché la fonte è la stessa costante
+`INFLAZIONE_DICHIARATA`); un'ultima riga avverte che non è una previsione. In
+nessun punto della pagina compare la parola «ISTAT» — vedi «Divergenze», punto
+4.
+
+In fondo, sempre come ultimo blocco della pagina (`.spiegazione.lastElementChild
+=== .limiti-schermata`, confermato via DOM), due righe in rosa `#FF50A0`
+dicono che cosa questa pagina non fa. Passata in rassegna ogni riga di testo
+della pagina per colore computato, quel rosa compare **soltanto** lì — nessun
+titolo, bordo o sfondo lo usa altrove — confermato sia a runtime (Playwright)
+sia staticamente su `stiliSpiegazione.css` (`tests/spiegazione-css.test.ts`,
+nuovo).
+
+L'istanza di riferimento non dichiara alcun rimando (`passi: []`): il blocco 7
+non compare affatto, non come sezione vuota.
+
+Oggi, però, **questa pagina si raggiunge solo scrivendo l'indirizzo a mano**:
+dall'elenco della sua area la domanda resta testo semplice con la nota «La
+schermata che risponde a questa domanda non c'è ancora.», perché
+`catalogoDomande.ts` non è stato aggiornato a `stato: 'con-schermata'`. Il
+percorso di navigazione mostra due gradini, non tre. Entrambi i fatti sono
+divergenze dal previsto — vedi sotto — e non sono stati corretti qui: non è
+questo il file dell'agente che li deve correggere.
 
 ### Per chi
 
@@ -500,6 +552,326 @@ scrive, sarebbe un file di appunti, non una funzionalità.
 
 ### Come si prova
 
+I 15 passi di fase 1, eseguiti il 2026-09-15 da `app/` con un browser pilotato
+(Playwright/Chromium), non a occhio. Accanto a ciascuno, ciò che è successo
+davvero.
+
+1. **Preparare l'ambiente.** Non ho rilanciato `/prepara` da zero (il server
+   era già attivo, come dichiarato nel compito): ho verificato l'equivalente
+   sostanziale, `npx tsc --noEmit` e `npm test`, più volte durante questa
+   riconciliazione. Risultato in «Divergenze», punto 3: non sempre verde, e il
+   motivo non è mai un file di questa funzionalità. ✅ (con la nota)
+
+2. **Avviare l'applicazione.** `node scripts/dev-server.mjs status` risponde
+   «attivo · http://localhost:5173 · pid 580»: non ho dovuto avviarlo. ✅
+
+3. **Dalla home alla domanda, non alla pagina direttamente — questo passo non
+   dà il risultato atteso.** Dalla home, il click sulla card «Il costo della
+   vita» porta davvero a `#/costo-della-vita` (href `#/costo-della-vita`,
+   confermato). Ma nell'elenco dell'area la domanda **non è un collegamento**:
+   resta un paragrafo di testo con sotto la nota «La schermata che risponde a
+   questa domanda non c'è ancora.» — la stessa frase che compare per ogni
+   domanda ancora senza pagina. Navigando invece direttamente all'indirizzo
+   `#/spiegazione/inflazione-spesa`, la pagina si apre correttamente. ❌ per la
+   lettera del passo («toccare la domanda» apre la pagina); ✅ per la
+   sostanza (la pagina esiste e funziona, raggiunta per indirizzo). Causa e
+   classificazione in «Divergenze», punto 2.
+
+4. **Il percorso in cima, di tre gradini — questo passo non dà il risultato
+   atteso.** La barra di navigazione mostra **due** gradini — «Pagina
+   iniziale» e, come corrente, la domanda stessa — non tre: manca il gradino
+   intermedio con il nome dell'area. Confermato leggendo `Navigazione.tsx`
+   (per `rotta.tipo === 'schermata'` il gradino corrente è solo `passoSchermata`,
+   senza un livello per l'area) e sulla barra resa a schermo. **Ora anche
+   confermato da un test automatico**, comparso durante questa stessa
+   riconciliazione: `tests/accettazione/03-pagina-di-spiegazione.test.ts`,
+   caso C-07, fallisce con `expected 2 to be 3`, e il commento del test stesso
+   lo classifica: «difetto reale del codice (non del test): riportato nel
+   referto come bloccante, non corretto qui». ❌. Causa in «Divergenze», punto
+   1.
+
+5. **I primi due blocchi.** Confermato: `.occhiello` mostra «IL COSTO DELLA
+   VITA» (maiuscolo per CSS, testo dichiarato «Il costo della vita»);
+   `.spiegazione-titolo` mostra, carattere per carattere, la stessa domanda
+   già letta nell'elenco. ✅
+
+6. **L'immagine prima del nome tecnico — il criterio più importante di
+   tutti.** Confermato in tre modi indipendenti: sul DOM del browser
+   (`compareDocumentPosition`, l'ultima frase-immagine precede il nome
+   tecnico), sul markup prodotto da `renderToStaticMarkup` (stessa
+   posizione relativa, verificato anche eseguendo il componente con
+   `vite-node`), e da `tests/spiegazione.test.ts`
+   («per ogni pagina con nomeTecnico, l'ultima immagine precede sempre il
+   nome tecnico»). Mai il nome tecnico compare per primo. ✅
+
+7. **Il numero e il suo paragone.** Confermato: «98,04 €», `text-align:
+   right`, `font-variant-numeric: tabular-nums`; accanto, il paragone
+   «Fra le due cifre c'è una differenza di 1,96 €…» — un numero diverso, non
+   una ripetizione. ✅
+
+8. **Da dove viene quel numero — confermato, con una precisazione rispetto
+   a fase 1.** La riga sulla fonte, l'avvertenza «non è una previsione», e la
+   dichiarazione onesta che il periodo della media non è ancora stabilito
+   compaiono tutte. **Non compare, però, la parola «ISTAT»**, che la fase 1
+   dava per attesa: né questa pagina né la schermata analoga dei risparmi
+   (`07`, stessa fonte `INFLAZIONE_DICHIARATA`) la nominano in quel punto — dicono
+   solo che è «un valore scritto a mano dentro il sito, non preso da
+   internet». Il nome della fonte compare, letteralmente, solo nella pagina
+   dedicata «da dove vengono i numeri» (`13`). ✅ per la sostanza (fonte,
+   periodo, avvertenza dichiarati); imprecisione di fase 1 in «Divergenze»,
+   punto 4.
+
+9. **Il blocco dei limiti, sempre in fondo e sempre in rosa.** Confermato: due
+   voci, colore computato `rgb(255, 80, 160)` = `#FF50A0`, ultimo blocco
+   della pagina (`lastElementChild`); nessun altro elemento di testo della
+   pagina usa quel colore (verificato interrogando ogni nodo foglia dentro
+   `.spiegazione`), confermato anche staticamente su `stiliSpiegazione.css`
+   da `tests/spiegazione-css.test.ts`, comparso durante questa
+   riconciliazione. ✅
+
+10. **Il ritorno.** «Indietro» riporta a `#/costo-della-vita`, la stessa
+    posizione di navigazione delle altre pagine. ✅
+
+11. **Nessuna attesa, nessun salto di layout.** Aprendo direttamente
+    l'indirizzo con `waitUntil: 'commit'` (il minimo che Playwright permette),
+    la cifra «98,04 €» è già presente al primo controllo: nessuna rotellina,
+    nessun ricalcolo successivo. ✅
+
+12. **Da tastiera e a 375 px.** Nessuno scorrimento orizzontale
+    (`scrollWidth` = `innerWidth` = 375); il contenuto (occhiello, titolo,
+    cifra, numero di voci del blocco 8) è identico al disegno desktop;
+    nessuna scritta sotto i 16 px (misurate 18 px, 18,9 px, 19,125 px — tutte
+    sopra il minimo). Con solo Tab si raggiungono, in sequenza, «Pagina
+    iniziale» e «Indietro» — i due soli elementi cliccabili di questa
+    istanza, dato `passi: []` — ciascuno con un contorno di 3 px `#FF50A0`
+    ben visibile (`:focus-visible`, regola globale del sito). ✅
+
+13. **Con il Wi-Fi spento — questo passo non dà il risultato atteso alla
+    lettera.** `npm run build` finisce senza errori (`index.html` 0,50 kB,
+    CSS 9,97 kB, JS 183,99 kB). Servita da un server locale — verificato sia
+    con il server di sviluppo sia con un piccolo server statico scritto per
+    l'occasione su `127.0.0.1:4321` — la build funziona in modo identico:
+    stesso contenuto (occhiello, titolo, cifra, paragone, numero di voci del
+    blocco 8), **zero richieste diverse da quelle verso l'host che la
+    serve**. **Aperta con un doppio clic reale su `dist/index.html`, cioè
+    `file://`, la pagina resta bianca**: `<script type="module"
+    crossorigin>` e `<link rel="stylesheet" crossorigin>` vengono bloccati
+    dal browser sotto l'origine `null` di `file://` (confermato leggendo
+    gli eventi `console`/`requestfailed`: «Access to script… blocked by CORS
+    policy… origin 'null'»). **Non è un difetto nuovo**: è lo stesso,
+    identico problema già trovato e registrato in `01-landing-page` (passo
+    8), e ritrovato identico in `02`, `07`, `09`, `13`. ❌ per la lettera del
+    passo; ✅ per la sostanza che il passo voleva provare (funziona offline,
+    zero richieste di rete). Causa in «Divergenze», punto 5.
+
+14. **Nessuna regressione sulle domande senza pagina.** L'area «Il lavoro»
+    mostra ancora le sue sei voci, tutte con la nota «in arrivo» invariata:
+    l'arrivo di questa pagina non ne cambia una. ✅
+
+15. **Ciò che nessun clic può dimostrare — verificato leggendo il codice e
+    (novità rispetto a fase 1) da test comparsi durante questa stessa
+    riconciliazione.**
+    - **Blocco 7 assente quando `passi: []`.** Confermato a schermo (nessuna
+      sezione, non una sezione vuota) e ora anche da
+      `tests/spiegazione.test.ts` indirettamente tramite il vincolo 5⇔6; il
+      caso specifico «passi vuoto» resta confermato leggendo
+      `BloccoPassi` in `PaginaSpiegazione.tsx` (`if (passi.length === 0)
+      return null;`).
+    - **Esempio `null` → blocchi 5 e 6 assenti.** Non più solo una lettura
+      del tipo: `tests/spiegazione.test.ts` lo esercita a runtime («senza
+      esempio (esempio: null), non compaiono né la cifra né la fonte») e
+      passa.
+    - **Stato «errore» (`ok: false`) → nessuna cifra, blocco fonte
+      assente.** Esercitato a runtime da `tests/spiegazione.test.ts»
+      («con un esempio che il core rifiuta…»), che passa: `BloccoEsempio`
+      mostra la riga condivisa «Qualcosa in questo conto non torna…» al
+      posto del numero, `BloccoFonte` non stampa nulla (`renderToStaticMarkup`
+      restituisce `''`).
+    - **Caso «dati lunghi» (103 caratteri, sei voci, importo a sette
+      cifre).** Non esercitato dall'istanza di riferimento. Il `tester` ha
+      scritto, durante questa stessa finestra di tempo,
+      `tests/accettazione/03-pagina-di-spiegazione-limite.test.ts` e
+      `…-limite-2.test.ts`; quest'ultimo, al momento di chiudere questa
+      scheda, non compila ancora (`tsc --noEmit` segnala una proprietà
+      `nonFa` mancante) — è un file evidentemente ancora in scrittura. Non
+      verificato da questa scheda: resta un caso di struttura CSS
+      dichiarata (`stiliSpiegazione.css`), non messo alla prova con
+      un'istanza reale a sette cifre.
+    - **Le due tuple non vuote (`immagine`, `nonFa`) e i due campi singolari
+      (`nomeTecnico`, `esempio`).** Confermati leggendo i tipi in
+      `contenutiSpiegazione.ts`, e ora anche da
+      `tests/accettazione/03-pagina-di-spiegazione-tipi.ts` (CL-01…CL-08),
+      che con `@ts-expect-error` dimostra che `tsc --noEmit` rifiuta
+      un'istanza priva di uno di questi campi o con una tupla vuota — file
+      apparso durante questa riconciliazione, eseguito con successo
+      (nessun errore residuo sui suoi otto casi).
+    - **L'ordine «immagine prima del nome tecnico» deciso dal componente.**
+      Confermato sul markup reso (punto 6 qui sopra), non sull'ordine dei
+      campi dichiarati.
+    - **In più, non previsto da fase 1: «al massimo due passi» è ora un
+      vincolo di TIPO**, non solo un test a runtime. `contenutiSpiegazione.ts`
+      dichiara `PassiSuccessivi` come unione chiusa di tuple di lunghezza 0,
+      1, 2 — un miglioramento rispetto a quanto la specifica descriveva
+      («un array libero, verificato da un test»), confermato anche dal caso
+      CL-18 del `tester`. Resta invece un test a runtime, non un vincolo di
+      tipo, che ogni `percorso` dichiarato sia una rotta realmente
+      registrata: imporlo nel tipo richiederebbe l'elenco a mano che la
+      funzionalità 14 ha eliminato — confermato leggendo il commento su
+      `PassoSuccessivo` in `contenutiSpiegazione.ts`.
+
+### Limiti
+
+- **Non scrive i contenuti delle altre pagine.** Consegna il contenitore
+  (`PaginaSpiegazione.tsx`, `contenutiSpiegazione.ts`) e una sola istanza,
+  quella sull'inflazione: confermato, `PAGINE_SPIEGAZIONE` ha un solo
+  elemento.
+- **Non è una ricerca interna e non ha un campo di domanda libera.**
+  Confermato: il titolo è la chiave `domanda`, letta da `testi.ts`, mai un
+  valore digitato.
+- **Non prende niente dalla rete.** Confermato al passo 13: zero richieste
+  diverse da quelle verso l'host che serve la pagina, sia in sviluppo sia
+  dalla build.
+- **Non aggiunge nessuna funzione al core e non tocca `types/`.** Confermato:
+  `spiegazioneEsempio.ts` chiama `simulaRisparmio`, già scritta per la `07`;
+  nessun file di questa funzionalità è sotto `src/core/` o `types/` (`git
+  show --stat` sui due commit di questa funzionalità, `3106942` e
+  `3fc47f9`, mostra solo file sotto `src/ui/` e due file di `docs/`).
+- **Non riscrive le dodici domande della `01`.** Confermato: `domanda:
+  'area1Altra1'` legge una chiave già esistente in `testi.ts`, non ne
+  dichiara una nuova.
+- **Non risolve il periodo mancante del tasso d'inflazione.** Confermato:
+  stessa dichiarazione esplicita già presente nella schermata dei risparmi,
+  perché la fonte è la stessa costante `INFLAZIONE_DICHIARATA`
+  (`periodoDaCompilare` resta vero).
+- **Non decide da sola l'ordine fra `02` e `03`: qui vince il catalogo, ma
+  il catalogo non è stato aggiornato.** La `02` è già entrata (esiste
+  `catalogoDomande.ts`, con `domandeDiArea` già usato da
+  `PaginaMacrocategoria.tsx`): per la regola di risoluzione dichiarata nella
+  specifica, la `03` avrebbe dovuto scrivere `stato: 'con-schermata'` e
+  `percorso` sulla voce `area1Altra1`. Non l'ha fatto — vedi «Divergenze»,
+  punto 2 — quindi oggi questo non è (solo) un limite previsto ma anche una
+  divergenza: la pagina esiste ma non è raggiungibile dal catalogo.
+- **Il collegamento fra domanda e pagina, quando esisterà nel catalogo, non
+  aggiungerà un secondo modo di navigare**: resterà sempre un tocco sulla
+  stessa voce dell'elenco, non un percorso alternativo.
+
+### Divergenze fra previsto e realizzato
+
+1. **Il percorso di navigazione ha due gradini, non tre.** La fase 1 (e la
+   specifica) prevedevano «Pagina iniziale › Il costo della vita › la
+   domanda». `Navigazione.tsx`, per una rotta di tipo `'schermata'`, mostra
+   solo il gradino corrente (`passoSchermata`, risolto dal registro) accanto
+   a «Pagina iniziale»: manca un livello per il nome dell'area. **Confermato
+   da un test automatico** apparso durante questa stessa riconciliazione
+   (`tests/accettazione/03-pagina-di-spiegazione.test.ts`, C-07,
+   `expected 2 to be 3`), il cui stesso commento lo classifica «difetto
+   reale del codice (non del test)… bloccante». **Non corretto qui**:
+   `Navigazione.tsx` non è dentro il perimetro di questo agente (`docs/`), e
+   la specifica lo elencava fra gli «innesti minimi» di `03-ui-builder` — chi
+   ha costruito la funzionalità non l'ha esteso a un terzo gradino.
+
+2. **Il collegamento «domanda → pagina» nel catalogo non è stato scritto.**
+   La specifica, alla sezione «Conflitti di pianificazione», stabiliva che se
+   la `02` fosse entrata prima (ed è entrata: `catalogoDomande.ts` esiste ed
+   è usato da `PaginaMacrocategoria.tsx`), la `03` avrebbe dovuto scrivere
+   `stato: 'con-schermata'` e `percorso: '#/spiegazione/inflazione-spesa'`
+   sulla voce `area1Altra1`. La voce, confermato leggendo
+   `catalogoDomande.ts`, è rimasta `{ chiave: 'area1Altra1', area:
+   'costo-della-vita', stato: 'in-arrivo' }`. Conseguenza osservabile: dalla
+   home la domanda resta testo con la nota «La schermata che risponde a
+   questa domanda non c'è ancora.» — la stessa di una domanda senza
+   nessuna pagina — mentre una pagina vera esiste e funziona a un indirizzo
+   diretto. **Non corretto qui**: `catalogoDomande.ts` è sotto `src/ui/`, non
+   sotto `docs/`.
+
+3. **Il file di test promesso dalla specifica non esisteva quando questa
+   fase 2 è iniziata, ed è comparso mentre la scrivevo.** La sezione «Come
+   si dimostra che ha funzionato» della specifica promette
+   `tests/spiegazione.test.ts`, assegnato a `guardrail-officer`. All'inizio
+   di questa riconciliazione (`npm test`, 15:55) la suite contava 195 test
+   in 25 file: **nessuno** relativo a questa funzionalità. Rieseguendo la
+   stessa suite alle 16:03 e alle 16:10, comparivano
+   `tests/spiegazione.test.ts`, `tests/spiegazione-css.test.ts` (di
+   `guardrail-officer`) e `tests/accettazione/03-pagina-di-spiegazione*.test.ts`
+   più `…-tipi.ts` (di `tester`) — tutti non ancora committati
+   (`git status`, 2026-09-15 16:14, li mostra `??`). Il vuoto descritto è
+   reale ed è durato dall'apertura della funzionalità fino a questo momento;
+   non lo dichiaro chiuso perché non lo era quando ho iniziato a verificare,
+   e perché i file più recenti (`…-limite-2.test.ts`) non compilano ancora a
+   questa data. **Non è un difetto di questa scheda**: è cronaca di ciò che
+   ho osservato, riportata perché chi legge deve saperlo senza cercare
+   altrove.
+
+4. **Imprecisione di fase 1: la fonte non nomina «ISTAT» in questa
+   pagina.** Il passo 8 di fase 1 prevedeva che comparisse «la fonte —
+   ISTAT, la stessa già letta sotto il simulatore dei risparmi». Verificato
+   che né questa pagina né quella dei risparmi (`07`) nominano «ISTAT» in
+   quel punto: entrambe dicono solo che il tasso è «un valore scritto a mano
+   dentro il sito, non preso da internet» (`spiegazioneInflazioneSpesaFonte`,
+   `simulazioneRisparmioFonte`). «ISTAT» compare, come stringa letterale,
+   solo nella pagina dedicata `13` e nel registro `registroFonti.ts`. Non è
+   un difetto della `03`: è che fase 1 attribuiva a questa pagina un
+   dettaglio testuale che la specifica non prometteva e che nessuna delle
+   due pagine analoghe realizza.
+
+5. **Passo 13 — «con il Wi-Fi spento» non dà, alla lettera, il risultato
+   previsto.** Un doppio clic reale su `dist/index.html` produce una pagina
+   bianca: gli attributi `type="module" crossorigin` generati dalla build
+   sono bloccati dal browser sotto l'origine `null` di `file://`. **Non è un
+   difetto nuovo**: è lo stesso, identico problema già trovato e registrato
+   in `01-landing-page` (passo 8) e ritrovato in `02`, `07`, `09`, `13`. La
+   causa vive nella configurazione di build (`vite.config.ts` e l'HTML
+   generato), fuori da `src/ui/` — fuori dal perimetro di questa
+   funzionalità e di questo agente. Servita da un server locale, anche solo
+   di loopback, la stessa build funziona in modo identico al server di
+   sviluppo, con zero richieste esterne.
+
+6. **Un fallimento non riprodotto, trovato e chiarito durante questa stessa
+   verifica.** La prima volta che ho eseguito l'intera suite dopo la
+   comparsa di `tests/spiegazione.test.ts`, un'asserzione sull'ordine dei
+   blocchi 3→4 è fallita (`expected [] to equal ['inflazione-spesa']`).
+   Rieseguendo lo stesso file in isolamento (7/7 verdi) e di nuovo l'intera
+   suite subito dopo (di nuovo verde su questo file), e confrontando
+   indipendentemente il markup prodotto da `renderToStaticMarkup` (via
+   `vite-node`) con il DOM del browser — entrambi mostrano l'ordine
+   corretto — attribuisco il fallimento al carico concorrente di più agenti
+   sulla stessa macchina nello stesso istante (più processi `vitest`/`tsc`
+   in esecuzione insieme), non a un difetto del codice di questa
+   funzionalità. Registrato per trasparenza: non ha richiesto nessuna
+   correzione, perché non c'era niente da correggere.
+
+7. **Nessuna divergenza sui restanti passi**, né su «Cosa farà», né sui
+   limiti previsti diversi da quelli elencati sopra: il numero di
+   riferimento, il suo paragone, l'ordine dei blocchi 1-2-3-4-5/6-8, il
+   blocco 8 sempre presente e sempre in rosa, la tenuta a 375 px e da
+   tastiera, e l'assenza di regressioni sulle altre aree corrispondono, alla
+   lettera, a quanto la fase 1 prevedeva.
+
+---
+
+## 04 — «Sulla busta paga c'è un numero grande, sul conto ne arriva uno più piccolo: dove va la differenza?»
+**Stato:** ◌ in sviluppo  
+**Origine:** [`docs/features/04-guida-interattiva-busta-paga.md`](features/04-guida-interattiva-busta-paga.md)
+### Cosa fa
+
+«…»
+
+### Per chi
+
+Una persona con contratto da dipendente che riceve il cedolino ogni mese, lo
+guarda due secondi, cerca l'ultima riga in basso e butta il resto: sa che il
+numero sul conto è più piccolo di quello scritto in alto, ma non sa dire
+perché, e ha smesso di chiederselo perché ogni volta ha trovato solo sigle —
+`IVS`, `IRPEF`, `c/dipendente`. Le servirà il giorno dello stipendio, con il
+proprio cedolino vero aperto accanto al telefono: non in un momento di
+studio, in un momento in cui sta confrontando due schermate.
+
+Le servirà anche, ed è il caso meno scontato, a chi riceve la **prima** busta
+paga della vita e non ha un termine di paragone: per quella persona il salto
+fra lordo e netto non sarà una curiosità, sarà una sorpresa da 645 euro.
+
+### Come si prova
+
 «…»
 
 ### Limiti
@@ -510,27 +882,6 @@ scrive, sarebbe un file di appunti, non una funzionalità.
 
 «Ogni scostamento, con il motivo. Si segnalano, non si appianano: riscrivere la
 previsione per farla combaciare con il risultato rende inutile l'esercizio.»
-
----
-
-## 04 — «Sulla busta paga c'è un numero grande, sul conto ne arriva uno più piccolo: dove va la differenza?»
-**Stato:** ◌ in sviluppo — *non ancora riconciliato con il codice*  
-**Origine:** [`docs/features/04-guida-interattiva-busta-paga.md`](features/04-guida-interattiva-busta-paga.md)
-### Cosa farà
-
-*non ancora descritto*
-
-### Per chi
-
-*non ancora indicato*
-
-### Come si proverà
-
-*passi non ancora scritti*
-
-### Limiti
-
-*nessun limite dichiarato*
 
 ---
 
@@ -539,24 +890,185 @@ previsione per farla combaciare con il risultato rende inutile l'esercizio.»
 **Origine:** [`docs/features/05-guida-interattiva-bolletta-luce-gas.md`](features/05-guida-interattiva-bolletta-luce-gas.md)
 ### Cosa fa
 
-«…»
+Aprendo questa guida comparirà, riga per riga, la bolletta della luce così
+come arriva davvero: cinque voci con il nome esatto stampato sul documento, e
+in cima il totale da pagare — **78,76 €**. Toccando una voce comparirà,
+accanto ad essa, quanto pesa sul totale e se dipende o no da quanto è stato
+consumato. In fondo, una barra dividerà il totale in due parti — quella
+legata al consumo e quella che resta uguale comunque — e dirà, in chiaro, che
+l'energia costa **0,25 €** per ogni kWh mentre l'intera bolletta, divisa per
+gli stessi kWh, viene **0,49 €**: quasi il doppio.
 
 ### Per chi
 
-«La persona, e il momento esatto in cui le serve.»
+Chi ha appena ricevuto la bolletta della luce e trova un totale più alto di
+quanto si aspettava, senza aver cambiato niente in casa: ha già fatto
+l'unica verifica che sa fare — ha guardato i kWh — e i kWh non sono
+aumentati abbastanza da spiegare la differenza. Le servirà nel momento in
+cui la sta confrontando con la bolletta di prima, in mano o sullo schermo
+del telefono, mentre cerca una riga che spieghi lo scarto — non in un
+momento di studio.
 
 ### Come si prova
 
-«…»
+Sono i **criteri di accettazione**: finché anche uno solo di questi passi non
+dà il risultato atteso, la funzionalità non è finita. I comandi vanno
+eseguiti da `app/`.
+
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (chi non usa Claude
+   Code ottiene lo stesso risultato con `npm run prepara`, che esegue
+   `node scripts/prepara.mjs`). Serve solo la prima volta.
+   *Risultato atteso:* lo script dirà che l'ambiente è pronto, oppure
+   elencherà i passi che ha installato, e il suo controllo di salute —
+   `tsc --noEmit` e poi `npm test` — finirà senza errori.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia` (che esegue
+   `node scripts/dev-server.mjs start`). Mai `npm run dev` a mano: è un
+   processo che non termina e lascia la sessione appesa.
+   *Risultato atteso:* lo script riporterà l'indirizzo
+   `http://localhost:5173`.
+
+3. **Raggiungere la guida dalla domanda vera, non da un indirizzo scritto a
+   mano.** Aprire quell'indirizzo, entrare nell'area «Il costo della vita» e
+   aprire la domanda già scritta lì oggi, «Perché la bolletta è così alta
+   questo mese?» — segnata, prima di questa funzionalità, come «in arrivo»
+   nel catalogo delle diciotto domande, senza un percorso vero.
+   *Risultato atteso:* la domanda porterà a una schermata vera, non a un
+   avviso «presto disponibile»: la guida alla bolletta della luce.
+
+4. **Il facsimile, con il totale in cima.** Guardare la parte alta della
+   schermata, poi scorrere le cinque righe sotto.
+   *Risultato atteso:* il numero più grande di tutta la schermata sarà il
+   totale da pagare, **78,76 €**, con accanto **160 kWh** — il dato che la
+   persona ha già controllato da sola. Sotto, cinque righe nell'ordine della
+   bolletta, ciascuna con l'etichetta **esattamente come stampata**: «Spesa
+   per la materia energia», «Spesa per il trasporto e la gestione del
+   contatore», «Spesa per oneri di sistema», «Accisa (imposta di consumo)»,
+   «IVA 10%». Nessuna sarà riscritta, nessuna mancherà — nemmeno la più
+   piccola, i 3,60 € dell'accisa — e sommandole a mano si otterrà lo stesso
+   78,76 € del totale, senza alcun avviso di scarto.
+
+5. **Aprire una voce.** Toccare o cliccare «Spesa per oneri di sistema», poi
+   provare a farlo anche con un'altra riga.
+   *Risultato atteso:* sotto la riga toccata — **accanto** all'etichetta
+   originale, mai al posto — comparirà una spiegazione con un numero e il
+   suo paragone: qualcosa come «12,70 € ogni 100 € di bolletta», più la
+   frase che dice che quella spesa non dipende da quanto si è consumato. La
+   spiegazione resterà visibile finché non se ne apre un'altra o non si
+   richiude la stessa riga: non scomparirà da sola né al passaggio del
+   mouse.
+
+6. **Il numero che risponde alla domanda.** Guardare in fondo alla
+   schermata, dove le due parti del totale sono scritte accanto a una
+   barra.
+   *Risultato atteso:* si leggeranno due cifre, non solo una barra
+   disegnata: **40,00 € · 50,79%** per la parte che dipende da quanto
+   consumato, **38,76 € · 49,21%** per quella che non ne dipende. Le due
+   percentuali sommeranno a 100%.
+
+7. **Il paragone sul prezzo dell'energia — il numero che la persona porta
+   via.** Cercare, nella spiegazione della materia energia o accanto alla
+   barra, il confronto fra il prezzo dell'energia e il prezzo dell'intera
+   bolletta.
+   *Risultato atteso:* si leggerà che l'energia costa **0,25 €** per ogni
+   kWh, ma l'intera bolletta, divisa per gli stessi 160 kWh, viene
+   **0,49 €** — quasi il doppio. I due numeri nasceranno dai valori già
+   stampati sulla bolletta — i 40,00 € della materia energia, i 78,76 € del
+   totale, i 160 kWh — e non da un prezzo dell'energia preso da altrove.
+
+8. **Nessun accenno all'offerta o al fornitore.** Rileggere tutta la
+   schermata: facsimile, ogni spiegazione aperta una alla volta, la barra
+   delle due parti.
+   *Risultato atteso:* in nessun punto comparirà un confronto fra tariffe,
+   una parola come «conviene» o «cambia fornitore», né un'indicazione su
+   che cosa fare. La schermata dirà da dove viene ogni euro di questa
+   bolletta, e si fermerà lì.
+
+9. **Da tastiera, senza mouse.** Premere Tab dall'inizio della pagina.
+   *Risultato atteso:* il fuoco si sposterà sulle righe apribili nello
+   stesso ordine in cui sono stampate, con un contorno netto sempre
+   visibile, e il testo resterà leggibile — bianco pieno su fondo scuro,
+   mai una tonalità sbiadita. Invio e anche la barra spaziatrice apriranno
+   la riga con il fuoco; nessuna informazione di questa schermata sarà
+   leggibile solo passando il mouse sopra qualcosa, senza cliccare o
+   premere un tasto.
+
+10. **A finestra stretta, come un telefono.** Restringere la finestra sotto
+    i 768 px di larghezza e rifare i passi 4 e 5.
+    *Risultato atteso:* nessuna barra di scorrimento orizzontale;
+    l'etichetta più lunga — «Spesa per il trasporto e la gestione del
+    contatore», trentaquattro caratteri — andrà a capo restando comunque
+    accanto al proprio importo; nessuna scritta scenderà sotto i 16 px;
+    ogni riga apribile resterà un bersaglio di almeno 44×44 px, anche
+    quando il testo è corto.
+
+11. **Vuoto e in caricamento — non devono far saltare il layout.**
+    Osservare la schermata nell'istante esatto in cui si apre.
+    *Risultato atteso:* nessuna rotellina che gira e sparisce. Il documento
+    è una fixture importata staticamente, quindi il facsimile e il
+    riepilogo delle due quote compariranno già pronti, con le cinque righe
+    chiuse: nessuno scatto del layout un istante dopo l'apertura.
+
+12. **Errore — la quadratura che non torna, verificabile solo in parte con
+    questa bolletta.** Controllare se compare un avviso di scarto.
+    *Risultato atteso:* nessuno, perché questa bolletta **quadra** — la
+    somma delle cinque righe è esattamente il totale stampato. È il
+    comportamento corretto per un documento che torna, ma **non mette alla
+    prova** il caso in cui i conti non tornano: quel comportamento
+    (l'avviso mostrato in linguaggio umano, senza correggere nulla) non è
+    raggiungibile cliccando su questa fixture, e andrà verificato in fase 2
+    leggendo il caso dedicato in
+    `src/core/__tests__/letturaBolletta.test.ts` — un documento con il
+    totale alterato di un centesimo. Se in fase 2 quel test non lo copre, è
+    una divergenza da segnalare, non un dato da inventare per poterlo
+    mostrare.
+
+13. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire la schermata.
+    *Risultato atteso:* la build finirà senza errori, e rifacendo i passi
+    3-8 si leggerà lo stesso identico contenuto — senza che parta una sola
+    richiesta fuori dal computer: nessun prezzo dell'energia scaricato da
+    nessuna parte, perché la bolletta e tutti i suoi numeri sono scritti
+    nel codice, non recuperati da una fonte esterna.
 
 ### Limiti
 
-«…»
+- **Non dirà nulla sull'offerta né sul fornitore.** Nessun confronto fra
+  tariffe, nessun accenno al mercato libero o tutelato, nessuna indicazione
+  su dove costerebbe meno. È il limite più delicato: la domanda «e allora
+  che faccio?» arriverà naturale subito dopo la scomposizione, e la
+  risposta non ci sarà.
+- **Non dirà come consumare meno.** Nessun elenco di accorgimenti, nessuna
+  fascia oraria da preferire, nessun elettrodomestico da evitare: spiegare
+  da dove viene un costo è informazione, dire che cosa farne non lo è.
+- **Non riscriverà le etichette della bolletta.** Resteranno identiche a
+  come sono stampate, anche quando non descrivono niente di riconoscibile
+  («Spesa per oneri di sistema»): la spiegazione si affiancherà, non le
+  sostituirà.
+- **Non nasconderà né arrotonderà via le voci piccole.** Anche i 3,60 €
+  dell'accisa resteranno una riga a sé, visibile quanto le altre.
+- **Non ricalcolerà gli importi della bolletta.** Userà solo i numeri già
+  stampati, per calcolarne i rapporti — pesi, le due quote, il prezzo per
+  kWh, la quadratura — mai per rifare il conto al posto del documento.
+- **Non rimanderà a un simulatore energia/spese.** Quel simulatore non
+  esiste e non è in programma: nessun collegamento verso una pagina che
+  non c'è.
+- **Non leggerà una bolletta vera.** Nessun caricamento di PDF o foto,
+  nessun riconoscimento del testo: la bolletta sarà una sola, anonima,
+  sempre uguale.
+- **Non sarà la bolletta di chi guarda.** Chi consuma diversamente vedrà
+  comunque questi stessi numeri, e la schermata lo dirà invece di
+  lasciarlo intuire.
+- **Non coprirà il gas.** Solo la luce: il gas ha un'unità di misura
+  diversa e una struttura diversa, ed è un lavoro a parte — non abbozzato
+  qui.
+- **Non chiederà né conserverà alcun dato.** Nessun campo da compilare,
+  nessun salvataggio: uscendo e rientrando, la schermata ripartirà come la
+  prima volta.
+- **Non farà domande né assegnerà punteggi.** Nessun quiz, nessuna misura
+  della comprensione: quella è un'altra parte del sito.
 
-### Divergenze fra previsto e realizzato
-
-«Ogni scostamento, con il motivo. Si segnalano, non si appianano: riscrivere la
-previsione per farla combaciare con il risultato rende inutile l'esercizio.»
+---
 
 ---
 
@@ -565,24 +1077,271 @@ previsione per farla combaciare con il risultato rende inutile l'esercizio.»
 **Origine:** [`docs/features/06-guida-interattiva-dichiarazione-730.md`](features/06-guida-interattiva-dichiarazione-730.md)
 ### Cosa fa
 
-«…»
+Aprendo questa guida comparirà il quadro E di un 730 già compilato,
+riprodotto riga per riga con le stesse identiche parole del modulo: tre spese
+che danno diritto a una detrazione — gli interessi del mutuo, le spese
+sanitarie, le spese di istruzione — e, sopra l'elenco, il numero più grande
+di tutta la schermata: il rimborso, **665,00 €**. Toccando una riga comparirà
+sotto di essa quanto è stato speso, quanto di quella spesa torna indietro e
+quanto torna ogni 100 € spesi — per esempio sugli interessi del mutuo:
+**2.000,00 €** spesi, **380,00 €** che tornano, **19,00 €** ogni 100 €, con
+accanto la precisazione che quel 19% è il numero stampato sul modulo, non
+un'ipotesi di questo sito. Due riquadri in più, apribili allo stesso modo,
+mostreranno il reddito complessivo (**27.243,00 €**) e le ritenute IRPEF già
+trattenute in busta paga (**4.683,00 €**): il ponte fra questo modulo e il
+cedolino della funzionalità 04. In fondo, una barra dividerà le tre spese in
+due parti — quanto torna con il 730 e quanto resta comunque a carico — per
+correggere con un numero solo l'idea più diffusa su questo documento, che una
+spesa detratta sia una spesa recuperata per intero: su ogni 100 € di queste
+spese, **19,00 €** torneranno e **81,00 €** resteranno pagati da chi ha
+dichiarato.
 
 ### Per chi
 
-«La persona, e il momento esatto in cui le serve.»
+Una persona dipendente che riceve il 730 **già compilato** ogni anno: lo
+guarda, cerca l'ultima riga, vede scritto «rimborso» e la accetta senza
+sapere da dove venga — non ha modo di dire se quella cifra sia grande o
+piccola, giusta o sbagliata, perché il modulo è fatto di righi numerati,
+sigle e rimandi ad altri righi.
+
+Due cose la bloccano, ed è a queste due che la guida risponderà: non saprà
+che quel rimborso è una **restituzione**, non un regalo né un premio dello
+Stato; e non collegherà il 730 alla busta paga, cioè non saprà che le righe
+`IRPEF` trattenute ogni mese sono esattamente i soldi di cui una parte torna
+indietro qui. Le servirà fra aprile e luglio, con il 730 precompilato aperto
+e la sensazione di dover «solo confermare» — il momento esatto in cui sta per
+chiuderlo senza averlo letto.
+
+È la stessa persona della funzionalità 04: la fixture di questa guida userà
+l'anno dello stesso cedolino anonimo — dodici mesi da 2.500,00 € di lordo —
+così da poter mostrare i due documenti in fila e far vedere che i numeri si
+tengono.
 
 ### Come si prova
 
-«…»
+Sono i **criteri di accettazione**: finché anche uno solo di questi passi non
+dà il risultato atteso, la funzionalità non è finita. I comandi vanno
+eseguiti da `app/`.
+
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (chi non usa Claude
+   Code ottiene lo stesso risultato con `npm run prepara`, che esegue
+   `node scripts/prepara.mjs`). Serve solo la prima volta.
+   *Risultato atteso:* lo script dirà che l'ambiente è pronto, oppure
+   elencherà i passi che ha installato, e il suo controllo di salute —
+   `tsc --noEmit` e poi `npm test` — finirà senza errori.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia` (che esegue
+   `node scripts/dev-server.mjs start`). Mai `npm run dev` a mano: è un
+   processo che non termina e lascia la sessione appesa.
+   *Risultato atteso:* lo script riporterà l'indirizzo
+   `http://localhost:5173`.
+
+3. **Raggiungere la guida.** Aprire quell'indirizzo e navigare fino alla
+   guida alla dichiarazione 730, all'indirizzo che `rotte.ts` le assegnerà.
+   *Risultato atteso:* si aprirà la schermata del 730, con le sue righe
+   leggibili da subito — non un avviso «presto disponibile», non una pagina
+   bianca. **Nota sulla specifica, da leggere prima di considerare questo
+   passo scontato**: a differenza delle guide 04 (cedolino) e 05 (bolletta),
+   che si raggiungono toccando una domanda già scritta sulla home, questa
+   specifica non lega la guida a nessuna voce del catalogo delle diciotto
+   domande — verificato: né `src/ui/catalogoDomande.ts` né
+   `src/ui/testi.ts`/`testiCatalogo.ts` contengono oggi una domanda sul 730 o
+   sulla dichiarazione dei redditi, in nessuna area. Questo criterio verifica
+   quindi l'indirizzo diretto della guida, non un percorso dalla home: se in
+   fase 2 risultasse comunque presente un collegamento dalla home, sarebbe
+   un'aggiunta rispetto a quanto scritto qui, da segnalare come tale.
+
+4. **Il facsimile, prima di toccare qualunque riga — lo stato vuoto.**
+   Guardare la schermata subito dopo l'apertura, senza toccare niente.
+   *Risultato atteso:* compariranno le tre righe del quadro E, con le
+   etichette **identiche**, carattere per carattere, a quelle di un modulo
+   vero: `Interessi passivi su mutuo ipotecario - abitazione principale`,
+   `Spese sanitarie (al netto della franchigia di 129,11)`, `Spese di
+   istruzione - iscrizione scolastica`. Gli importi saranno allineati a
+   destra, con cifre tabulari e l'euro accanto al valore: `2.000,00 €`,
+   `1.000,00 €`, `500,00 €`. Sopra l'elenco, **665,00 €** — il rimborso —
+   sarà il numero più grande di tutta la schermata. Il riquadro del
+   riepilogo sarà già presente, con una riga che dirà che si riempirà via
+   via che si aprono le voci — non «nessun risultato».
+
+5. **Il caricamento non sposterà il layout.** Osservare lo stesso istante
+   del passo precedente, con attenzione a eventuali scatti del layout.
+   *Risultato atteso:* nessuna rotellina né alcun indicatore di attesa: il
+   730 è una fixture importata staticamente, quindi le tre righe, i due
+   riquadri del prospetto e il riepilogo compariranno già pronti. Il
+   riquadro dove poi comparirà la spiegazione occuperà già il suo spazio da
+   chiuso, così aprire la prima riga non sposterà il resto della schermata
+   verso il basso.
+
+6. **Aprire il rigo degli interessi del mutuo.** Toccare
+   `Interessi passivi su mutuo ipotecario - abitazione principale`.
+   *Risultato atteso:* la riga si evidenzierà con un bordo **e** un fondo
+   diversi, non il solo colore, e sotto comparirà un riquadro con
+   l'etichetta ripetuta identica, la spesa `2.000,00 €`, la detrazione
+   `380,00 €` e il paragone `19,00 € ogni 100 €`, con accanto la frase che
+   dichiara che quel 19% è il numero **stampato sul modulo**, non
+   un'ipotesi di questo sito. La spiegazione partirà dall'immagine di tutti
+   i giorni — la rata fatta di prestito restituito più interessi — prima
+   della sigla.
+
+7. **Il controllo che conta più di tutti.** Con una calcolatrice qualunque,
+   dividere `380,00` per `2.000,00` e moltiplicare per 100.
+   *Risultato atteso:* il risultato sarà `19`, lo stesso numero già
+   stampato dentro l'etichetta del modulo. Sarà la prova che la percentuale
+   scritta sul documento e i due importi del documento raccontano la stessa
+   cosa, e non due cose diverse per caso vicine.
+
+8. **Le altre due righe, guardando il riepilogo dopo ognuna.** Toccare
+   `Spese sanitarie (al netto della franchigia di 129,11)`, poi `Spese di
+   istruzione - iscrizione scolastica`.
+   *Risultato atteso:* sulle spese sanitarie si leggerà `1.000,00 €` di
+   spesa — già al netto della franchigia di 129,11 €, spiegata con il
+   paragone della franchigia dell'assicurazione dell'auto — e `190,00 €`
+   che tornano; sull'istruzione, `500,00 €` di spesa e `95,00 €` che
+   tornano. Ogni tocco sostituirà il contenuto del riquadro di spiegazione
+   con quello della riga appena aperta — una spiegazione visibile alla
+   volta — ma il riepilogo sotto **aggiungerà** una riga per ogni voce
+   toccata finora, senza perdere quelle di prima: nessuna domanda, nessun
+   punteggio, nessuna barra di avanzamento.
+
+9. **I due riquadri sul prospetto — il ponte con la busta paga.** Toccare
+   il riquadro del reddito complessivo, poi quello delle ritenute IRPEF.
+   *Risultato atteso:* si leggerà **27.243,00 €** di reddito complessivo,
+   con la spiegazione che è il lordo dell'anno meno i contributi, e
+   **4.683,00 €** di ritenute IRPEF, con la spiegazione che è la somma
+   delle dodici righe `IRPEF netta` del cedolino, `390,25 €` al mese. Sarà
+   il punto in cui, se si è già vista la funzionalità 04, si riconoscono
+   gli stessi numeri.
+
+10. **La barra delle due parti.** Guardare in fondo alla schermata.
+    *Risultato atteso:* due cifre scritte accanto a una barra sola, non
+    solo disegnata: **665,00 € · 19,00%** per la parte che torna con il
+    730, **2.835,00 € · 81,00%** per quella che resta comunque a carico. Le
+    due percentuali sommeranno esattamente a 100%, e la frase accanto dirà
+    che una spesa che si detrae non è una spesa che si recupera per
+    intero.
+
+11. **Nessuna consulenza fiscale — il criterio più delicato di tutti.**
+    Rileggere tutta la schermata: le tre righe aperte una alla volta, i due
+    riquadri del prospetto, la barra finale.
+    *Risultato atteso:* in nessun punto comparirà un'indicazione su quali
+    spese portare in detrazione, su quale modello usare, su quali ricevute
+    procurarsi, né un giudizio se il 730 è compilato bene o se manca
+    qualcosa. Nessun ricalcolo dell'imposta lorda con gli scaglioni IRPEF:
+    gli unici numeri saranno rapporti fra cifre già stampate sul modulo.
+    Nessuna parola come «dovresti», «ti conviene», «ricordati di»,
+    «potresti recuperare»: il lessico di blocco le intercetta già, ma qui
+    la rilettura di `guardrail-officer` è dichiarata bloccante proprio
+    perché il lessico prende le parole, non le intenzioni.
+
+12. **Errore — verificabile solo in parte con questa fixture.** Cercare,
+    nel facsimile, un punto in cui la somma delle tre spese non coincida
+    con il totale stampato, oppure una riga senza la sua percentuale.
+    *Risultato atteso:* non se ne troverà nessuno: questa fixture **quadra
+    per costruzione** — la somma delle tre voci, `3.500,00 €`, è
+    esattamente il totale degli oneri stampato sul modulo — e tutte e tre
+    le righe hanno la loro aliquota. **I due comportamenti d'errore non
+    sono quindi eseguibili end-to-end con questo documento**: (a) una
+    quadratura che non torna dovrà essere dichiarata in linguaggio umano,
+    con lo scarto mostrato e **mai corretto**, esattamente come su un
+    cedolino o una bolletta che non tornano; (b) un rigo senza aliquota
+    stampata non dovrà mostrare nessuna detrazione, **né assumerla al 19%
+    per analogia**: la riga resterà con la sua spesa, e al posto della
+    detrazione ci sarà scritto che il modulo non stampa quel numero.
+    Andranno verificati in fase 2 leggendo
+    `src/core/__tests__/letturaDichiarazione.test.ts`. Se in fase 2 quei
+    casi non risultano coperti, va segnalato come divergenza, non
+    inventato un modulo finto solo per poterlo mostrare.
+
+13. **Dati lunghi — in parte verificabile oggi, in parte no.** Guardare
+    come va a capo l'etichetta più lunga, `Interessi passivi su mutuo
+    ipotecario - abitazione principale` (sessanta caratteri).
+    *Risultato atteso:* andrà a capo su più righe restando accanto al
+    proprio importo, senza rompere la griglia né staccarsi dall'importo.
+    **Il quadro E pieno — venti righi, aliquote diverse fra loro, importi a
+    sei cifre — non è invece riproducibile con questa fixture di tre
+    righe**, e andrà verificato in fase 2 leggendo la struttura pensata per
+    reggerlo in `stiliDichiarazione.css`.
+
+14. **Da tastiera e a finestra stretta come un telefono.** Restringere la
+    finestra sotto i 768 px di larghezza e rifare i passi 4-10 leggendo con
+    attenzione la riga del mutuo; poi, senza toccare il mouse, premere Tab
+    più volte fino a raggiungere e attivare la prima riga, e passare il
+    mouse su una riga **senza** cliccarla.
+    *Risultato atteso:* le etichette andranno a capo restando accanto al
+    proprio importo, senza barra di scorrimento orizzontale; nessuna
+    scritta scenderà sotto i 16 px, il contrasto resterà leggibile (almeno
+    4,5:1), e nessun bersaglio sarà più piccolo di 44×44 px. Ogni riga
+    apribile sarà un `<button>` vero, raggiungibile con Tab, apribile con
+    Invio **e** con Spazio, con `aria-expanded` che passa a `true` e la
+    spiegazione collegata da `aria-controls`; il fuoco avrà un contorno
+    netto sempre visibile, nello stesso ordine della lettura del modulo,
+    rigo per rigo. Passando il mouse senza cliccare non comparirà nessuna
+    informazione nuova: l'unico modo di aprire una riga sarà il tocco, il
+    clic o l'attivazione da tastiera.
+
+15. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire la stessa schermata
+    servita da un server locale qualunque.
+    *Risultato atteso:* la build finirà senza errori, e rifacendo i passi
+    3-10 si leggerà esattamente lo stesso contenuto — **senza che parta una
+    sola richiesta fuori dal computer**: nessuna lettura di un 730 vero,
+    nessuna chiamata all'Agenzia delle Entrate, perché il modulo e tutti i
+    suoi numeri sono scritti in una fixture dentro il codice.
 
 ### Limiti
 
-«…»
+- **Non dirà a nessuno che cosa mettere nella dichiarazione.** È il confine
+  che definisce questo task: spiegare che gli interessi del mutuo prima casa
+  rientrano fra gli oneri al 19% è informazione, perché sta scritta sul
+  modulo e nella legge; dire quali spese portare in detrazione, quale
+  modello usare, quali ricevute procurarsi o se si potrebbero recuperare
+  altri soldi è consulenza fiscale, che il prodotto non dà. Spiegherà solo i
+  righi già scritti su questo modulo, e si fermerà lì.
+- **Non dirà se il 730 è compilato bene.** Nessuna verifica di completezza,
+  nessun «sembra mancare qualcosa», nessun confronto con quello che
+  dichiarano altre persone: la quadratura confronterà solo la somma dei
+  righi con il totale stampato sullo stesso documento.
+- **Non calcolerà l'imposta.** Nessuna IRPEF a scaglioni, nessuna detrazione
+  per lavoro dipendente, nessuna addizionale, nessun ricalcolo del
+  rimborso: gli importi saranno quelli stampati sul modulo, e il conto
+  riguarderà solo i rapporti fra loro. Ricalcolare l'imposta lorda
+  richiederebbe gli scaglioni IRPEF e trasformerebbe questa guida in un
+  calcolatore di tasse — un'altra funzionalità, la 08.
+- **Non assumerà aliquote che il modulo non stampa.** Un rigo senza
+  percentuale stampata non riceverà il 19% per analogia: la sua detrazione
+  semplicemente non comparirà.
+- **Non tratterà il caso «a debito».** Questa fixture esce a rimborso: un
+  730 a debito è una domanda diversa — «perché devo pagare?» — con un tono
+  che va pensato da zero, non una variante di questa schermata.
+- **Non coprirà il resto del modulo.** Solo il quadro E, e di quello solo
+  tre righi al 19%: niente familiari a carico, redditi di altra natura,
+  quadro B degli immobili, oneri deducibili.
+- **Non riscriverà le etichette del documento.** `etichettaOriginale`
+  comparirà identica, franchigia compresa: la spiegazione si metterà
+  accanto, mai al posto.
+- **Non nasconderà i righi che non spiega** né arrotonderà via le spese
+  piccole: anche i 500,00 € di istruzione resteranno un rigo a sé, visibile
+  quanto gli altri.
+- **Non leggerà un 730 vero e non si collegherà a nessun servizio.** Nessun
+  PDF, nessuno SPID, nessuna chiamata all'Agenzia delle Entrate: il modulo
+  sarà uno solo, anonimo, scritto a mano in una fixture.
+- **Non sarà il 730 di chi legge.** I numeri saranno quelli della fixture:
+  chi ha altre spese vedrà cifre diverse dalle sue, e la schermata lo dirà
+  invece di lasciarlo intuire.
+- **Non avrà nessun collegamento verso un simulatore o verso la guida 04.**
+  Il ponte più utile — verso la busta paga, per chiudere il cerchio fra
+  ritenute e rimborso — si farà solo dopo che `04` sarà stata unita a
+  `develop`: fino ad allora nessun bottone disattivato, nessun «presto
+  disponibile» — una porta che non si apre è peggio di una parete.
+- **Non chiederà e non conserverà niente.** Nessun campo da compilare,
+  nessun dato personale, nessun salvataggio: uscendo e rientrando il
+  riepilogo ripartirà vuoto.
+- **Non farà domande e non assegnerà punteggi.** Il riepilogo sarà un
+  promemoria, non un quiz: la misura della comprensione appartiene a
+  `src/assessment/`, un'altra parte del sito.
 
-### Divergenze fra previsto e realizzato
-
-«Ogni scostamento, con il motivo. Si segnalano, non si appianano: riscrivere la
-previsione per farla combaciare con il risultato rende inutile l'esercizio.»
+---
 
 ---
 
@@ -776,107 +1535,507 @@ cifra che il test dimostra.
 ---
 
 ## 08 — «Quanto mi resta davvero in busta»
-**Stato:** ◌ in sviluppo — *non ancora riconciliato con il codice*  
+**Stato:** ◌ in sviluppo  
 **Origine:** [`docs/features/08-simulatore-netto-in-busta-paga.md`](features/08-simulatore-netto-in-busta-paga.md)
-### Cosa farà
+### Cosa fa
 
-*non ancora descritto*
+Chi digiterà quanto guadagna lordo al mese e quante mensilità riceve in un
+anno vedrà comparire, subito e senza attese, quanto gli resterà davvero: il
+numero grande sarà il netto mensile — con 2.000 € lordi e 13 mensilità,
+**1.398,47 €** — insieme al netto annuo, più piccolo, e a una barra che
+scomporrà la differenza in tre pezzi visibili tutti insieme: quanto andrà ai
+contributi, quanto all'imposta sul reddito, quanto resterà sul conto.
+Accanto comparirà il paragone «su ogni 100 € scritti come lordo, 69,92 €
+arrivano sul tuo conto», e — in corpo leggibile, non in una nota a piè di
+pagina — la frase che dichiara che questo numero è una stima calcolata così,
+non la busta paga vera.
 
 ### Per chi
 
-*non ancora indicato*
+La persona con il cedolino in mano che vede due numeri molto diversi — il
+lordo in alto, il netto arrivato sul conto — senza sapere che cosa sia
+successo in mezzo. Le servirà nel momento in cui arriva la busta paga, o
+quando qualcuno le proporrà un lordo — un colloquio, un rinnovo, un
+passaggio di livello — e dovrà tradurlo nella cifra mensile che si confronta
+con l'affitto e con la spesa di tutti i giorni.
 
-### Come si proverà
+Le servirà anche arrivando dalla guida che spiega il cedolino voce per voce
+(funzionalità 04): dopo aver letto le singole trattenute sul proprio
+documento, potrà digitare qui gli stessi due numeri e rifare il conto sul
+proprio caso.
 
-*passi non ancora scritti*
+### Come si prova
+
+Sono i **criteri di accettazione**: finché anche uno solo di questi passi non
+dà il risultato atteso, la funzionalità non è finita. I comandi vanno
+eseguiti da `app/`.
+
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (chi non usa Claude
+   Code ottiene lo stesso risultato con `npm run prepara`, che esegue
+   `node scripts/prepara.mjs`). Serve solo la prima volta.
+   *Risultato atteso:* lo script dirà «Ambiente già pronto», oppure elencherà
+   i passi che ha installato, e il suo controllo di salute — `tsc --noEmit` e
+   poi `npm test` — finirà senza errori.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia` (che esegue
+   `node scripts/dev-server.mjs start`). Mai `npm run dev` a mano: è un
+   processo che non termina e lascia la sessione appesa.
+   *Risultato atteso:* lo script riporterà l'indirizzo `http://localhost:5173`.
+
+3. **Raggiungere la schermata, continuando dalla guida al cedolino.** Aprire
+   quell'indirizzo e arrivare — dalla home, area «Il lavoro» — alla guida che
+   spiega il cedolino voce per voce (funzionalità 04); da lì toccare l'invito
+   a rifare il conto sul proprio caso: è il collegamento che la specifica
+   della 04 dichiara **ancora assente oggi**, con la promessa esplicita di
+   aggiungerlo «quando 08 sarà pronta».
+   *Risultato atteso:* si aprirà, con un tocco solo dalla guida, una
+   schermata dedicata a un concetto solo — dove finisce il lordo.
+   **Attenzione**: quel collegamento non è fra i file che la specifica di
+   questa funzionalità dichiara di toccare (non cita `PaginaBustaPaga.tsx` né
+   `catalogoDomande.ts`). Se all'apertura della guida 04 il collegamento non
+   comparisse ancora, è un punto da segnalare in fase 2 come divergenza — non
+   un motivo per inventare un altro percorso di prova: tutti i passi
+   successivi restano verificabili aprendo la schermata dal suo indirizzo,
+   qualunque esso sia.
+
+4. **Lo stato vuoto, prima di digitare niente.** Osservare la schermata
+   appena aperta, senza scrivere nei due campi.
+   *Risultato atteso:* comparirà quali due numeri servono — il lordo
+   mensile e le mensilità — e dove si leggono sulla propria busta paga, non
+   «nessun risultato». La barra non comparirà vuota né a zero: al suo posto
+   una frase che spiega che cosa mostrerà una volta compilati i campi.
+
+5. **Lo stato «in caricamento» non sposterà il layout.** Osservare la
+   schermata nell'istante esatto in cui si apre.
+   *Risultato atteso:* nessuna rotellina che gira e sparisce: il calcolo è
+   immediato e locale, quindi lo stato esisterà solo come spazio già
+   riservato. Il riquadro del risultato e la barra occuperanno già il loro
+   posto da vuoti, così quando compariranno i numeri il resto della
+   schermata non si sposterà.
+
+6. **Digitare il caso di riferimento.** Scrivere **2000** (il lordo
+   mensile, in euro) nel primo campo e **13** (le mensilità) nel secondo.
+   *Risultato atteso:* senza attese comparirà **1.398,47 €** come numero
+   grande — il netto mensile — e sotto, più piccolo, **18.180,16 €** come
+   netto annuo, insieme al paragone «su ogni 100 € scritti come lordo, 69,92 €
+   arrivano sul tuo conto».
+
+7. **La barra e la quadratura — il criterio più importante di tutti.**
+   Leggere i tre pezzi della barra e, con una calcolatrice qualunque,
+   sommare i tre importi in euro scritti accanto a ciascuno.
+   *Risultato atteso:* tre pezzi — contributi, imposta sul reddito, quello
+   che resta — ciascuno con etichetta, percentuale e importo **sempre
+   scritti**, mai visibili solo al passaggio del mouse: **9,19%** ai
+   contributi (2.389,40 €), **20,89%** all'imposta (5.430,44 €), **69,92%**
+   che resta (18.180,16 €). Sommando i tre importi si otterrà **esattamente**
+   26.000,00 € — il lordo annuo, 2.000 × 13 — senza un centesimo di scarto:
+   è la sottrazione che la persona potrà rifare su un foglio.
+
+8. **L'avvertenza che questo numero non è la busta paga vera.** Cercare,
+   sulla stessa schermata, la frase che dichiara i limiti del calcolo.
+   *Risultato atteso:* comparirà in corpo leggibile — della stessa
+   dimensione del resto del testo, almeno 16 px, **non** in una nota a piè
+   di pagina — e dirà che il calcolo lascia fuori le detrazioni per lavoro
+   dipendente e le addizionali regionali e comunali: le due cose tirano in
+   direzioni opposte (le detrazioni alzerebbero il netto, le addizionali lo
+   abbasserebbero), e per questo la cifra sarà presentata come una stima —
+   «un netto calcolato così, con queste due cose lasciate fuori» — non come
+   «il tuo netto».
+
+9. **Da dove vengono le aliquote usate.** Cercare, vicino al risultato, la
+   riga che dichiara le aliquote e le soglie con cui è stato fatto il
+   calcolo.
+   *Risultato atteso:* comparirà la fonte attesa per ciascun dato — Agenzia
+   delle Entrate per l'IRPEF, INPS per i contributi — insieme a una
+   dichiarazione esplicita che l'anno d'imposta a cui questi valori si
+   riferiscono non è ancora stato confermato da nessuno: le aliquote non
+   saranno presentate come un fatto già verificato, sullo stesso schema già
+   usato per il tasso di inflazione della funzionalità 07, dove quel flag è
+   tuttora falso.
+
+10. **Lo stato di errore.** Cancellare il valore digitato nel campo delle
+    mensilità e scrivere **15** (fuori dall'intervallo 12–14 ammesso).
+    *Risultato atteso:* comparirà una frase in linguaggio umano — sul
+    modello di «controlla questo numero, sembra troppo alto», mai «errore di
+    validazione» — il numero grande non mostrerà una cifra calcolata su un
+    dato che non va, e il **2000** digitato nell'altro campo resterà dov'è,
+    senza sparire.
+
+11. **Dati lunghi.** Cancellare e riscrivere **99000** come lordo mensile
+    (99.000 €, sotto la soglia massima di 100.000 €) con **14** mensilità:
+    un lordo annuo a sette cifre, 1.386.000 €.
+    *Risultato atteso:* la griglia non si romperà, il numero grande non
+    andrà a capo in un punto illeggibile, e le tre etichette della barra
+    resteranno leggibili e affiancate al proprio importo anche dovendo
+    andare a capo.
+
+12. **Da tastiera e a finestra stretta come un telefono.** Restringere la
+    finestra sotto i 768 px di larghezza e rifare i passi 6-8; poi, senza
+    toccare il mouse, premere Tab più volte fino a raggiungere i due campi e
+    i collegamenti della schermata.
+    *Risultato atteso:* nessuna scritta scenderà sotto i 16 px, il contrasto
+    fra testo e fondo resterà leggibile (almeno 4,5:1), nessun bersaglio —
+    campi, collegamenti — sarà più piccolo di 44×44 px, e ogni elemento che
+    riceve il focus da tastiera avrà un contorno visibile, mai un `outline`
+    rimosso senza un sostituto altrettanto evidente.
+
+13. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire la stessa schermata servita
+    da un server locale qualunque.
+    *Risultato atteso:* la build finirà senza errori, e rifacendo i passi
+    6-9 si leggerà esattamente lo stesso risultato — **1.398,47 €**, la
+    stessa barra, la stessa avvertenza — senza che parta una sola richiesta
+    fuori dal computer: le aliquote sono scritte nel codice, non lette da
+    qualche parte in rete.
 
 ### Limiti
 
-*nessun limite dichiarato*
+- **Non dirà a nessuno che cosa farne.** Niente su quanto chiedere di
+  aumento, su come ridurre le trattenute, su quale inquadramento o regime
+  fiscale avere. Si fermerà a mostrare dove va il lordo digitato — una
+  sottrazione scomposta in tre pezzi — non un'indicazione su come cambiarla.
+- **Non metterà a confronto il regime da lavoratore dipendente con quello da
+  partita IVA in regime forfettario.** Se un giorno rientrerà, sarà una
+  specifica a sé, con i due conti mostrati fianco a fianco senza che nessuno
+  dei due venga indicato come l'opzione buona, e con il coefficiente di
+  redditività digitato dalla persona, mai fisso: oggi mancano comunque,
+  dichiarate con il loro anno d'imposta, le altre grandezze che
+  servirebbero — coefficiente, imposta sostitutiva, aliquota della Gestione
+  Separata.
+- **Non prenderà le aliquote IRPEF, gli scaglioni né l'aliquota contributiva
+  INPS dalla rete**, né a runtime né in fase di build: sono dati che nessuno
+  di noi può inventare. Entreranno nel codice come parametri dichiarati in un
+  modulo a parte, `fiscoDichiarato.ts`, insieme alla loro fonte attesa —
+  Agenzia delle Entrate / Legge di Bilancio per l'IRPEF, circolare INPS per i
+  contributi — e a un flag, `annoImpostaDichiarato`, che partirà `false`.
+  Finché resterà falso, la schermata lo dirà apertamente invece di
+  presentare 23% / 33% / 43% e 9,19% / 10,19% come aliquote già verificate:
+  sono, per ora, valori di prova presi da un documento interno, non da una
+  circolare controllata. È lo stesso schema già usato per il tasso di
+  inflazione della funzionalità 07, dove quel flag è tuttora falso — e con
+  la funzionalità 13 esiste ora un registro unico delle fonti che è il luogo
+  naturale in cui questi valori finiranno una volta confermati: è quel
+  passaggio, non l'implementazione di questo calcolo, a fermare la demo
+  dall'avere qui numeri già verificati.
+- **Non includerà le detrazioni per lavoro dipendente né le addizionali
+  regionali e comunali**, e lo dichiarerà a schermo in corpo leggibile: sono
+  due omissioni che tirano in direzioni opposte, e per questo il risultato
+  non sarà presentato come «il tuo netto» ma come una stima calcolata così.
+- **Non spalmerà correttamente la tredicesima.** Il netto mensile sarà una
+  media fra le mensilità digitate, mentre nella busta vera il mese della
+  tredicesima è tassato a parte — e la schermata lo dichiarerà.
+- **Non tratterà casi diversi da un lavoratore dipendente del settore
+  privato**: niente pubblico impiego, part-time a orario variabile, premi,
+  straordinari, fringe benefit, bonus o trattenute personali.
+- **Non chiederà né conserverà dati personali.** Le due cifre digitate
+  resteranno nella pagina, non finiranno nell'indirizzo del browser né
+  saranno salvate da nessuna parte.
+- **Non leggerà un documento vero.** I due numeri si digiteranno a mano.
+  Leggere il cedolino riga per riga resta il compito della guida —
+  funzionalità 04 — a cui questa schermata si collega ma che non sostituisce.
+
+---
 
 ---
 
 ## 09 — «Per quanti mesi bastano i soldi che ho da parte»
-**Stato:** ◌ in sviluppo — *non ancora riconciliato con il codice*  
+**Stato:** ◌ in sviluppo  
 **Origine:** [`docs/features/09-mesi-coperti-dai-risparmi.md`](features/09-mesi-coperti-dai-risparmi.md)
-### Cosa farà
+### Cosa fa
 
-*non ancora descritto*
+Chi scriverà due numeri — quanto spende in un mese per le spese fisse e quanto
+ha da parte — vedrà comparire una cifra sola, grande: per quanti mesi e giorni
+quella cifra copre quelle spese, se da un certo momento in poi non entrasse più
+niente sul conto. Con 1.200 € di spese al mese e 3.100 € da parte comparirà
+**2 mesi e 17 giorni**, e subito sotto la scomposizione che permette di rifare
+il conto a mano: due mesi pagati per intero — 2.400,00 € — più altri 700,00 €
+che restano, cioè 17 giorni del mese successivo. Il conto si fermerà sempre al
+giorno pieno per difetto: non dichiarerà mai una copertura più lunga di quella
+che la divisione dà davvero.
+
+La schermata dirà per quanti mesi durano quei soldi, con l'ipotesi scritta in
+chiaro accanto al risultato — non in una nota a piè di pagina — e si fermerà
+lì: non dirà se quel numero è poco o tanto, non userà nessun colore di
+giudizio e non proporrà nessun traguardo da raggiungere.
 
 ### Per chi
 
-*non ancora indicato*
+Una persona con un lavoro che potrebbe non esserci fra sei mesi — un contratto
+a termine in scadenza, una partita IVA con un cliente solo, un'azienda che ha
+annunciato tagli. Ha qualcosa da parte e non sa dire quanto le durerebbe:
+l'ansia è generica — «non so se basterebbe» — e in quella forma non si può né
+misurare né mettere giù.
 
-### Come si proverà
+Le servirà nel momento in cui arriva la notizia che il reddito potrebbe
+fermarsi, o nel momento tranquillo in cui guarda il conto e la domanda le
+passa per la testa da sola — prima che succeda qualcosa, perché dopo nessuno
+apre un sito per fare una divisione. Dopo, al posto di «non so se basterebbe»,
+avrà una cifra riferita a sé — «con 1.200 € di spese al mese e 3.100 € da
+parte, quei soldi coprono 2 mesi e 17 giorni» — che potrà rifare su un foglio
+ogni volta che vorrà.
 
-*passi non ancora scritti*
+### Come si prova
+
+Sono i **criteri di accettazione**: finché anche uno solo di questi passi non
+dà il risultato atteso, la funzionalità non è finita. I comandi vanno eseguiti
+da `app/`.
+
+Il caso di riferimento è quello già verificato a mano nella specifica: **1.200 €
+di spese fisse al mese, 3.100 € da parte** → 2 mesi e 17 giorni, con un residuo
+di 700,00 € nell'ultimo mese. Lo stesso caso che il test unitario bloccherà e
+che finirà nello screenshot della demo: la slide mostrerà la cifra che il test
+dimostra.
+
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (chi non usa Claude
+   Code ottiene lo stesso risultato con `npm run prepara`, che esegue
+   `node scripts/prepara.mjs`). Serve solo la prima volta.
+   *Risultato atteso:* lo script dirà «Ambiente già pronto», oppure elencherà
+   i passi che ha installato, e il suo controllo di salute — `tsc --noEmit` e
+   poi `npm test` — finirà senza errori. Se fallisce, ci si fermerà qui.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia` (che esegue
+   `node scripts/dev-server.mjs start`). Mai `npm run dev` a mano: è un
+   processo che non termina e lascia la sessione appesa.
+   *Risultato atteso:* lo script riporterà l'indirizzo `http://localhost:5173`.
+
+3. **Arrivare alla schermata navigando, non scrivendo l'indirizzo a mano.**
+   Aprire quell'indirizzo, entrare nell'area «Il futuro» e aprire la nuova
+   domanda nella sua lista di argomenti.
+   *Risultato atteso:* si aprirà la pagina all'indirizzo
+   `#/quanti-mesi-bastano`. Se la voce nuova non comparirà nella lista
+   dell'area «Il futuro» e vi si potrà arrivare solo scrivendo l'indirizzo a
+   mano nella barra, il passo non sarà superato: andrà segnalato come
+   divergenza in fase 2, non aggirato.
+
+4. **Lo stato vuoto — prima di digitare qualunque cosa.** Guardare la
+   schermata appena aperta, senza toccare i campi.
+   *Risultato atteso:* **nessun numero grande inventato e nessuno zero** al
+   posto del risultato, e **nessuna frase che anticipi un giudizio** su quello
+   che comparirà. Al loro posto una frase che dirà quali due cifre servono —
+   le spese fisse di un mese e quanto si ha da parte — e dove scriverle.
+
+5. **Il caso verificato a mano.** Digitare le spese mensili e i risparmi del
+   caso di riferimento — 1.200 € e 3.100 €.
+   *Risultato atteso:* comparirà **2 mesi e 17 giorni** come numero grande —
+   il più grande della schermata. Accanto si leggerà l'ipotesi in chiaro, non
+   in una nota a piè di pagina: «se da domani non entrasse più niente sul
+   conto». Sotto, la scomposizione che permette di rifare il conto a mano: due
+   mesi pagati per intero — **2.400,00 €** — più **700,00 €** che restano,
+   cioè altri 17 giorni. Si leggeranno anche la convenzione dichiarata — «un
+   mese contato come 30 giorni; i conti si fermano sempre al giorno pieno» —
+   la frase che dice che il numero non viene da nessuna fonte esterna ma solo
+   dalle due cifre digitate, e l'avvertenza standard già usata nelle altre
+   simulazioni del sito.
+
+6. **Niente da parte — un risultato, non un errore.** Lasciare le spese
+   mensili come al passo 5 e cambiare i risparmi in `0`.
+   *Risultato atteso:* comparirà **0 giorni** come risultato valido, con la
+   frase che spiega il conto — non un messaggio d'errore, non un campo che si
+   rifiuta, non un tono che lasci intendere che zero sia sbagliato. Rifiutarlo
+   come errore di validazione sarebbe un giudizio mascherato da controllo:
+   dire a chi non ha nulla da parte che il suo numero «non va bene» non
+   sarebbe un controllo, sarebbe un verdetto. È una differenza voluta rispetto
+   alla funzionalità «quanto valgono davvero i miei risparmi» (07), dove una
+   somma a zero viene invece rifiutata perché lì non c'è nessuna erosione da
+   mostrare: qui zero da parte è una situazione reale che qualcuno può
+   trovarsi a leggere, e la schermata la tratterà come tale.
+
+7. **L'errore in linguaggio umano.** Nel campo delle spese mensili scrivere
+   `0`, oppure una cifra chiaramente troppo bassa per essere le spese fisse di
+   un mese, oppure del testo al posto di un numero.
+   *Risultato atteso:* comparirà un messaggio scritto come lo direbbe una
+   persona, mai «errore di validazione nel campo input». Il numero grande non
+   mostrerà un risultato calcolato su una divisione per zero o su un dato che
+   non va, e quello che resterà digitato nel campo dei risparmi **non andrà
+   perso**: correggere un campo non dovrà costare quello già scritto
+   nell'altro.
+
+8. **Nessun giudizio in vista — il criterio più delicato di tutti.** Con il
+   caso del passo 5 ancora a schermo, guardare l'intera pagina: colori,
+   titoli, ogni frase.
+   *Risultato atteso:* nessun elemento colorato di verde, giallo o rosso — né
+   in generale nessun colore usato per comunicare un verdetto — e nessuna
+   parola come «abbastanza», «sufficiente», «obiettivo», «traguardo»,
+   «dovresti avere», o «tre mesi» / «sei mesi» usate come soglia da
+   raggiungere. In nessun punto comparirà l'espressione «fondo di emergenza».
+   La pagina dirà per quanti mesi durano quei soldi e non dirà se è poco o
+   tanto.
+
+9. **Lo stato «in caricamento» non deve far saltare il layout.** Guardare
+   dove si trova il riquadro del risultato prima di digitare, poi digitare i
+   valori del passo 5 e guardare dove si trova dopo.
+   *Risultato atteso:* sarà nello stesso posto. Il calcolo è immediato e tutto
+   locale: nessuna rotellina che gira per un istante e sparisce.
+
+10. **Dati lunghi — il caso che rompe le griglie.** Digitare `500` nelle
+    spese mensili e `999999` nei risparmi.
+    *Risultato atteso:* comparirà **1.999 mesi e 29 giorni** su una riga
+    leggibile, senza spezzare «1.999» da «mesi» andando a capo a metà, e senza
+    barra di scorrimento orizzontale. Le cifre resteranno tabulari e allineate
+    a destra dove compaiono in una tabella.
+
+11. **Da tastiera e a finestra stretta come un telefono.** Restringere la
+    finestra sotto i 768 px di larghezza — quanto misura lo schermo di un
+    telefono tenuto in verticale — e rifare il passo 5; poi, senza toccare il
+    mouse, premere Tab più volte per compilare i due campi e raggiungere ogni
+    collegamento della pagina.
+    *Risultato atteso:* i campi e il risultato si impileranno senza testo
+    tagliato, nessuna scritta scenderà sotto i 16 px, ogni testo si leggerà
+    con un contrasto di almeno 4,5:1 sul fondo — mai un grigio slavato — e
+    nessun bersaglio da toccare sarà più piccolo di 44×44 px, cioè del
+    polpastrello di un dito. Con Tab il focus attraverserà i campi nell'ordine
+    in cui si leggono e a ogni passaggio si vedrà un contorno netto attorno
+    all'elemento che lo ha; nessuna informazione — l'ipotesi, la
+    scomposizione, l'avvertenza — sarà disponibile solo passando il mouse
+    sopra qualcosa.
+
+12. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire la schermata dalla cartella
+    `dist/`.
+    *Risultato atteso:* la build finirà senza errori, e rifacendo il passo 5
+    il risultato sarà lo stesso — 2 mesi e 17 giorni — **senza che parta una
+    sola richiesta fuori dal computer**. Questa è l'unica funzionalità del
+    sito che non dipende da nessuna costante esterna da dichiarare: non c'è un
+    tasso, non c'è una fonte, quindi non c'è niente da aggiornare né alcun
+    blocco aperto legato ai dati. Il caso del doppio clic diretto su
+    `dist/index.html` è un difetto già noto e registrato in `01-landing-page`,
+    passo 8: qui si verifica solo che questa schermata non aggiunga nuove
+    richieste di rete, non lo si risolve.
 
 ### Limiti
 
-*nessun limite dichiarato*
+- **Non dirà se i mesi calcolati sono pochi o tanti.** Nessuna soglia, nessun
+  obiettivo, nessun «tre mesi» o «sei mesi» presentati come traguardo da
+  raggiungere: sarebbero insieme una raccomandazione personalizzata e un
+  numero senza nessuna fonte che lo dichiari.
+- **Non userà il semaforo verde/giallo/rosso**, pur essendo il pattern che le
+  regole di scrittura del sito prescrivono di solito per tradurre un numero in
+  un giudizio immediato. È una **deroga dichiarata, non una dimenticanza**:
+  qui il semaforo classificherebbe la situazione personale di chi legge — «va
+  bene» / «attenzione» / «preoccupante» — che è esattamente il giudizio che
+  questo prodotto non dà.
+- **Non si chiamerà, in nessun punto** — schermata, indirizzo, testo del
+  codice — **«fondo di emergenza»**: è il nome respinto dal cancello
+  d'ingresso della specifica, non una scelta di stile evitata per gusto.
+- **Non proporrà un traguardo** e non calcolerà quanto manca per
+  raggiungerlo: «ti mancano 4.500 € per arrivare a sei mesi» sarebbe un
+  consiglio travestito da sottrazione.
+- **Non farà digitare un traguardo scelto dalla persona**: sarebbe un secondo
+  concetto nella stessa schermata, e la regola del sito è un concetto per
+  schermata. Se servirà, sarà un'altra specifica e un altro branch.
+- **Non chiederà perché le entrate potrebbero fermarsi** e non distinguerà
+  fra le cause: la divisione resterà identica in ogni caso, senza profilare
+  né drammatizzare chi la usa.
+- **Non nominerà prodotti finanziari** — conti, depositi, fondi, titoli,
+  polizze — e non dirà dove tenere quei soldi.
+- **Non calcolerà l'inflazione** su quella cifra: incrociarla con la
+  funzionalità «quanto valgono davvero i miei risparmi» raddoppierebbe i
+  concetti in una schermata sola.
+- **Non sarà una previsione.** Presupporrà che le spese restino quelle
+  digitate e che non entri più nessuna entrata, e le due ipotesi
+  compariranno scritte a schermo, non in una nota a piè di pagina.
+- **Non leggerà nessun documento.** I due numeri si digiteranno a mano, e la
+  funzionalità non toccherà `src/ingest/`.
+- **Non conserverà né trasmetterà le due cifre da nessuna parte.**
+  Resteranno nello stato della pagina e non finiranno nell'indirizzo, per la
+  stessa ragione già valida nella «07»: un importo nell'hash resterebbe nella
+  cronologia del browser senza che nessuno l'abbia deciso.
+
+---
 
 ---
 
 ## 10 — «Quanto pago al mese: la rata con un tasso fermo e con un tasso che si muove»
-**Stato:** ◌ in sviluppo — *non ancora riconciliato con il codice*  
+**Stato:** ◌ in sviluppo  
 **Origine:** [`docs/features/10-simulatore-rata-mutuo-fisso-variabile.md`](features/10-simulatore-rata-mutuo-fisso-variabile.md)
-### Cosa farà
+### Cosa fa
 
-*non ancora descritto*
+«…»
 
 ### Per chi
 
-*non ancora indicato*
+Una persona che ha in mano due preventivi di mutuo — o un preventivo solo con
+due righe di tasso, «3,46% fisso» e «2,80% variabile» — nel momento esatto in
+cui li tiene sul tavolo e sta per chiedere a qualcuno «ma in pratica quanto
+pago?». Non sta scegliendo fra le due offerte: vuole tradurre due percentuali
+che non sa leggere in euro al mese, l'unica unità con cui la sua vita è
+organizzata.
 
-### Come si proverà
+### Come si prova
 
-*passi non ancora scritti*
+«…»
 
 ### Limiti
 
-*nessun limite dichiarato*
+«…»
+
+### Divergenze fra previsto e realizzato
+
+«Ogni scostamento, con il motivo. Si segnalano, non si appianano: riscrivere la
+previsione per farla combaciare con il risultato rende inutile l'esercizio.»
 
 ---
 
 ## 11 — «Quanto costa in tutto un mutuo, oltre ai soldi che la banca presta»
-**Stato:** ◌ in sviluppo — *non ancora riconciliato con il codice*  
+**Stato:** ◌ in sviluppo  
 **Origine:** [`docs/features/11-approfondimento-sul-mutuo.md`](features/11-approfondimento-sul-mutuo.md)
-### Cosa farà
+### Cosa fa
 
-*non ancora descritto*
+«…»
 
 ### Per chi
 
-*non ancora indicato*
+Una persona che sta per firmare, o ha già firmato, il debito più grande
+della sua vita, e che davanti al foglio della banca riconosce solo la
+cifra della rata: TAN, TAEG, ammortamento, ipoteca, istruttoria sono parole
+lette senza aver mai osato chiedere che cosa significano. Le serve nei
+giorni fra il preventivo e la firma, nei mesi dopo quando il debito scende
+meno di quanto sperava, e — per la sola schermata 7 — nel momento in cui la
+rata comincia a pesare troppo: lì non legge per curiosità.
 
-### Come si proverà
+### Come si prova
 
-*passi non ancora scritti*
+«…»
 
 ### Limiti
 
-*nessun limite dichiarato*
+«…»
+
+### Divergenze fra previsto e realizzato
+
+«Ogni scostamento, con il motivo. Si segnalano, non si appianano: riscrivere la
+previsione per farla combaciare con il risultato rende inutile l'esercizio.»
 
 ---
 
 ## 12 — «Il foglio che ti danno prima di firmare»
-**Stato:** ◌ in sviluppo — *non ancora riconciliato con il codice*  
+**Stato:** ◌ in sviluppo  
 **Origine:** [`docs/features/12-guida-al-foglio-prima-di-firmare.md`](features/12-guida-al-foglio-prima-di-firmare.md)
-### Cosa farà
+### Cosa fa
 
-*non ancora descritto*
+«…»
 
 ### Per chi
 
-*non ancora indicato*
+La persona a cui, allo sportello o in un ufficio, hanno appena messo davanti
+un foglio fitto di poche pagine che non ha chiesto e non capisce, con
+qualcuno seduto davanti che aspetta una firma — oppure la stessa persona, la
+sera a casa, con la copia in mano e la domanda «che cosa ho firmato». Le
+servirà **prima di firmare**, non dopo: il tempo a disposizione è pochi
+secondi, non una lettura con calma.
 
-### Come si proverà
+### Come si prova
 
-*passi non ancora scritti*
+«…»
 
 ### Limiti
 
-*nessun limite dichiarato*
+«…»
+
+### Divergenze fra previsto e realizzato
+
+«Ogni scostamento, con il motivo. Si segnalano, non si appianano: riscrivere la
+previsione per farla combaciare con il risultato rende inutile l'esercizio.»
 
 ---
 
@@ -1085,4 +2244,25 @@ davvero.
    previsti».** Quanto descritto in fase 1 corrisponde a quanto costruito,
    incluso il criterio dichiarato «il più importante di tutti» (passo 5): la
    pagina non presenta mai il 2,00% come un fatto già verificabile.
+
+---
+
+## 14 — Registro delle schermate
+**Stato:** ◌ in sviluppo — *non ancora riconciliato con il codice*  
+**Origine:** [`docs/features/14-registro-delle-schermate.md`](features/14-registro-delle-schermate.md)
+### Cosa farà
+
+*non ancora descritto*
+
+### Per chi
+
+*non ancora indicato*
+
+### Come si proverà
+
+*passi non ancora scritti*
+
+### Limiti
+
+*nessun limite dichiarato*
 
