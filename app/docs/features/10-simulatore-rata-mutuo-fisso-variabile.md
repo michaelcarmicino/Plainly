@@ -422,3 +422,201 @@ Il legame con **`11-approfondimento-sul-mutuo`** è di contenuto, non di file:
 questa pagina calcola la rata, quella spiega il meccanismo. Se `11` arriva
 prima, questa schermata ci si collega con un link; se arriva dopo, non cambia
 niente qui.
+
+---
+
+## Previsto
+
+*Scritto da `doc-funzionale` in fase 1, dalla sola specifica, mentre il codice
+viene costruito. **Tutto al futuro**: nulla qui è ancora verificato.*
+
+> Stato: **in sviluppo** · fase 1 scritta il 2026-09-15, dalla sola
+> specifica. La fase 2 — rilettura del codice e dei test, esecuzione dei
+> passi qui sotto e riscrittura al presente sotto «Verificato» — non è
+> ancora stata fatta.
+>
+> **Uno scostamento già visibile nella specifica stessa, segnalato qui
+> invece che corretto.** La tabella «Directory toccate» (sezione
+> «Dichiarazioni tecniche») indica ancora `rotte.ts` come file da estendere
+> per aggiungere la rotta della nuova schermata. Dalla funzionalità
+> `14-registro-delle-schermate` questo non è più il modo in cui una
+> schermata si aggiunge: si dichiara in un file nuovo sotto
+> `src/ui/schermate/NN-nome.ts` (vedi `07-valore-risparmi.ts` e
+> `13-fonti.ts` come modello) e il registro la raccoglie da sola —
+> `rotte.ts` non si tocca più. I passi di prova qui sotto seguono la
+> struttura attuale, non quella scritta nella specifica; chi implementa
+> dovrà fare lo stesso, e la fase 2 dovrà verificare che sia successo
+> davvero.
+
+### Cosa farà
+
+Digitando l'importo del prestito, gli anni e i due tassi scritti sul
+preventivo, la schermata mostrerà le due rate mensili — quella a tasso fermo e
+quella a tasso che si muove — **affiancate, della stessa dimensione, dello
+stesso colore e dello stesso peso**, con la differenza fra le due in euro al
+mese e in dodici mesi, e una scala di quattro ipotesi su come cambierebbe la
+rata mobile se il suo tasso si muovesse davvero. Non indicherà, in nessuna
+forma, quale delle due opzioni convenga.
+
+### Per chi
+
+Una persona che ha in mano due preventivi di mutuo — o un preventivo solo con
+due righe di tasso, «3,46% fisso» e «2,80% variabile» — nel momento esatto in
+cui li tiene sul tavolo e sta per chiedere a qualcuno «ma in pratica quanto
+pago?». Non sta scegliendo fra le due offerte: vuole tradurre due percentuali
+che non sa leggere in euro al mese, l'unica unità con cui la sua vita è
+organizzata.
+
+### Come si proverà
+
+Sono i **criteri di accettazione**: finché anche uno solo di questi passi non
+dà il risultato atteso, la funzionalità non è finita. I comandi vanno eseguiti
+da `app/`.
+
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (o
+   `node scripts/prepara.mjs`). Serve solo la prima volta.
+   *Risultato atteso:* l'ambiente risulterà pronto e il controllo di salute
+   — `tsc --noEmit` e poi `npm test` — finirà senza errori.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia`, che esegue
+   `node scripts/dev-server.mjs start`. Mai `npm run dev` a mano.
+   *Risultato atteso:* lo script riporterà l'indirizzo
+   `http://localhost:5173`.
+
+3. **Raggiungere la schermata.** Aprire quell'indirizzo e arrivarci dalla
+   home, attraverso l'area «Il futuro» — oppure, se il collegamento da lì non
+   fosse ancora presente, aprire direttamente il percorso dichiarato nella
+   schermata sotto `src/ui/schermate/` per questa funzionalità.
+   *Risultato atteso:* si aprirà una pagina sola, con quattro campi da
+   compilare: l'importo del prestito, gli anni, il tasso fermo, il tasso che
+   si muove.
+
+4. **Il caso vuoto, prima di digitare qualunque cosa.**
+   *Risultato atteso:* la schermata dirà **quali quattro numeri servono e
+   dove sono scritti sul foglio** — non «nessun risultato» — e i due riquadri
+   delle rate occuperanno già il loro spazio, senza numeri, così il layout
+   non salterà quando i dati arriveranno.
+
+5. **Il caso di riferimento.** Digitare **150.000,00 €** di capitale, **25**
+   anni, **3,46** di tasso fermo e **2,80** di tasso che si muove — lo stesso
+   caso calcolato a mano nella specifica.
+   *Risultato atteso:* compariranno **747,72 €** e **695,81 €**, affiancate,
+   **della stessa dimensione, dello stesso colore e dello stesso peso**,
+   ognuna con sopra l'etichetta di quale tasso rappresenta e accanto la
+   durata resa tangibile («al mese, per 300 mesi»).
+
+6. **La differenza.** Guardare sotto le due rate.
+   *Risultato atteso:* si leggerà **51,91 € al mese** e, subito accanto, **in
+   dodici mesi sono 622,92 €**, con la frase «a tasso fermo, cioè come se
+   quello che si muove non si muovesse» **a schermo**, non in una nota a piè
+   di pagina.
+
+7. **La scala delle ipotesi.** Guardare le quattro righe sotto la
+   differenza.
+   *Risultato atteso:* quattro righe, con lo scarto rispetto a oggi
+   (−1 punto, oggi, +1 punto, +2 punti), la rata corrispondente e quanto
+   cambia rispetto a oggi; alla riga «+1 punto» comparirà **775,28 €**.
+   Accanto alla scala, a schermo, comparirà la frase che dichiara che sono
+   **ipotesi, non pronostici**.
+
+8. **Nessun totale, nessun semaforo — il criterio più importante di
+   tutti.** Cercare, in tutta la pagina, un totale sull'intera durata o gli
+   interessi complessivi di una delle due offerte, e confrontare i colori
+   delle due rate fra loro.
+   *Risultato atteso:* **nessun totale sui 25 anni comparirà, per nessuna
+   delle due rate.** Le due cifre principali useranno lo stesso colore e lo
+   stesso peso: nessuna sarà più grande, più scura o accompagnata da un
+   colore diverso dall'altra. Il rosa `#FF50A0` comparirà **solo** nel
+   blocco «che cosa questa pagina non fa», in fondo, e da nessun'altra
+   parte.
+
+9. **Errore, in lingua umana.** Scrivere un capitale sopra 2.000.000,00 €
+   (per esempio 3.000.000,00 €) nel campo del prestito.
+   *Risultato atteso:* comparirà un messaggio in linguaggio umano accanto al
+   campo — non «errore di validazione» — che dirà che il numero sembra
+   troppo alto e fino a dove arriva la pagina. Le due rate **non
+   mostreranno una cifra sbagliata**: resteranno come erano o torneranno
+   allo stato vuoto, e gli altri tre campi già compilati **non** si
+   svuoteranno.
+
+10. **Dati lunghi o numerosi.** Digitare un capitale a sette cifre (per
+    esempio 1.980.000,00 €) e 40 anni.
+    *Risultato atteso:* le due rate resteranno **su una riga sola ciascuna**,
+    senza uscire dal riquadro; restringendo la finestra sotto i 768 px di
+    larghezza i due riquadri si impileranno invece di stringersi. Nella
+    scala delle ipotesi le etichette andranno a capo se necessario, ma i
+    numeri resteranno **allineati a destra e con cifre tabulari**.
+
+11. **Da tastiera e senza mouse.** Restringere la finestra sotto i 768 px,
+    poi, senza toccare il mouse, premere Tab più volte fino a raggiungere e
+    compilare i quattro campi e ad attivare ogni collegamento della pagina.
+    *Risultato atteso:* nessuna scritta scenderà sotto i **16 px**, ogni
+    testo avrà un contrasto di almeno **4,5:1**, nessun bersaglio sarà più
+    piccolo di **44×44 px**, ogni elemento che riceve il focus mostrerà un
+    contorno visibile, e **nessuna informazione** — in particolare la
+    differenza fra le due rate e la scala delle ipotesi — sarà leggibile
+    **solo** passando il mouse sopra qualcosa.
+
+12. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire la build da un server
+    locale (non con un doppio clic su `dist/index.html`: quel caso ha un
+    difetto già noto e non suo, descritto nella scheda 01).
+    *Risultato atteso:* la build finirà senza errori, e rifacendo i passi
+    5-8 si leggerà esattamente lo stesso contenuto, senza che parta una sola
+    richiesta fuori dal computer.
+
+### Limiti previsti
+
+- **Non indicherà quale delle due opzioni prendere**, in nessuna forma: né a
+  parole, né con un colore diverso, né con una dimensione diversa, né con
+  l'ordine. È il confine più facile da sfondare, e per questo il passo 8 lo
+  mette alla prova per primo fra i criteri di merito.
+- **Non calcolerà il totale pagato sull'intera durata**, né gli interessi
+  complessivi, per nessuna delle due offerte — nemmeno per il tasso fermo,
+  dove sarebbe stato legittimo: la simmetria fra le due colonne è ciò che le
+  tiene alla pari.
+- **Non presenterà le ipotesi come previsioni.** La scala mostrerà che cosa
+  succede alla rata a quattro valori di tasso dichiarati, non quattro
+  scenari probabili, e lo dirà a schermo accanto alla scala.
+- **Non mostrerà il piano di ammortamento** rata per rata: è materiale della
+  funzionalità `11-approfondimento-sul-mutuo`.
+- **Non calcolerà né stimerà il TAEG.** Quello che la persona digita è il
+  TAN, il solo interesse: istruttoria, perizia e assicurazioni non
+  entreranno nel calcolo, e la pagina lo dichiarerà.
+- **Non prenderà nessun tasso dalla rete**, né a runtime né in fase di
+  build: i due tassi sono quelli che la persona ha scritto, presi dal suo
+  preventivo.
+- **Non valuterà la sostenibilità della rata** e non la confronterà con
+  nessun reddito: non chiederà quanto guadagna la persona.
+- **Non nominerà banche, prodotti o offerte.**
+- **Non chiederà né conserverà dati personali:** i quattro numeri
+  resteranno nella pagina, non finiranno nell'indirizzo e non saranno
+  salvati da nessuna parte.
+
+---
+
+## Verificato
+
+*Scritto da `doc-funzionale` in fase 2, al termine di `/implementa`, dopo aver
+letto codice e test ed **eseguito** i passi qui sopra. **Tutto al presente**:
+solo ciò che è stato confermato.*
+
+*Finché questa sezione non esiste, la funzionalità non è riconciliata e
+`/verifica` non la accetta come `implementato`.*
+
+### Cosa fa
+
+«…»
+
+### Come si prova
+
+«…»
+
+### Limiti
+
+«…»
+
+### Divergenze fra previsto e realizzato
+
+«Ogni scostamento, con il motivo. Si segnalano, non si appianano: riscrivere la
+previsione per farla combaciare con il risultato rende inutile l'esercizio.»

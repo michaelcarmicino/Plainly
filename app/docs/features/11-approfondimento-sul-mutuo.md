@@ -431,3 +431,264 @@ naturale è staccare `src/guardrails/` — le tre voci nuove del lessico, che
 nessun altro task rivendica — in un intervento separato di
 `04-guardrail-officer`. Ma allora vanno fatte **prima**, non dopo, perché
 servono a scandire i testi mentre nascono.
+
+---
+
+## Previsto
+
+*Scritto da `doc-funzionale` in fase 1, dalla sola specifica, mentre il codice
+viene costruito. **Tutto al futuro**: nulla qui è ancora verificato.*
+
+> Stato: **in sviluppo** · fase 1 scritta il 2026-09-15, dalla sola
+> specifica. La fase 2 — rilettura del codice e dei test, esecuzione dei
+> passi qui sotto e riscrittura al presente sotto «Verificato» — non è
+> ancora stata fatta.
+
+> **Scostamento tecnico rispetto al testo della specifica, segnalato e non
+> corretto qui.** La sezione «Dichiarazioni tecniche» elenca fra i file
+> toccati «rotte a due segmenti in `rotte.ts`». Da quando la funzionalità
+> `14` (registro delle schermate) è entrata — ed è già presente nel
+> repository: `src/ui/schermate/`, `src/ui/schermate/registro.ts` e
+> `src/ui/schermate/tipi.ts` esistono e sono già usati dall'istanza di
+> riferimento della `03` — nessuna schermata nuova si dichiara più a mano in
+> `rotte.ts`: si aggiunge un file `NN-nome.ts` sotto `src/ui/schermate/`,
+> con `id`, `percorso`, `componente` (senza props) e `passo`, e il registro
+> lo raccoglie da solo. `rotte.ts` non si tocca. I criteri qui sotto sono
+> scritti su questa base, non su quella superata: chi implementa aggiunge
+> otto file di dichiarazione (uno per l'indice, sette per i concetti) sotto
+> `src/ui/schermate/`, non righe nuove in `rotte.ts`.
+
+### Cosa farà
+
+Toccando, nell'area «Il futuro», la domanda «Quanto costa in tutto un
+mutuo, oltre ai soldi che la banca presta?» comparirà un indice con **sette
+voci**, una per concetto. Ogni voce aprirà una pagina intera su un solo
+argomento — quanto del pagamento mensile abbassa davvero il debito, la
+differenza fra i due numeri del volantino e quelli del contratto, che cosa
+cambia allungando la durata o cambiando tipo di tasso, che cosa si paga
+all'inizio, che il mutuo si può spostare in un'altra banca, e che cosa
+esiste se la rata smette di essere sostenibile — mai due argomenti nella
+stessa pagina.
+
+### Per chi
+
+Una persona che sta per firmare, o ha già firmato, il debito più grande
+della sua vita, e che davanti al foglio della banca riconosce solo la
+cifra della rata: TAN, TAEG, ammortamento, ipoteca, istruttoria sono parole
+lette senza aver mai osato chiedere che cosa significano. Le serve nei
+giorni fra il preventivo e la firma, nei mesi dopo quando il debito scende
+meno di quanto sperava, e — per la sola schermata 7 — nel momento in cui la
+rata comincia a pesare troppo: lì non legge per curiosità.
+
+### Come si proverà
+
+Sono i **criteri di accettazione**: finché anche uno solo di questi passi
+non dà il risultato atteso, la funzionalità non è finita. I comandi vanno
+eseguiti da `app/`.
+
+Come già per la `03`, alcuni vincoli dichiarati dalla specifica **non si
+potranno verificare in nessun browser**: sono raccolti nel passo 16.
+
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (o
+   `npm run prepara`). Serve solo la prima volta.
+   *Risultato atteso:* Node, dipendenze e browser confermati a posto;
+   `tsc --noEmit` e poi `npm test` finiranno senza errori.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia`, che esegue
+   `node scripts/dev-server.mjs start`. Mai `npm run dev` a mano.
+   *Risultato atteso:* l'indirizzo `http://localhost:5173` verrà riportato.
+
+3. **Dalla home all'indice, in tre tap.** Aprire quell'indirizzo, toccare
+   la porta «Il futuro», e nell'elenco delle domande toccare «Quanto costa
+   in tutto un mutuo, oltre ai soldi che la banca presta?».
+   *Risultato atteso:* si aprirà una pagina indice, non più testo fermo con
+   la nota «in arrivo». Il percorso in cima leggerà «Pagina iniziale › Il
+   futuro › Quanto costa in tutto un mutuo, oltre ai soldi che la banca
+   presta?» — tre gradini, nessuno cliccabile tranne «Pagina iniziale» e
+   «Indietro».
+
+4. **L'indice è un elenco di sette passaggi, non una tabella.** Guardare la
+   pagina indice.
+   *Risultato atteso:* sette voci distinte, ciascuna un blocco cliccabile
+   intero di almeno 44×44 px, con il testo della domanda accanto e mai
+   un'icona sola. Nessuna riga condensa più di un concetto: se una voce
+   contenesse due argomenti insieme, il criterio è violato.
+
+5. **Concetto 1 — la rata scomposta (quello che si apre per primo).**
+   Toccare la prima voce.
+   *Risultato atteso:* titolo «Perché nei primi anni il debito scende così
+   poco?»; da due a tre frasi di immagine concreta **prima** di qualunque
+   nome tecnico; **solo dopo** comparirà «ammortamento alla francese»; poi
+   l'esempio: rata **474,21 €**, con **250,00 €** di interessi e **224,21
+   €** che abbassano il debito nella prima rata, e **1,18 €** di interessi
+   nell'ultima; in fondo, in rosa `#FF50A0`, una riga non vuota che dice il
+   confine di questa pagina, e da nessuna parte una frase in seconda
+   persona che indichi un'azione («fai», «scegli», «conviene»).
+
+6. **Concetto 3 — la durata.** Tornare all'indice, toccare la voce «20, 25
+   o 30 anni: che cosa cambia nel conto?».
+   *Risultato atteso:* comparirà che allungando da 25 a 30 anni la rata
+   **scende di 52,61 €** al mese e in tutto si **pagano 9.513 € di
+   interessi in più** — descritto come meccanismo («chi allunga la durata
+   ottiene…»), mai come raccomandazione («conviene allungare»). Nessun
+   totale metterà a confronto un tasso fermo con un tasso che si muove.
+
+7. **Concetto 4 — fisso o variabile.** Tornare all'indice, toccare la voce
+   «Rata sempre uguale o rata che si muove?».
+   *Risultato atteso:* comparirà che un punto di tasso in più costa
+   **53,63 €** al mese in più, descritto come meccanismo. Non comparirà
+   «il fisso è più sicuro» né «il fisso è senza rischi»: comparirà che con
+   il tasso fisso la cifra della rata non cambia da un mese all'altro.
+
+8. **Concetto 2 — TAN e TAEG.** Tornare all'indice, toccare la voce «Sul
+   volantino c'è un numero, sul contratto ce ne sono due».
+   *Risultato atteso:* comparirà la differenza fra TAN e TAEG (istruttoria,
+   perizia, assicurazione incluse nel secondo) senza nessuna cifra: questo
+   concetto non ha un esempio numerico, e la pagina non ne inventerà uno
+   per riempire lo spazio.
+
+9. **Concetto 5 — le spese all'inizio.** Toccare «Che cosa si paga e che
+   cosa si firma all'inizio».
+   *Risultato atteso:* un solo concetto — l'inizio del mutuo, oltre alla
+   rata — con l'elenco delle voci (ipoteca, notaio, imposta sostitutiva,
+   perizia, assicurazione) descritte come cose che si pagano una volta
+   sola, senza importi inventati.
+
+10. **Concetto 6 — la surroga.** Toccare «Spostare il mutuo in un'altra
+    banca: che cosa dice la legge».
+    *Risultato atteso:* nella **stessa frase** comparirà che la legge
+    prevede il trasferimento senza notaio, penali né pratica, **e** che la
+    banca nuova deve accettarlo: mai la prima affermazione da sola.
+
+11. **Concetto 7 — se la rata non si riesce più a pagare.** Toccare l'ultima
+    voce.
+    *Risultato atteso:* comparirà l'esistenza del Fondo di solidarietà e
+    della rinegoziazione, con le condizioni a cui esistono, senza nessuna
+    pressione temporale e senza un'istruzione su che cosa fare. **Questo
+    testo, prima di essere considerato pronto per il merge, deve risultare
+    riletto da `guardrail-officer`**: è la condizione che la specifica pone
+    come vincolante, non una cortesia — e se non risulta riletta la
+    funzionalità non è finita, a prescindere da come appare a schermo.
+
+12. **Nessuna prova sociale, in nessuna delle otto schermate.** Rileggere
+    tutte le schermate, indice compreso.
+    *Risultato atteso:* non comparirà «oltre il 90% degli italiani sceglie
+    il fisso» né «quasi metà dei nuovi mutui è a 30 anni», né alcuna altra
+    cifra di quel tipo: nessuna riga giustificherà una scelta con quel che
+    fanno gli altri.
+
+13. **I quattro stati.** Verificare uno per uno:
+    - *Vuoto* — se un concetto non è ancora costruito, l'indice lo mostrerà
+      come testo semplice con la nota `statoPlaceholder`, non come un link
+      spento; e dove l'esempio numerico non è disponibile, il riquadro dirà
+      quale numero manca e perché, mai uno zero.
+    - *In caricamento* — nessuna rotellina: i numeri sono nel bundle e
+      compaiono già pronti al primo disegno.
+    - *Errore* — un indirizzo scritto a mano che punta a un concetto
+      inesistente mostrerà un messaggio in linguaggio umano e la via per
+      tornare all'indice, mai una pagina bianca.
+    - *Dati lunghi* — aprire il concetto 7 (il più lungo) e restringere la
+      finestra sotto i 768 px: l'etichetta «imposta sostitutiva» andrà a
+      capo, nessuna barra di scorrimento orizzontale comparirà, e le sette
+      voci dell'indice — ciascuna lunga una riga e mezzo — andranno a capo
+      senza rompere la griglia.
+
+14. **Da tastiera.** Senza toccare il mouse, premere Tab dall'inizio
+    dell'indice.
+    *Risultato atteso:* si raggiungeranno, in ordine di lettura, tutte e
+    sette le voci dell'indice e ogni collegamento delle pagine di concetto
+    (compreso l'eventuale link al simulatore), ciascuno con un contorno del
+    focus ben visibile e attivabile con Invio. Nessuna informazione — in
+    particolare nessuna condizione della surroga o del Fondo di solidarietà
+    — comparirà solo al passaggio del mouse.
+
+15. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire da `dist/`.
+    *Risultato atteso:* la build finirà senza errori e rifacendo i passi
+    3-11 si leggerà lo stesso contenuto, senza che parta una sola richiesta
+    fuori dal computer.
+
+16. **Ciò che nessun clic può dimostrare — si verifica in fase 2 leggendo
+    il codice e i test, non nel browser.**
+    - **I valori attesi di `quoteRata.ts`** (250,00 € / 224,21 € sulla prima
+      rata, 1,18 € / 473,03 € sull'ultima, 42.263,00 € di interessi su 300
+      rate, il caso `tassoAnnuoBp = 0`, l'invariante
+      `interesse + capitale = rata`): si confermano in
+      `src/core/__tests__/quoteRata.test.ts`, non cliccando in giro.
+    - **Che la formula della rata non sia riscritta qui**: si verifica
+      leggendo che `quoteRata.ts` chiama `rataMutuo()` di `10` invece di
+      duplicarne il calcolo.
+    - **La dipendenza dalla funzionalità `10`.** Alla data di questa fase 1,
+      `10` risulta **proposta**, non ancora costruita: se resta tale al
+      momento dell'implementazione, le schermate 1, 3 e 4 non avranno un
+      numero da mostrare finché `rataMutuo()` non esiste. Non è un
+      criterio che questa pagina può soddisfare da sola: si segnala come
+      blocco, non si aggira.
+    - **Che ogni schermata chiuda con la propria riga di confine** e che il
+      rosa `#FF50A0` compaia **soltanto** lì: si conferma leggendo il
+      markup reso in `tests/accettazione/11-approfondimento-sul-mutuo.test.ts`,
+      non contando a occhio otto schermate.
+    - **Che il nome tecnico non compaia mai prima dell'immagine concreta**,
+      su ogni concetto che dichiara entrambi: si conferma con `indexOf` sul
+      markup reso, come già per la `03`.
+    - **Le tre voci nuove del lessico** (`cambia banca`, `rinegozia`,
+      `tratta con la banca`) e l'assenza delle tre formulazioni vietate
+      indicate dalla specifica («passa a», «garantisce», «senza rischi»):
+      si confermano in `tests/lessico-mutuo.test.ts`, che è dominio del
+      `guardrail-officer` e del `tester`, non di questa pagina di
+      documentazione.
+
+### Limiti previsti
+
+- **Non dirà a nessuno che cosa scegliere** — non fra fisso e variabile,
+  non fra 20 e 30 anni, non se spostare il mutuo — perché mostrare che cosa
+  cambia nel conto e fermarsi lì è il confine più facile da sfondare di
+  questa funzionalità.
+- **Non userà numeri di mercato veri.** Tasso e capitale sono un'ipotesi
+  dichiarata nella stessa frase in cui appare, perché prenderli da una
+  fonte viva sarebbe una chiamata di rete e scriverli senza fonte sarebbe
+  inventarli. I valori reali restano del task `13`.
+- **Non riporterà le due statistiche del documento d'origine** («oltre il
+  90% sceglie il fisso», «quasi metà dei mutui è a 30 anni»): sono vere ma
+  funzionano come prova sociale, cioè un consiglio travestito da dato.
+- **Non riscriverà la formula della rata**: la chiama da `10`, non la
+  duplica.
+- **Non affiancherà mai un totale del tasso fermo a un totale del tasso
+  che si muove**: il confronto con i totali esiste solo fra due durate a
+  parità di tasso.
+- **Non mostrerà il piano di ammortamento rata per rata**: solo la prima e
+  l'ultima rata, perché il concetto sta nel loro confronto.
+- **Non sarà il simulatore**: nessun campo da compilare. Chi vuole provare
+  con la propria cifra passa dal simulatore `10`, collegato dove
+  dichiarato.
+- **Non valuterà la situazione di chi legge** e non conserverà nessun dato
+  personale.
+- **Non metterà fretta**, in particolare nella schermata 7.
+
+---
+
+## Verificato
+
+*Scritto da `doc-funzionale` in fase 2, al termine di `/implementa`, dopo aver
+letto codice e test ed **eseguito** i passi qui sopra. **Tutto al presente**:
+solo ciò che è stato confermato.*
+
+*Finché questa sezione non esiste, la funzionalità non è riconciliata e
+`/verifica` non la accetta come `implementato`.*
+
+### Cosa fa
+
+«…»
+
+### Come si prova
+
+«…»
+
+### Limiti
+
+«…»
+
+### Divergenze fra previsto e realizzato
+
+«Ogni scostamento, con il motivo. Si segnalano, non si appianano: riscrivere la
+previsione per farla combaciare con il risultato rende inutile l'esercizio.»

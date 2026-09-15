@@ -145,3 +145,27 @@ Nota collegata: il centesimo esatto sulle tre soglie **non è raggiungibile** da
 due campi digitati (5.219.000 non condivide fattori con 12, 13 né 14). I valori
 esatti (`lordoAnnuoCent` = 5.219.000 · 3.083.361 · 5.509.197) vanno provati con
 un test diretto sulla funzione pura, non attraverso la schermata.
+
+## Il breadcrumb a due gradini — non una regressione
+
+`guardrail-officer` e `tester` hanno trovato indipendentemente che il percorso di
+navigazione mostra **due** gradini (Pagina iniziale › la domanda) dove la
+specifica 03 promette **tre** (Pagina iniziale › l'area › la domanda).
+`guardrail-officer` l'ha attribuito al refactor della 14.
+
+**Verificato: l'attribuzione è sbagliata.** Il commit precedente alla 14
+(`f02dfa3`) ha già due `<li>` nel percorso. La 14 non ha perso nulla: il
+breadcrumb è sempre stato a due livelli.
+
+È quindi uno **scostamento fra la specifica 03 e il codice preesistente**, non un
+danno da riparare. La 03 ha promesso tre gradini in fase di specifica, senza che
+nessuno verificasse che la navigazione li supportasse.
+
+**Da decidere, non da correggere in fretta:** o la navigazione impara il livello
+dell'area — richiede che la dichiarazione di schermata porti un'area opzionale,
+tutto dentro `src/ui/` — oppure la 03 ritira la promessa e si registra come
+limite. La prima è migliore per chi usa il sito: sapere in quale area si è.
+
+Nel frattempo **un test del `tester` resta rosso**, di proposito, con il commento
+«difetto reale del codice, non del test». È la scelta giusta: documenta lo
+scostamento invece di nasconderlo.

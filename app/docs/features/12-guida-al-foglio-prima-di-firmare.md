@@ -550,3 +550,231 @@ etichetta e valore **facoltativo** — e va nominato come chiede la `05`:
   periodo rende` — tocca `src/guardrails/`, che è **fuori dall'impronta di
   questa funzionalità** e vale per ogni stringa del progetto, quindi per ogni
   branch aperto. Va aperto come task suo, non nascosto in questo diff.
+
+---
+
+## Previsto
+
+*Scritto da `doc-funzionale` in fase 1, dalla sola specifica, mentre il codice
+viene costruito. **Tutto al futuro**: nulla qui è ancora verificato.*
+
+> Stato: **in sviluppo** · fase 1 scritta il 2026-09-15, dalla sola specifica.
+> La fase 2 — rilettura del codice e dei test, esecuzione dei passi qui sotto e
+> riscrittura al presente sotto «Verificato» — non è ancora stata fatta.
+>
+> **Nota tecnica sui percorsi, da segnalare e non da ignorare.** La riga
+> «Directory toccate» qui sopra prevede una modifica a `src/ui/rotte.ts`
+> (`PERCORSO_FOGLIO`) e a `src/ui/App.tsx`. Dalla funzionalità **14**, entrata
+> nel frattempo, quell'istruzione è superata: una schermata nuova si dichiara
+> aggiungendo `src/ui/schermate/12-foglio.ts` (id, percorso, componente,
+> passo) e il registro la raccoglie da sé — `rotte.ts` e `App.tsx` **non si
+> toccano più** per una schermata in più, salvo la riga di spread in
+> `testi.ts`. I passi di prova qui sotto sono scritti sulla struttura attuale
+> (`src/ui/schermate/`), non su quella descritta nella sezione tecnica della
+> spec. Lo scostamento va tenuto presente da chi implementa: non è una
+> licenza per riaprire `rotte.ts` come previsto lì.
+
+### Cosa farà
+
+Mostrerà, in un'unica pagina, il facsimile vuoto di un KID — il foglio di
+poche pagine che per legge accompagna ogni prodotto di investimento
+complesso, «il bugiardino del farmaco, ma per i soldi» — con le sue
+intestazioni originali nell'ordine di legge, e un traduttore che prende i due
+numeri che la persona legge sul proprio foglio (una percentuale di costo e la
+somma che sta mettendo) e li trasforma in un euro grande: quanto costa un
+anno, quanto costa un mese, e quanto si spende per ogni 100 € messi.
+
+Nella riga dei rischi mostrerà i sette numeri **per intero, nessuno segnato e
+nessuno colorato**: chi guarda riconosce dove sta, sul proprio foglio, il
+numero che lo riguarda — non gli viene detto quale sia il numero «buono».
+
+### Per chi
+
+La persona a cui, allo sportello o in un ufficio, hanno appena messo davanti
+un foglio fitto di poche pagine che non ha chiesto e non capisce, con
+qualcuno seduto davanti che aspetta una firma — oppure la stessa persona, la
+sera a casa, con la copia in mano e la domanda «che cosa ho firmato». Le
+servirà **prima di firmare**, non dopo: il tempo a disposizione è pochi
+secondi, non una lettura con calma.
+
+### Come si proverà
+
+Sono i **criteri di accettazione**: finché anche uno solo di questi passi non
+dà il risultato atteso, la funzionalità non è finita. I comandi vanno
+eseguiti da `app/`.
+
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (o `npm run
+   prepara`, che esegue `node scripts/prepara.mjs`). Serve solo la prima
+   volta.
+   *Risultato atteso:* lo script confermerà l'ambiente pronto, e il suo
+   controllo di salute — `tsc --noEmit` e poi `npm test` — finirà senza
+   errori.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia` (che esegue `node
+   scripts/dev-server.mjs start`). Mai `npm run dev` a mano: è un processo che
+   non termina e lascia la sessione appesa.
+   *Risultato atteso:* lo script riporterà l'indirizzo
+   `http://localhost:5173`.
+
+3. **Raggiungere la pagina.** Aprire quell'indirizzo e arrivarci con un
+   percorso di navigazione, senza scrivere l'indirizzo a mano — dalla home o
+   da un collegamento dell'area «Il futuro» — fino a `#/foglio-prima-di-firmare`.
+   *Risultato atteso:* comparirà, dall'alto in basso: l'occhiello dell'area, il
+   titolo come domanda («Che cos'è il foglio che mi danno da firmare?»),
+   l'immagine mentale del bugiardino del farmaco **prima** della parola KID,
+   il facsimile a riquadri, il traduttore, la nota su chi impone il foglio, e
+   in fondo — sempre nello stesso punto — il blocco rosa dei limiti.
+
+4. **Lo stato vuoto — il primo che si vede, non un incidente.** Guardare la
+   pagina senza aver ancora digitato nulla nei due campi.
+   *Risultato atteso:* nessuno `0,00 €` messo lì come segnaposto. Al posto del
+   numero grande comparirà una frase che dice quali due dati servono — la
+   percentuale scritta sul foglio e quanti soldi si stanno mettendo — e dove
+   si trova la prima, cioè nel riquadro «Quali sono i costi?».
+
+5. **Il facsimile, nell'ordine di legge.** Leggere le sei intestazioni dei
+   riquadri, dall'alto in basso, senza aprirne nessuno.
+   *Risultato atteso:* le etichette compariranno **identiche** a quelle di
+   legge, incluse quelle lunghe («Costi di gestione e altri costi
+   amministrativi o di esercizio»), senza essere riscritte o abbreviate. Tre
+   riquadri risulteranno apribili — rischi, costi, tempo — gli altri tre no.
+   Tutti i riquadri saranno **vuoti**: nessun numero, nessun importo, nessuna
+   percentuale già scritta dentro.
+
+6. **La riga dei sette numeri.** Aprire il riquadro «Quali sono i rischi e
+   qual è il potenziale rendimento?».
+   *Risultato atteso:* comparirà una riga con i numeri da 1 a 7, **tutti
+   uguali fra loro, nessuno segnato, nessuno colorato**: niente verde, niente
+   giallo, niente rosso. Il testo accanto dirà che quel numero misura quanto
+   il valore si è mosso in passato — non se il prodotto è buono — e che un
+   numero più basso non significa più sicuro né uno più alto rende di più.
+
+7. **Il traduttore, con il caso di riferimento.** Aprire il riquadro «Quali
+   sono i costi?», digitare `1,50` nel campo della percentuale e `10000` nel
+   campo dell'importo.
+   *Risultato atteso:* comparirà, come numero più grande della pagina,
+   **150,00 €**, con accanto la frase che lo spiega («1,50% su 10.000 € sono
+   150 € l'anno»); sotto, visibilmente più piccolo, **12,50 € al mese**; e il
+   paragone su 100 €: «su ogni 100 € che metti, 1,50 € l'anno se ne vanno in
+   costi». Il paragone con la bolletta del telefono comparirà **solo dentro
+   il testo dell'esempio del riquadro dei costi**, non accanto al risultato
+   appena calcolato.
+
+8. **Il caso con il resto — il mese non ricompone l'anno.** Cambiare i due
+   campi in `2,30` e `3500`.
+   *Risultato atteso:* il numero grande mostrerà **80,50 €** l'anno; il mese
+   mostrerà **6,71 €**, e la pagina **non scriverà mai** che dodici volte il
+   mese fa l'anno — quel conto darebbe 80,52 €, due centesimi in più, e
+   affermarlo sarebbe falso.
+
+9. **Un errore, in linguaggio umano.** Digitare una percentuale fuori
+   intervallo (per esempio `15`) e poi un importo troppo alto.
+   *Risultato atteso:* comparirà una frase in linguaggio umano — «Controlla
+   questa percentuale, sembra troppo alta» con l'indicazione di dove si trova
+   sul foglio, oppure «Controlla questo numero, sembra troppo alto» per
+   l'importo — mai un messaggio tecnico. Il numero grande non mostrerà mai una
+   cifra calcolata su un dato rifiutato, e ciò che era digitato nell'altro
+   campo resterà al suo posto.
+
+10. **Il blocco dei limiti, in fondo, sempre visibile.** Scorrere fino in
+    fondo alla pagina.
+    *Risultato atteso:* un blocco in rosa (`#FF50A0`) dirà che la pagina non
+    dice se firmare, non parla di nessun prodotto in particolare e non dice a
+    nessuno che cosa fare dei propri soldi. Sarà l'**unico** punto della
+    pagina colorato così: guardandosi attorno, nessun altro elemento — inclusa
+    la riga dei sette numeri — userà quel colore.
+
+11. **Da tastiera e a finestra stretta come un telefono.** Restringere la
+    finestra sotto i 768 px di larghezza, rifare i passi 5-7, poi — senza
+    toccare il mouse — premere Tab più volte, nell'ordine: prima i riquadri
+    del facsimile, poi i due campi, poi il risultato.
+    *Risultato atteso:* i riquadri si impileranno senza barra di scorrimento
+    orizzontale, nessuna scritta scenderà sotto i 16 px, nessun bersaglio
+    sarà più piccolo di 44×44 px, e ogni elemento che riceve il focus mostrerà
+    un contorno visibile. Il riquadro apribile risponderà anche a Invio, non
+    solo al clic.
+
+12. **Dati lunghi.** Con la finestra stretta del passo 11, controllare
+    l'intestazione più lunga («Per quanto tempo devo detenerlo? Posso
+    ritirare il capitale prematuramente?») e digitare un importo a sette
+    cifre (`9999999`) con una percentuale al massimo (`10`).
+    *Risultato atteso:* l'intestazione andrà a capo dentro il proprio
+    riquadro senza rompere la griglia, e il numero grande — a sei cifre in
+    euro — resterà su una riga sola, dentro il suo riquadro, senza scorrimento
+    orizzontale.
+
+13. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire la build da un server
+    locale (non con un doppio clic su `dist/index.html`: quel caso è un
+    difetto già noto e tracciato altrove, non di questa funzionalità — vedi la
+    scheda 01, passo 8, e la scheda 13, passo 11).
+    *Risultato atteso:* la build finirà senza errori, e rifacendo i passi 3-7
+    si leggerà esattamente lo stesso contenuto, **senza che parta una sola
+    richiesta fuori dal computer**.
+
+### Limiti previsti
+
+- **Non nominerà nessun prodotto e nessuno strumento finanziario.** Niente
+  conto deposito, BOT, BTP, obbligazioni, azioni, fondi comuni, ETF, fondi
+  pensione, criptoattività, crowdfunding — nemmeno come esempio.
+- **Non accosterà bisogni a strumenti** e non dirà a nessuno quale prodotto
+  corrisponde alla propria situazione: è il motivo per cui la versione
+  originale del task è stata rifiutata, e questa variante lo evita per
+  costruzione.
+- **Non indicherà percentuali di portafoglio** né userà formule come «solo
+  una piccola parte»: sarebbe un giudizio di idoneità travestito da prudenza.
+- **Non dirà che cosa è adatto a chi.** Nessuna domanda sulla situazione di
+  chi legge, nessun profilo, nessun questionario.
+- **Non mostrerà rendimenti, né passati né futuri**, e non avrà un simulatore
+  che proietti «quanto avrai»: un rendimento passato messo a schermo verrebbe
+  letto come un'attesa, qualunque avvertenza gli si scriva accanto.
+- **Non moltiplicherà il costo per gli anni** (niente «150 € × 5 anni»):
+  sarebbe aritmeticamente corretto e fattualmente falso, perché presuppone in
+  silenzio che la somma resti ferma. Mostrerà solo il costo di un anno e,
+  derivato da quello, il costo di un mese.
+- **Non darà nessun semaforo e nessun punteggio** sulla riga da 1 a 7: sarà
+  mostrata per intero, senza colori né parole di giudizio.
+- **Non dirà se firmare.** Nessun riepilogo, nessuna riga «cosa fare adesso».
+- **Non conterrà la spiegazione della diversificazione**: esiste già come
+  paragrafo altrove (`.claude/rules/scrittura-e-accessibilita.md`), non fa
+  parte di questa pagina, che spiega un concetto solo.
+- **Non riscriverà le intestazioni del foglio.** Compariranno identiche,
+  anche quelle lunghe.
+- **Non leggerà un KID vero**: nessun caricamento di PDF, nessuna foto,
+  nessun riconoscimento del testo. I due numeri li digita la persona guardando
+  il proprio foglio.
+- **Non prenderà niente dalla rete** e non avrà nessun dato che invecchia: il
+  riferimento normativo è testo scritto nel codice, non un tasso da
+  aggiornare.
+- **Non farà domande e non assegnerà punteggi**: la misura della comprensione
+  è un'altra funzionalità, di un altro agente.
+- **Non conserverà i due numeri digitati**: restano nella pagina, non finiscono
+  nell'indirizzo e non vengono salvati da nessuna parte.
+
+---
+
+## Verificato
+
+*Scritto da `doc-funzionale` in fase 2, al termine di `/implementa`, dopo aver
+letto codice e test ed **eseguito** i passi qui sopra. **Tutto al presente**:
+solo ciò che è stato confermato.*
+
+*Finché questa sezione non esiste, la funzionalità non è riconciliata e
+`/verifica` non la accetta come `implementato`.*
+
+### Cosa fa
+
+«…»
+
+### Come si prova
+
+«…»
+
+### Limiti
+
+«…»
+
+### Divergenze fra previsto e realizzato
+
+«Ogni scostamento, con il motivo. Si segnalano, non si appianano: riscrivere la
+previsione per farla combaciare con il risultato rende inutile l'esercizio.»
