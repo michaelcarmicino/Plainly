@@ -461,3 +461,112 @@ un componente che stampasse `voce.spiegazione` direttamente non verrebbe
 fermato da nessun controllo automatico: solo la rilettura umana di
 `guardrail-officer` prima del merge lo intercetterebbe. Segnalato esplicitamente
 a `ui-builder` e a `guardrail-officer` perché non resti un rischio silenzioso.
+
+---
+
+## Dopo la 14: `pm:piano` riconosce le cartelle a file esclusivi
+
+### D31 · Il piano si affina per cartelle «provate», non passa a un'impronta per file
+
+**Il problema.** La funzionalità 14 ha tolto quattro dei cinque punti di
+conflitto condivisi sotto `src/ui/`: da quel momento aggiungere una schermata
+vuol dire creare file nuovi e modificare una riga sola, in `src/ui/testi.ts`.
+Ma `pm:piano` calcola le collisioni **per cartella dichiarata**: vede
+`src/ui/` nell'impronta di nove task e li mette tutti in ondate da uno, come
+se ciascuno riscrivesse l'intera cartella. Il piano era diventato una
+previsione pessimistica invece che un fatto — e un piano che dichiara il
+falso, anche per eccesso di prudenza, smette di essere lo strumento su cui
+chiunque può verificare una decisione senza fidarsi di chi l'ha lanciato.
+
+**La tentazione scartata.** Passare a un'impronta per file avrebbe richiesto
+di cambiare il formato di `directory:` nei quattordici task già scritti,
+oppure di indovinare — per i nove ancora da fare — quali file esatti creerà
+un'implementazione che non esiste ancora. Il primo è un cambio di formato in
+mezzo all'hackathon; il secondo è esattamente ciò che il commento di
+`leggiTask()` vieta da sempre («indovinare è il modo di sbagliare»),
+applicato ai file invece che alle cartelle. Nessuno dei due è stato fatto.
+
+**La scelta.** `directory:` non cambia formato: resta una lista di cartelle
+— e, quando un task la conosce già, anche di file precisi, perché
+`collide()` confronta prefissi di stringa in entrambe le direzioni e quindi
+un file esatto (`src/ui/testi.ts`) funziona da impronta più stretta senza
+bisogno di nessuna modifica. Quello che cambia è **come lo script traduce
+una cartella dichiarata in collisione**: una tabella esplicita nello
+script, `CARTELLE_A_FILE_ESCLUSIVI`, elenca le cartelle in cui — per
+convenzione **provata**, non osservata — ogni task aggiunge solo file
+nuovi. Per quelle cartelle la dichiarazione intera non pesa sulla
+collisione: pesa solo il suo punto di contatto residuo, e quel punto di
+contatto non forza comunque l'ondata, perché il piano lo segnala come da
+applicare **fuori dall'ondata**, in un passaggio unico del PM — lo stesso
+meccanismo già descritto a mano in `docs/backlog/registro.md` per la 14
+(«lo spread in testi.ts lo fa il PM in un passaggio unico»), qui reso
+esplicito nello strumento invece di restare una nota a margine.
+
+**Oggi la tabella ha una voce sola: `src/ui/` → `src/ui/testi.ts`.** La
+prova, verificata qui prima di scriverla, non riscritta a memoria:
+`src/ui/rotte.ts`, `src/ui/App.tsx`, `src/ui/Navigazione.tsx` e
+`src/main.tsx`, letti oggi, non contengono più un solo identificatore di
+singola schermata — l'ultimo `case` per schermata e l'ultimo import di CSS
+per schermata sono usciti con la 14, e la specifica (sezione 4) spiega
+perché l'architettura del registro rende strutturalmente inutile
+riaggiungerli: non c'è più un elenco a cui una nuova schermata debba
+aggiungersi. Il punto di contatto che resta, `testi.ts`, è sorvegliato da un
+test che esiste davvero — `src/ui/schermate/__tests__/registro.test.ts` —
+che fallisce con il nome della schermata se una chiave dichiarata manca dal
+registro delle stringhe. **Non è provato invece da un test dedicato** il
+resto dell'affermazione della specifica (che i quattro file condivisi
+restino puliti anche in futuro, sorvegliati riga per riga): oggi è vero per
+ispezione diretta e per come il registro è costruito, non per un cancello
+automatico che lo richiuderebbe se qualcuno tornasse a scrivere un `case`
+per schermata. Onesto dirlo qui piuttosto che scrivere «provato» due volte
+quando è vero una volta e mezza.
+
+**Che cosa NON è entrato in tabella, e perché.** `src/core/index.ts` ha la
+**stessa forma** di `src/ui/testi.ts` — un barrel con un blocco di
+re-export per modulo, verificato leggendo il file: ogni simulatore futuro
+dovrà aggiungerci due righe, non riscriverlo. `tests/` mostra la stessa
+convenzione quasi ovunque (`lessico-fonti.test.ts`,
+`lessico-simulazione-risparmio.test.ts`, `tests/accettazione/NN-*.test.ts`:
+un file nuovo per funzionalità), con l'eccezione di un pugno di file
+generici e già esistenti che si auto-scandiscono (`lessico-ui.test.ts` via
+`readdirSync`) invece di essere riscritti a ogni funzionalità. **Nessuna
+delle due è entrata nella tabella.** Il motivo non è il dubbio sulla
+somiglianza strutturale — è che qui le due direzioni dell'errore non
+costano uguale. Se una cartella davvero a file esclusivi resta fuori dalla
+tabella, il piano è troppo prudente e un paio di task aspettano un turno
+che non serviva: uno spreco di tempo, visibile, che si corregge rilanciando
+il piano. Se una cartella **non** a file esclusivi finisce in tabella per
+errore, il piano dichiara sicuro un parallelismo che non lo è — il guasto
+silenzioso che questo intero strumento esiste per impedire, lo stesso che
+`CLAUDE.md` nomina: due agenti scrivono lo stesso file, entrambi dichiarano
+di aver finito, il lavoro perso si scopre dopo. Sovrastimare i conflitti è
+sicuro; sottostimarli non lo è. Quando le due direzioni non costano uguale
+si sceglie quella che non costa la seconda — anche quando, come qui, la
+somiglianza con il caso già provato è forte.
+
+**Che cosa serve per aggiungere una voce.** Una specifica che dichiari la
+cartella «a file esclusivi» **e** un test che lo sorvegli — lo stesso
+standard già rispettato dalla 14 per `testi.ts`. `src/core/index.ts` e la
+generalità di `tests/` restano scritti qui apposta perché non si perdano,
+non perché siano già decisi: chi tocca uno dei due può leggere questa voce,
+scrivere il test che manca (un guardiano analogo a `registro.test.ts`, o
+alla scansione con `readdirSync` che `lessico-ui.test.ts` già usa), e
+aggiungere la riga in `CARTELLE_A_FILE_ESCLUSIVI`.
+
+**L'avvertenza resta nel piano stesso, sempre, non solo quando serve.**
+`docs/BACKLOG.md` e l'output di `pm:piano` riportano il limite del calcolo a
+ogni generazione, indipendentemente da quali cartelle siano affinate in quel
+momento: un piano che tace il proprio limite non è più affidabile di uno che
+millanta una precisione che non ha.
+
+**Effetto sul backlog di oggi — dichiarato, non nascosto.** I nove task
+ancora da fare condividono anche `tests/` e, otto su nove, `src/core/`:
+restando quelle due cartelle **non** affinate, il piano continua a produrre
+nove ondate da uno, esattamente come prima di questo intervento. Non è un
+difetto di questo intervento: è la conseguenza dichiarata di non aver esteso
+la stessa fiducia a cartelle non ancora provate. Il guadagno di oggi è che
+il piano non mente più su `src/ui/` — lo dichiara affinato, mostra perché, e
+segnala il punto di contatto residuo come lavoro del PM invece che come
+blocco — e lo strumento è pronto a riconoscere `src/core/` e `tests/` nel
+momento in cui qualcuno scrive la specifica e il test che li provano, senza
+dover toccare di nuovo la logica di calcolo: solo la tabella.

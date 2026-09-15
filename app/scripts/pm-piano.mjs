@@ -12,6 +12,18 @@
  * compone delle ONDATE: dentro un'ondata le impronte sono disgiunte, quindi
  * i task si lanciano insieme; fra un'ondata e l'altra si aspetta.
  *
+ * L'impronta dichiarata (`directory:`) resta per cartella intera: cambiare
+ * il formato del backlog per farla diventare per-file è un intervento
+ * grosso, rinviato di proposito (docs/decisioni.md, D31). Quello che QUESTO
+ * script affina è come una cartella dichiarata si traduce in collisione:
+ * una cartella elencata in CARTELLE_A_FILE_ESCLUSIVI (sotto) non pesa sulla
+ * collisione — perché una specifica **e** un test hanno già provato che ogni
+ * task ci aggiunge solo file nuovi — tranne il suo punto di contatto
+ * dichiarato, che il PM applica fuori dall'ondata, in un unico passaggio,
+ * invece che dentro ogni task. Fuori da quella lista una cartella pesa per
+ * intero, come sempre: **può sovrastimare i conflitti, non li sottostima
+ * mai** — l'asimmetria è voluta, vedi D31.
+ *
  *   node scripts/pm-piano.mjs                  stampa il piano e rigenera BACKLOG.md
  *   node scripts/pm-piano.mjs --json           il piano in forma strutturata
  *   node scripts/pm-piano.mjs --registra "…"   annota un evento nel registro
@@ -96,7 +108,52 @@ function leggiTask() {
     });
 }
 
-const task = leggiTask();
+/* ------------------------------------------- cartelle a file esclusivi */
+
+/**
+ * Una cartella qui dentro NON pesa sulla collisione quando un task la
+ * dichiara così com'è: i file che ci aggiunge sono nuovi per convenzione, e
+ * quella convenzione è **provata** — una specifica l'ha dichiarata e un
+ * test la sorveglia — non solo osservata a occhio. Il criterio è alto di
+ * proposito: sottostimare una collisione è il guasto silenzioso che questo
+ * intero script esiste per impedire, ed è peggio di sovrastimarla. Vedi
+ * docs/decisioni.md, D31, anche per i candidati scartati per ora
+ * (`src/core/`, `tests/`) e per il motivo per cui restano fuori.
+ *
+ * `contatto` è il file condiviso che resta: non entra comunque in
+ * collisione, perché il PM lo applica fuori dall'ondata, in un solo
+ * passaggio dopo che l'ondata è finita — non dentro ogni task.
+ */
+const CARTELLE_A_FILE_ESCLUSIVI = [
+  {
+    prefisso: 'src/ui/',
+    contatto: 'src/ui/testi.ts',
+    fonte: 'docs/features/14-registro-delle-schermate.md, sezione 5; D31',
+  },
+];
+
+/**
+ * Separa l'impronta dichiarata in ciò che pesa sulla collisione
+ * (`collisione`) e ciò che è un punto di contatto tollerato, applicato dal
+ * PM fuori dall'ondata (`contattiFuoriOnda`). Non tocca `impronta`: quella
+ * resta la dichiarazione per intero, per la colonna «Directory toccate» e
+ * per il controllo «nessuna directory dichiarata».
+ */
+function raffinaImpronta(impronta) {
+  const collisione = [];
+  const contattiFuoriOnda = [];
+  for (const voce of impronta) {
+    const regola = CARTELLE_A_FILE_ESCLUSIVI.find((r) => r.prefisso === voce);
+    if (regola) {
+      contattiFuoriOnda.push(regola.contatto);
+      continue;
+    }
+    collisione.push(voce);
+  }
+  return { collisione, contattiFuoriOnda };
+}
+
+const task = leggiTask().map((t) => ({ ...t, ...raffinaImpronta(t.impronta) }));
 const perId = new Map(task.map((t) => [t.id, t]));
 const fatti = new Set(task.filter((t) => t.stato === 'fatto').map((t) => t.id));
 
@@ -104,6 +161,23 @@ const fatti = new Set(task.filter((t) => t.stato === 'fatto').map((t) => t.id));
 
 const collide = (a, b) =>
   a.some((x) => b.some((y) => x.startsWith(y) || y.startsWith(x)));
+
+/**
+ * Per un'ondata (elenco di task già ammessi), i punti di contatto tollerati
+ * che i suoi task condividono — anche uno solo: il PM deve comunque
+ * applicarlo, fuori dall'ondata, in un passaggio unico per tutti quelli che
+ * lo toccano insieme.
+ */
+function contattiCondivisi(ondata) {
+  const per = new Map();
+  for (const t of ondata) {
+    for (const c of t.contattiFuoriOnda) {
+      if (!per.has(c)) per.set(c, []);
+      per.get(c).push(t.id);
+    }
+  }
+  return [...per.entries()].map(([file, task]) => ({ file, task }));
+}
 
 const problemi = [];
 const ondate = [];
@@ -138,9 +212,9 @@ while (residui.length > 0 && guardia++ < 50) {
   const ondata = [];
   const occupate = [];
   for (const t of pronti) {
-    if (collide(t.impronta, occupate)) continue;
+    if (collide(t.collisione, occupate)) continue;
     ondata.push(t);
-    occupate.push(...t.impronta);
+    occupate.push(...t.collisione);
   }
 
   ondate.push(ondata);
@@ -149,6 +223,13 @@ while (residui.length > 0 && guardia++ < 50) {
 }
 
 /* ------------------------------------------------------------- output */
+
+const AVVERTENZA_LIMITE =
+  'Il calcolo è per cartella dichiarata. È affinato solo dove una convenzione ' +
+  'è stata provata con una specifica e un test (docs/decisioni.md, D31): oggi ' +
+  'solo src/ui/. Altrove — src/core/, tests/, types/, fixtures/, ' +
+  'src/guardrails/ — resta per cartella intera e può sovrastimare i ' +
+  'conflitti reali. Non li sottostima mai: è la direzione sicura.';
 
 const piano = {
   generatoIl: new Date().toISOString(),
@@ -163,8 +244,10 @@ const piano = {
     numero: i + 1,
     parallele: o.length,
     task: o.map((t) => ({ id: t.id, titolo: t.titolo, impronta: t.impronta })),
+    contattiFuoriOnda: contattiCondivisi(o),
   })),
   problemi,
+  avvertenza: AVVERTENZA_LIMITE,
 };
 
 if (process.argv.includes('--json')) {
@@ -185,13 +268,30 @@ const righeStato = task.length
 
 const righeOndate = ondate.length
   ? ondate
-      .map(
-        (o, i) =>
+      .map((o, i) => {
+        const contatti = contattiCondivisi(o);
+        const righeContatti = contatti.length
+          ? "\n\n  Contatto fuori onda — lo applica il PM in un passaggio unico, dopo l'ondata: " +
+            contatti
+              .map((c) => `\`${c.file}\` (${c.task.map((id) => `\`${id}\``).join(', ')})`)
+              .join('; ')
+          : '';
+        return (
           `### Ondata ${i + 1} — ${o.length} in parallelo\n\n` +
-          o.map((t) => `- \`${t.id}\` ${t.titolo}\n  - tocca: ${t.impronta.map((d) => `\`${d}\``).join(', ')}`).join('\n'),
-      )
+          o
+            .map((t) => `- \`${t.id}\` ${t.titolo}\n  - tocca: ${t.impronta.map((d) => `\`${d}\``).join(', ')}`)
+            .join('\n') +
+          righeContatti
+        );
+      })
       .join('\n\n')
   : '*Nessun task da pianificare.*';
+
+const righeCartelleAffinate = CARTELLE_A_FILE_ESCLUSIVI.length
+  ? CARTELLE_A_FILE_ESCLUSIVI.map(
+      (r) => `- \`${r.prefisso}\` — punto di contatto \`${r.contatto}\` (${r.fonte})`,
+    ).join('\n')
+  : '*Nessuna, oggi: ogni cartella dichiarata pesa per intero sulla collisione.*';
 
 mkdirSync(dirname(INDICE), { recursive: true });
 writeFileSync(
@@ -216,6 +316,17 @@ ${righeStato}
 Dentro un'ondata le directory sono **disgiunte**: i task si lanciano insieme.
 Fra un'ondata e l'altra si aspetta, perché le impronte si sovrappongono.
 
+> Il calcolo è per cartella dichiarata. È affinato solo dove una convenzione
+> è stata **provata** con una specifica e un test — oggi solo \`src/ui/\`
+> (\`docs/decisioni.md\`, D31): il punto di contatto rimasto,
+> \`src/ui/testi.ts\`, non forza l'ondata perché il PM lo applica fuori
+> dall'ondata, in un passaggio unico. Altrove il calcolo resta per cartella
+> intera e **può sovrastimare** i conflitti reali — non li sottostima mai.
+
+**Cartelle affinate:**
+
+${righeCartelleAffinate}
+
 ${righeOndate}
 
 ${problemi.length ? `## Problemi\n\n${problemi.map((p) => `- ${p}`).join('\n')}\n` : ''}
@@ -236,12 +347,19 @@ if (ondate.length === 0) {
   for (const [i, o] of ondate.entries()) {
     console.log(`  Ondata ${i + 1} — ${o.length} in parallelo:`);
     for (const t of o) console.log(`    ${t.id.padEnd(20)} ${t.impronta.join(', ')}`);
+    for (const c of contattiCondivisi(o)) {
+      console.log(
+        `      contatto fuori onda: ${c.file} <- ${c.task.join(', ')} (lo applica il PM in un passaggio unico, non dentro l'ondata)`,
+      );
+    }
   }
   const seq = ondate.reduce((a, o) => a + o.length, 0);
   console.log(
     `\n  ${seq} task in ${ondate.length} ondate invece di ${seq} passaggi in fila.`,
   );
 }
+
+console.log(`\n  ${piano.avvertenza}`);
 
 if (problemi.length) {
   console.log('\n  PROBLEMI:');

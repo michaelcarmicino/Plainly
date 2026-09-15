@@ -9,6 +9,12 @@ note:
 > Modello. Non compilare questo file: copialo con il numero progressivo.
 > Il campo `directory` è **l'impronta**: decide con chi questo task può girare
 > in parallelo. Ricavala dalla specifica in `docs/features/`, non a intuito.
+> Può contenere cartelle (`src/core/`) o file precisi (`src/ui/testi.ts`),
+> mescolati: un file preciso è un'impronta più stretta, collide con meno cose.
+> Alcune cartelle sono registrate come «a file esclusivi» in
+> `scripts/pm-piano.mjs` (`CARTELLE_A_FILE_ESCLUSIVI`): dichiarale per intero
+> come sempre, il piano affina da solo il calcolo — vedi `docs/decisioni.md`,
+> D31, per il criterio e per quali cartelle non ci sono ancora e perché.
 > Stati ammessi: `da-fare` · `in-corso` · `fatto` · `bloccato`.
 
 ## Obiettivo
