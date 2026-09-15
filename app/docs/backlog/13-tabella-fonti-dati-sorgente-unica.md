@@ -1,5 +1,5 @@
 id: 13-tabella-fonti-dati-sorgente-unica
-stato: da-fare
+stato: fatto
 directory: src/core/, src/ui/, tests/
 dipende-da:
 note: impronta ricavata da docs/features/13-tabella-fonti-dati-sorgente-unica.md

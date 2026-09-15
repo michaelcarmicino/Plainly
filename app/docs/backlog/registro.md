@@ -73,3 +73,4 @@ Si sbloccano lanciando Claude Code dalla **root del repository** invece che da
 nessuno ha dichiarato gli anni su cui la media è calcolata. La schermata lo dice
 a chi guarda invece di nasconderlo. Per chiuderlo serve una persona che recuperi
 il dato con il periodo esatto.
+| 2026-09-15T09:06:20.980Z | 13 chiusa e unita a master: core, schermata, rilettura guardrail, entrambe le fasi 2. 116 test verdi. NOTA: develop locale e' deviato (5 commit duplicati di lavoro gia' in master, zero contenuto esclusivo); etichetta develop-locale-deviato. origin/develop e' antenato di master, il ramo pubblicato e' sano. |
