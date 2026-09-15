@@ -1,0 +1,140 @@
+/* La pagina «da dove vengono i numeri» — agente ui-builder. Funzionalità 13.
+   .occhiello, .limiti-schermata, .limiti-titolo e .limiti sono già definiti
+   in stiliSimulazione.css / stiliRisultato.css / styles.css e restano validi
+   qui: non si ridefiniscono due volte.
+   Contrasti (fondo #050008, riquadri #0a0014), ricalcolati con la stessa
+   formula WCAG delle altre pagine del sito:
+     #ffffff su #0a0014 -> 20.5:1   corpo, valore, messaggio di riga rotta
+     #BE82FF su #0a0014 ->  7.7:1   occhiello, etichette di campo, nota
+     #FF50A0 su #0a0014 ->  6.8:1   SOLO la dichiarazione di periodo mancante
+   Corpo minimo 1rem = 18px. Bersagli di click minimo 44px. */
+
+.fonti { max-width: 60rem; }
+
+.fonti-titolo {
+  margin: 0 0 1rem;
+  max-width: 40ch;
+  font-size: clamp(1.5rem, 3.4vw, 2.125rem);
+  letter-spacing: -0.015em;
+  color: var(--testo);
+}
+
+.fonti-intro {
+  margin: 0 0 1rem;
+  max-width: 66ch;
+}
+
+.fonti-nota {
+  margin: 0 0 1.75rem;
+  max-width: 66ch;
+  color: var(--purple-light);
+}
+
+.fonti-banner {
+  max-width: 66ch;
+  margin: 0 0 1.75rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--purple-dark);
+  border-left: 4px solid var(--purple);
+  border-radius: 10px;
+  background: var(--ink);
+}
+
+.fonti-vuoto { max-width: 60ch; }
+
+.elenco-fonti {
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.elenco-fonti > li + li {
+  margin-top: 1.25rem;
+}
+
+/* --- Ogni riga del registro: un riquadro, non una colonna --------------- */
+
+.riga-fonte {
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--purple-dark);
+  border-left: 4px solid var(--purple);
+  border-radius: 10px;
+  background: var(--ink);
+}
+
+/* Una riga che non risponde resta al suo posto: bordo più chiaro, non rosa
+   — il rosa qui dentro dichiara solo il periodo non ancora stabilito. */
+.riga-fonte-errore { border-left-color: var(--purple-light); }
+
+.riga-fonte-messaggio { margin: 0; }
+
+.riga-fonte-nome {
+  margin: 0 0 1rem;
+  max-width: 62ch;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  color: var(--testo);
+  overflow-wrap: break-word;
+}
+
+.riga-fonte-tecnico {
+  font-weight: 400;
+  color: var(--purple-light);
+}
+
+/* Sempre in colonna, anche larghi 1920px: tre campi appaiati sulla stessa
+   riga si leggerebbero come se «ISTAT» appartenesse a «Su quali anni vale».
+   Uno per riga resta chiaro a ogni larghezza, non solo sotto i 768px. */
+.riga-fonte-campi {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+}
+
+.riga-fonte-campo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.25rem 1.5rem;
+  margin: 0;
+}
+
+.riga-fonte-etichetta {
+  font-size: 1rem;
+  color: var(--purple-light);
+}
+
+.riga-fonte-valore {
+  max-width: 40ch;
+  overflow-wrap: break-word;
+}
+
+/* Il numero più importante della riga: più grande, allineato a destra,
+   cifre tabulari (.cifra è definita in styles.css). */
+.riga-fonte-campo-numero .riga-fonte-valore {
+  text-align: right;
+  font-size: 1.25rem;
+}
+
+/* Rosa: il colore di ciò che il prodotto non fa. In questa pagina dichiara
+   SOLO che il periodo non è ancora stato stabilito — da nessun'altra parte
+   qui dentro è usato per decorare. */
+.riga-fonte-mancante { color: var(--rose); }
+
+.riga-fonte-inserito {
+  margin: 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--purple-dark);
+  font-size: 1rem;
+  color: var(--purple-light);
+}
+
+@media (max-width: 767px) {
+  .riga-fonte { padding: 1rem 1.1rem; }
+
+  .riga-fonte-campo-numero .riga-fonte-valore {
+    font-size: 1.125rem;
+  }
+}

@@ -6,6 +6,7 @@ import './ui/stiliNavigazione.css';
 import './ui/stiliHome.css';
 import './ui/stiliSimulazione.css';
 import './ui/stiliRisultato.css';
+import './ui/stiliFonti.css';
 
 const root = document.getElementById('root');
 if (!root) throw new Error('#root non trovato in index.html');

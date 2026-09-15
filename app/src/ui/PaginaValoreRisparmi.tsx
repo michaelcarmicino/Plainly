@@ -11,6 +11,14 @@
  *
  * Nessun numero viene calcolato qui dentro: la schermata legge quello che è
  * stato scritto, lo passa al core e ne stampa la risposta.
+ *
+ * Il collegamento a «da dove vengono i numeri» (NotaTasso.tsx) porta fuori
+ * da questa pagina e «Indietro» ci fa tornare: App.tsx smonta e rimonta
+ * questo componente a ogni cambio di rotta, e un useState nudo ripartirebbe
+ * vuoto proprio quando la persona sta tornando sui suoi due numeri. I due
+ * valori restano perciò anche nel modulo, non solo nel componente — ancora
+ * dentro questa sola pagina, mai nell'indirizzo, mai su disco: spariscono a
+ * un vero ricaricamento, esattamente come promesso qui sopra.
  */
 
 import { useState, type ReactElement } from 'react';
@@ -57,9 +65,22 @@ function messaggioAnni(lettura: LetturaCampo): MessaggioCampo | undefined {
   return { chiave: TESTO_DEL_MOTIVO[motivo], valori: valoriAnni(), tono: 'errore' };
 }
 
+/** Sopravvivono a un giro fuori e ritorno; non a un ricaricamento vero. */
+let ultimaSommaScritta = '';
+let ultimiAnniScritti = '';
+
 export function PaginaValoreRisparmi(): ReactElement {
-  const [somma, setSomma] = useState('');
-  const [anni, setAnni] = useState('');
+  const [somma, setSommaStato] = useState(ultimaSommaScritta);
+  const [anni, setAnniStato] = useState(ultimiAnniScritti);
+
+  const setSomma = (testo: string): void => {
+    ultimaSommaScritta = testo;
+    setSommaStato(testo);
+  };
+  const setAnni = (testo: string): void => {
+    ultimiAnniScritti = testo;
+    setAnniStato(testo);
+  };
 
   const letturaSomma = leggiSomma(somma);
   const letturaAnni = leggiAnni(anni);

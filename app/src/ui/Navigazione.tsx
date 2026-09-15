@@ -34,6 +34,8 @@ function passoCorrente(rotta: Rotta): ChiaveStringaUtente | undefined {
       return 'sezioneLettura';
     case 'valore-risparmi':
       return 'simulazioneRisparmioPasso';
+    case 'fonti':
+      return 'fontiPasso';
   }
 }
 

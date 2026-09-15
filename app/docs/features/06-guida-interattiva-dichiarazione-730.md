@@ -156,6 +156,30 @@ come già fa `estratto-conto-trimestrale.input.json` con `saldoFinale`:
 `_visualizzazione` riporta gli stessi importi nel formato italiano come
 compaiono sulla carta.
 
+> **Blocco da sciogliere, non un dettaglio: i due parametri di legge.**
+> Gli importi delle spese sono i numeri di un documento dichiarato, e quelli
+> possono essere quello che vogliamo. **Due numeri di questa fixture non
+> sono nostri**: l'aliquota di detrazione del **19%** e la franchigia
+> sanitaria di **129,11 €**. Sono parametri di legge (art. 15 del TUIR), e
+> compaiono **a schermo, scritti nelle parole della persona**: se sono
+> sbagliati o superati, la schermata dice a qualcuno una cosa falsa sulle
+> proprie tasse — che su questo documento non è un difetto di presentazione.
+>
+> Serve che una persona li verifichi sulla fonte indicata dalla sezione 7 del
+> documento d'origine — **Agenzia delle Entrate**, aggiornamento **annuale**,
+> legato alla Legge di Bilancio — e dichiari **l'anno d'imposta** a cui si
+> riferiscono. L'anno va scritto **accanto ai numeri a schermo**, non in una
+> nota: un 730 è un documento datato, e una detrazione giusta per un anno
+> sbagliato è una detrazione sbagliata.
+>
+> **L'architettura è studiata perché questo blocco non fermi
+> l'implementazione**: il 19% entra nel core come `aliquotaBp` **della voce**,
+> cioè come dato del documento, e non come costante scritta nel codice. La
+> franchigia non entra affatto nel calcolo — è già sottratta nella
+> `etichettaOriginale`, come sul modulo vero. Quindi codice e test si scrivono
+> e passano subito. Ferma però la demo con numeri veri, e su questa
+> funzionalità è il blocco più serio delle tre guide.
+>
 > **Perché le tre voci hanno `categoria: 'altro'`, e perché è una scelta
 > dichiarata.** `CategoriaVoce` non ha un valore per «onere detraibile».
 > Metterle in `imposta` sarebbe comodo e **sarebbe il contrario del vero**:

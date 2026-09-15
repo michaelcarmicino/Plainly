@@ -3,7 +3,7 @@
 > **File generato.** Si rigenera con `npm run pm:piano`. Le fonti sono i
 > file in `docs/backlog/`.
 >
-> Ultima generazione: 2026-09-14T14:20:13.096Z
+> Ultima generazione: 2026-09-15T07:42:39.113Z
 
 ## Stato
 
@@ -20,7 +20,7 @@
 | `09-simulatore-fondo-di-emergenza` | da-fare | 09 — Per quanti mesi bastano i soldi che ho da parte | `src/core/`, `src/ui/`, `tests/` | — |
 | `10-simulatore-rata-mutuo-fisso-variabile` | da-fare | 10 — Quanto pago al mese: la rata con un tasso fermo e con un tasso che si muove | `src/core/`, `src/ui/`, `tests/` | — |
 | `11-approfondimento-sul-mutuo` | da-fare | 11 — Quanto costa in tutto un mutuo, oltre ai soldi che la banca presta | `src/core/`, `src/ui/`, `src/guardrails/`, `tests/` | 03-pagina-di-spiegazione-struttura-riusabile, 10-simulatore-rata-mutuo-fisso-variabile |
-| `12-approfondimento-sugli-investimenti` | da-fare | 12 — Approfondimento sugli investimenti | — | — |
+| `12-approfondimento-sugli-investimenti` | da-fare | 12 — Approfondimento sugli investimenti | `src/core/`, `src/ui/`, `tests/` | 01-landing-page, 04-guida-interattiva-busta-paga, 07-valore-dei-risparmi-nel-tempo |
 | `13-tabella-fonti-dati-sorgente-unica` | da-fare | Tabella fonti dati sorgente unica | `src/core/`, `src/ui/`, `tests/` | — |
 
 **Totali** — da fare: 11 · in corso: 0 · fatti: 2 · bloccati: 0
@@ -77,11 +77,13 @@ Fra un'ondata e l'altra si aspetta, perché le impronte si sovrappongono.
 
 ### Ondata 10 — 1 in parallelo
 
+- `12-approfondimento-sugli-investimenti` 12 — Approfondimento sugli investimenti
+  - tocca: `src/core/`, `src/ui/`, `tests/`
+
+### Ondata 11 — 1 in parallelo
+
 - `13-tabella-fonti-dati-sorgente-unica` Tabella fonti dati sorgente unica
   - tocca: `src/core/`, `src/ui/`, `tests/`
 
-## Problemi
-
-- 12-approfondimento-sugli-investimenti: nessuna directory dichiarata — non pianificabile
 
 Registro di ciò che è successo: [`backlog/registro.md`](backlog/registro.md)

@@ -1,22 +1,33 @@
 id: 12-approfondimento-sugli-investimenti
 stato: da-fare
-directory: 
-dipende-da: 
-note: RIFIUTATA da /spec il 2026-09-14, criterio 1 — la sezione d'origine indica quale strumento usare per quale bisogno. Nessuna spec scritta, impronta non calcolabile. Variante conforme proposta qui sotto, in attesa di un sì.
+directory: src/core/, src/ui/, tests/
+dipende-da: 01-landing-page, 04-guida-interattiva-busta-paga, 07-valore-dei-risparmi-nel-tempo
+note: Il task nella forma d'origine resta RIFIUTATO da /spec il 2026-09-14, criterio 1 — la sezione 6 accosta bisogni a strumenti, e il motivo scritto qui sotto non decade. La spec è aperta sulla VARIANTE CONFORME approvata: docs/features/12-guida-al-foglio-prima-di-firmare.md, «Il foglio che ti danno prima di firmare» — guida alla lettura del KID. Numero 12 mantenuto perché lega task, branch, commit e agents:trace; slug nuovo perché la funzionalità è un'altra e cambia famiglia (guida-documento come 04/05/06, non approfondimento come 11). Impronta ricavata da quella spec. La dipendenza da 04 è di riuso, non di blocco: 12 gira anche prima, ma allora scrive un secondo componente di riga apribile. Nessun dato vivo, nessun blocco aperto.
 
 # 12 — Approfondimento sugli investimenti
 
 ## Obiettivo
 
-Approfondimento sugli investimenti
+Il task d'origine — «approfondimento sugli investimenti» — **non è
+realizzabile dentro i vincoli del prodotto**, e il perché è scritto qui sotto.
+
+L'obiettivo che resta, sulla variante approvata: chi ha davanti il foglio che
+per legge accompagna un prodotto di investimento complesso deve poter dire
+**dove sta sul proprio foglio la percentuale dei costi** e **quanto vale in
+euro sui propri soldi** — «1,50% su 10.000 € sono 150 € l'anno, cioè 12,50 €
+al mese».
 
 ## Specifica collegata
 
-**Nessuna.** `/spec` ha rifiutato la richiesta: `docs/features/12-*.md` non
-esiste e non va creato finché il task non viene riscritto.
+`docs/features/12-guida-al-foglio-prima-di-firmare.md` — **sulla variante
+conforme**, non sul task d'origine.
 
-Finché `directory` resta vuota il task **non è pianificabile**, e questa volta
-è corretto che lo sia: non è un'impronta che manca, è la funzionalità.
+Il nome del file di backlog **non viene cambiato**: rinominarlo cancellerebbe
+il legame fra il rifiuto e la decisione che ne è seguita, che è la parte di
+questo task che vale la pena conservare.
+
+Lo slug della spec è diverso da quello del task, ed è deliberato. Il branch
+segue la **spec**: `feature/12-guida-al-foglio-prima-di-firmare`.
 
 ## Note
 
@@ -64,7 +75,13 @@ Nota per `guardrail-officer`: la riformulazione già scritta nella voce
 `investimento` del lessico dice «Il prodotto non tratta investimenti. Rimuovere
 la frase.» Il lessico però non ha modo di farla rispettare.
 
-### Variante conforme proposta
+### Variante conforme — approvata, e ora specificata
+
+> Approvata da chi guida il progetto il 2026-09-14. La spec è
+> `docs/features/12-guida-al-foglio-prima-di-firmare.md`. Il testo qui sotto
+> resta **com'era quando è stato proposto**: è la traccia della decisione, non
+> la descrizione della funzionalità. Quella sta nella spec, ed è lì che si
+> aggiorna.
 
 **«Il foglio che ti danno prima di firmare»** — come si legge il KID.
 

@@ -30,11 +30,22 @@ const ESITI = {
 };
 
 function classifica(riga) {
+  // Limite noto, non corretto qui: guarda l'intera riga, non la sola cella
+  // «Esito». Una riga di aggregazione del referto che cita nel proprio testo
+  // l'esito di un caso figlio (es. CF-07: «CL-10 non coperto») può risultare
+  // classificata come quel figlio invece che come se stessa. Isolare la
+  // colonna giusta richiederebbe sapere in quale delle due tabelle — quella
+  // di fase 1, senza colonna Esito, o quella del referto, con Esito in
+  // quarta posizione — si trova la riga: è il ripensamento più grande
+  // segnalato insieme al resto di questo fix, non una correzione breve.
   if (ESITI['non coperto'].test(riga)) return 'non coperto';
   if (ESITI.fallito.test(riga)) return 'fallito';
   if (ESITI.passato.test(riga)) return 'passato';
   return 'da eseguire';
 }
+
+/** Una riga di tabella che apre con un identificativo tipo C-01, CL-02... */
+const RIGA_CASO = /^\s*\|?\s*\*{0,2}(C-\d+|CL-\d+|E-\d+|CF-\d+)\b/i;
 
 function leggiListe() {
   if (!existsSync(DIR)) return [];
@@ -45,17 +56,27 @@ function leggiListe() {
       const testo = readFileSync(join(DIR, file), 'utf8').replace(/\r\n/g, '\n');
       const titolo = (testo.match(/^#\s+(.+)$/m) ?? [, file.replace(/\.md$/, '')])[1].trim();
 
-      // I casi sono righe che cominciano con un identificativo tipo C-01.
-      const righe = testo
-        .split('\n')
-        .filter((r) => /^\s*\|?\s*\*{0,2}(C-\d+|CL-\d+|E-\d+|CF-\d+)\b/i.test(r));
+      // Ogni caso compare due volte nel file quando la fase 2 è stata fatta:
+      // una nelle tabelle di fase 1 (sezioni 1-4, la definizione del caso),
+      // una nel referto (l'esito vero). Contare le righe senza deduplicare
+      // per id sommava le due: sulla 13, 68 «casi» invece di 34. L'ultima
+      // occorrenza di ogni id nel documento è quella che conta — il referto
+      // sta sempre più in basso della propria definizione, quando esiste;
+      // altrimenti resta l'unica riga di fase 1, ed è corretto che quella
+      // valga (nessun esito ancora scritto).
+      const righe = testo.split('\n').filter((r) => RIGA_CASO.test(r));
+      const perId = new Map();
+      for (const r of righe) {
+        const id = r.match(RIGA_CASO)[1].toUpperCase();
+        perId.set(id, r);
+      }
 
       const conta = { passato: 0, fallito: 0, 'non coperto': 0, 'da eseguire': 0 };
-      for (const r of righe) conta[classifica(r)] += 1;
+      for (const r of perId.values()) conta[classifica(r)] += 1;
 
       const referto = /^##\s+Referto/m.test(testo);
 
-      return { file, titolo, casi: righe.length, conta, referto };
+      return { file, titolo, casi: perId.size, conta, referto };
     });
 }
 
