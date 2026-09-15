@@ -122,3 +122,26 @@ e `pesoInBp` in un file foglia di `src/core/`. Serve comunque anche alla `04`,
 che avrà lo stesso bisogno.
 
 Segnalato da `core-engine` chiudendo la 05, prima che il problema esistesse.
+
+## Un buco nella specifica 08, trovato prima del codice
+
+La specifica dichiara la convenzione di arrotondamento **solo al passo 6**. Ai
+passi 2 e 4 non la dichiara.
+
+Conseguenza: se l'implementazione usa un arrotondamento diverso fra il passo 4
+(IRPEF) e il passo 6, **la quadratura si rompe di un centesimo** — e la
+quadratura interna è la promessa centrale della funzionalità («le tre parti del
+lordo rimesse insieme ridanno esattamente il lordo»).
+
+Il caso `CL-10` del `tester` costruisce apposta un pareggio esatto a `,5` nel
+passo 4 per metterla alla prova.
+
+**Da sciogliere prima di implementare la 08**: la convenzione va dichiarata per
+tutti i passi, non solo per l'ultimo. Non è una decisione di chi implementa —
+due arrotondamenti entrambi difendibili danno due risultati diversi, e quale sia
+quello giusto lo dice la specifica o nessuno.
+
+Nota collegata: il centesimo esatto sulle tre soglie **non è raggiungibile** dai
+due campi digitati (5.219.000 non condivide fattori con 12, 13 né 14). I valori
+esatti (`lordoAnnuoCent` = 5.219.000 · 3.083.361 · 5.509.197) vanno provati con
+un test diretto sulla funzione pura, non attraverso la schermata.
