@@ -19,9 +19,9 @@
  * è il caso che il tester ha scritto apposta come CL-01.
  *
  * Puro e deterministico: nessun I/O, nessun Date.now, nessun random. Riusa
- * verificaQuadratura e pesoInBp già definite in ./index.ts — per questo
- * importa da lì invece di duplicarle; è l'unico punto di contatto con quel
- * file, in sola lettura.
+ * verificaQuadratura e pesoInBp definite in ./calcoliDocumento.ts, file
+ * foglia senza dipendenze dal resto di src/core/ — non da ./index.ts, che
+ * riesporta anche letturaBolletta e creerebbe un ciclo.
  */
 
 import type {
@@ -33,7 +33,7 @@ import type {
 import type { Esito } from './esito.ts';
 import { esitoErrore, esitoOk } from './esito.ts';
 import { formattaEuro, formattaPercentuale } from './formatoIt.ts';
-import { pesoInBp, verificaQuadratura } from './index.ts';
+import { pesoInBp, verificaQuadratura } from './calcoliDocumento.ts';
 
 /** Perché il costo per kWh non si mostra: mai Infinity, mai NaN a schermo. */
 export const MOTIVI_COSTO_KWH_NON_DISPONIBILE = ['quantita-assente', 'quantita-zero'] as const;

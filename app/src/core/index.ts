@@ -10,7 +10,6 @@ import type {
   DocumentoUtente,
   LetturaCalcolata,
   VoceCalcolata,
-  QuadraturaTotale,
 } from '../../types/contracts.ts';
 
 /** Errore di dominio: il core non lancia stringhe nude. */
@@ -24,23 +23,7 @@ export class ErroreCalcolo extends Error {
   }
 }
 
-/** Somma delle voci vs totale stampato. Segnala lo scarto, non lo corregge. */
-export function verificaQuadratura(documento: DocumentoUtente): QuadraturaTotale {
-  const sommaVociCent = documento.voci.reduce((acc, v) => acc + v.importoCent, 0);
-  const scartoCent = sommaVociCent - documento.totaleDichiaratoCent;
-  return {
-    sommaVociCent,
-    totaleDichiaratoCent: documento.totaleDichiaratoCent,
-    scartoCent,
-    quadra: scartoCent === 0,
-  };
-}
-
-/** Peso di una voce sul totale, in punti base. Arrotondamento half-up. */
-export function pesoInBp(importoCent: number, totaleCent: number): number {
-  if (totaleCent === 0) return 0;
-  return Math.round((importoCent * 10_000) / totaleCent);
-}
+export { verificaQuadratura, pesoInBp } from './calcoliDocumento.ts';
 
 /** TODO(scenario): una voce calcolata con la sua spiegazione fattuale. */
 export function calcolaVoce(
@@ -99,3 +82,12 @@ export {
   type IngressoSimulazioneRisparmio,
   type RisultatoSimulazioneRisparmio,
 } from './simulazioneRisparmio.ts';
+
+export {
+  letturaBolletta,
+  MOTIVI_COSTO_KWH_NON_DISPONIBILE,
+  type MotivoCostoKwhNonDisponibile,
+  type CostoPerKwhBolletta,
+  type DueQuoteBolletta,
+  type LetturaBolletta,
+} from './letturaBolletta.ts';
