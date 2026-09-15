@@ -395,3 +395,252 @@ Due note che riducono il blocco:
   generici su `VoceDocumento`, `05` diventa una fixture più qualche stringa.
   Farli in parallelo li farebbe divergere; farli in fila fa risparmiare la
   seconda metà. È una ragione per **non** parallelizzare, non un problema.
+
+---
+
+## Previsto
+
+*Scritto da `doc-funzionale` in fase 1, dalla sola specifica, mentre il codice
+viene costruito. **Tutto al futuro**: nulla qui è ancora verificato.*
+
+> Stato: **in sviluppo** · fase 1 scritta il 2026-09-15, dalla sola specifica.
+> La fase 2 — rilettura del codice e dei test, esecuzione dei passi qui sotto e
+> riscrittura al presente sotto «Verificato» — non è ancora stata fatta.
+
+### Cosa farà
+
+Aprendo questa schermata comparirà un cedolino riprodotto riga per riga, con
+le stesse parole di un documento vero: la retribuzione lorda in alto, quattro
+righe di trattenute nel mezzo, il numero che arriva davvero sul conto in
+fondo — più grande di tutti gli altri. Toccando una delle righe di trattenuta
+comparirà sotto una spiegazione — prima l'immagine di tutti i giorni, poi la
+sigla — di dove andrà quella parte di stipendio e di quanto peserà su ogni
+100 € di lordo; mettendo insieme le quattro si arriverà al numero che oggi
+questa persona non sa dire: su ogni 100 € scritti in alto, **74,20 €**
+arriveranno sul conto, e i restanti 25,80 € — **645,00 €** su questo
+cedolino — saranno esattamente le quattro righe aperte una per una.
+
+### Per chi
+
+Una persona con contratto da dipendente che riceve il cedolino ogni mese, lo
+guarda due secondi, cerca l'ultima riga in basso e butta il resto: sa che il
+numero sul conto è più piccolo di quello scritto in alto, ma non sa dire
+perché, e ha smesso di chiederselo perché ogni volta ha trovato solo sigle —
+`IVS`, `IRPEF`, `c/dipendente`. Le servirà il giorno dello stipendio, con il
+proprio cedolino vero aperto accanto al telefono: non in un momento di
+studio, in un momento in cui sta confrontando due schermate.
+
+Le servirà anche, ed è il caso meno scontato, a chi riceve la **prima** busta
+paga della vita e non ha un termine di paragone: per quella persona il salto
+fra lordo e netto non sarà una curiosità, sarà una sorpresa da 645 euro.
+
+### Come si proverà
+
+Sono i **criteri di accettazione**: finché anche uno solo di questi passi non
+dà il risultato atteso, la funzionalità non è finita. I comandi vanno
+eseguiti da `app/`.
+
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (chi non usa Claude
+   Code ottiene lo stesso risultato con `npm run prepara`, che esegue
+   `node scripts/prepara.mjs`). Serve solo la prima volta.
+   *Risultato atteso:* lo script dirà «Ambiente già pronto», oppure elencherà
+   i passi che ha installato, e il suo controllo di salute — `tsc --noEmit` e
+   poi `npm test` — finirà senza errori.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia` (che esegue
+   `node scripts/dev-server.mjs start`). Mai `npm run dev` a mano: è un
+   processo che non termina e lascia la sessione appesa.
+   *Risultato atteso:* lo script riporterà l'indirizzo `http://localhost:5173`.
+
+3. **Arrivare dalla domanda vera, non da un indirizzo digitato a mano.**
+   Aprire quell'indirizzo, restare sulla home, toccare la card «Il lavoro» e
+   poi, nell'elenco delle domande di quell'area, toccare quella già scritta
+   lì oggi: «Sulla busta paga c'è un numero grande, sul conto ne arriva uno
+   più piccolo: dove va la differenza?».
+   *Risultato atteso:* quella riga sarà diventata un collegamento vero
+   (sottolineato, non riconoscibile dal solo colore) e si aprirà la
+   schermata del cedolino, con le cinque righe del documento leggibili da
+   subito, senza passare da nessun altro menu.
+
+4. **Il facsimile, prima di toccare qualunque riga.**
+   *Risultato atteso:* compariranno tutte e cinque le righe, con le
+   etichette **identiche**, carattere per carattere, a quelle di un vero
+   cedolino: `Retribuzione lorda`, `Contributi IVS c/dipendente 9,19%`,
+   `IRPEF netta`, `Addizionale regionale IRPEF`, `Addizionale comunale
+   IRPEF`. Gli importi saranno allineati a destra, con cifre tabulari e
+   l'euro accanto al valore: `2.500,00 €` in alto, `1.855,00 €` in fondo — il
+   numero più grande di tutta la schermata. Il riquadro del riepilogo sarà
+   già presente, con una riga che dirà che si riempirà via via che si
+   apriranno le voci — non «nessun risultato».
+
+5. **Il caricamento non sposterà il layout.** Osservare la schermata
+   nell'istante esatto in cui si apre, prima ancora di toccare qualunque
+   riga.
+   *Risultato atteso:* non comparirà nessuna rotellina né alcun indicatore
+   di attesa — il cedolino è un documento scritto a mano in una fixture
+   importata direttamente, quindi le cinque righe e il riquadro del
+   riepilogo compariranno già pronti. Il riquadro dove poi comparirà la
+   spiegazione occuperà già il suo spazio da chiuso, così quando si aprirà
+   la prima riga il resto della schermata non si sposterà verso il basso.
+
+6. **Aprire la riga dei contributi.** Toccare
+   `Contributi IVS c/dipendente 9,19%`.
+   *Risultato atteso:* la riga si evidenzierà con un bordo **e** un fondo
+   diversi, non il solo colore, e sotto comparirà un riquadro con
+   l'etichetta ripetuta **identica**, l'importo `229,75 €`, il peso —
+   `9,19%`, scritto anche come `9,19 € ogni 100 € di lordo` — e una
+   spiegazione che partirà dall'immagine di tutti i giorni prima della
+   sigla.
+
+7. **Il controllo che conta più di tutti.** Con una calcolatrice qualunque,
+   dividere `229,75` per `2.500,00` e moltiplicare per 100.
+   *Risultato atteso:* il risultato sarà `9,19`, lo stesso numero già
+   stampato dentro l'etichetta della riga. Sarà la prova che la percentuale
+   scritta sul documento e i due importi del documento raccontano la stessa
+   cosa, e non due cose diverse per caso vicine.
+
+8. **Le altre righe, una alla volta, guardando il riepilogo dopo ognuna.**
+   Toccare `Retribuzione lorda`, poi `IRPEF netta`, poi una delle due
+   addizionali.
+   *Risultato atteso:* ogni tocco sostituirà il contenuto del riquadro di
+   spiegazione con quello della riga appena aperta — una spiegazione
+   visibile alla volta, mai tutte insieme — ma il riepilogo sotto
+   **aggiungerà** una riga per ogni voce toccata, senza perdere quelle
+   toccate prima. Toccando una delle due addizionali comparirà una
+   spiegazione che parlerà di entrambe insieme: `18,00 €` più `7,00 €`,
+   `25,00 €` in tutto, `1,00 € ogni 100 € di lordo`. Non comparirà nessuna
+   domanda, nessun punteggio, nessuna barra di avanzamento.
+
+9. **Il netto, per ultimo.**
+   *Risultato atteso:* si leggerà che su ogni 100 € di lordo arriveranno
+   `74,20 €` sul conto, e che la differenza — `645,00 €` — sarà la somma
+   delle quattro righe aperte sopra. La riga del netto non si aprirà al
+   tocco: resterà il risultato, non una voce da spiegare.
+
+10. **Le cinque righe, ancora tutte visibili.** Dopo aver aperto tutte e
+    quattro le voci apribili, scorrere di nuovo l'intero facsimile
+    dall'alto in basso.
+    *Risultato atteso:* nessuna riga sarà scomparsa. Avere spiegato quattro
+    voci non avrà fatto sparire la quinta né alcuna delle altre.
+
+11. **Il ritorno.** Usare il collegamento «Indietro» o l'equivalente di
+    navigazione.
+    *Risultato atteso:* comparirà nella stessa posizione in cui compare su
+    ogni altra pagina del sito, e riporterà all'elenco delle domande
+    dell'area «Il lavoro».
+
+12. **Errore e dati lunghi — verificabili solo in parte con questo
+    cedolino.** Cercare, nel facsimile a schermo, un punto in cui la somma
+    delle quattro trattenute e il netto non coincidano con la retribuzione
+    lorda.
+    *Risultato atteso:* non se ne troverà nessuno: questo cedolino
+    **quadrerà per costruzione** — la somma delle cinque voci sarà
+    esattamente il netto dichiarato. **Il comportamento per un cedolino che
+    non torna** (la schermata lo dichiarerà in linguaggio umano, mostrerà lo
+    scarto e non lo correggerà) **e quello per un cedolino con molte più di
+    cinque righe non saranno quindi eseguibili end-to-end con questo
+    documento**: andranno verificati in fase 2 leggendo
+    `src/core/__tests__/letturaBustaPaga.test.ts` — che, secondo la
+    specifica, dovrà coprire il caso di uno scarto di un centesimo — e la
+    struttura pensata per etichette e liste lunghe. Se in fase 2 quei casi
+    non risultano coperti, va segnalato come divergenza, non inventato un
+    cedolino finto solo per poterlo mostrare. Una parte di questo stato sarà
+    invece verificabile con il documento reale, senza bisogno di dati
+    inventati: la riga già lunga da sola, `Contributi IVS c/dipendente
+    9,19%`, dovrà andare a capo senza rompere la griglia né staccarsi dal
+    proprio importo — si controllerà nel passo successivo.
+
+13. **Da tastiera e a finestra stretta come un telefono.** Restringere la
+    finestra sotto i 768 px di larghezza e rifare i passi 4-9 leggendo con
+    attenzione la riga dei contributi; poi, senza toccare il mouse, premere
+    Tab più volte fino a raggiungere e attivare la prima riga apribile, e
+    passare il mouse su una riga **senza** cliccarla.
+    *Risultato atteso:* `Contributi IVS c/dipendente 9,19%` andrà a capo su
+    più righe restando accanto al proprio importo, senza barra di
+    scorrimento orizzontale. Nessuna scritta scenderà sotto i 16 px, il
+    contrasto fra testo e fondo resterà leggibile (almeno 4,5:1), e nessun
+    bersaglio sarà più piccolo di 44×44 px — il polpastrello di un dito. Con
+    Tab si raggiungerà ogni riga apribile con un contorno netto ben
+    visibile, e Invio (o Spazio) la aprirà esattamente come il tocco.
+    Passando il mouse senza cliccare non comparirà nessuna informazione
+    nuova: l'unico modo di aprire una riga sarà il tocco, il clic o
+    l'attivazione da tastiera.
+
+14. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire la stessa schermata
+    servita da un server locale qualunque.
+    *Risultato atteso:* la build finirà senza errori, e rifacendo i passi
+    3-9 si leggerà esattamente lo stesso cedolino, con la stessa cifra
+    `74,20 €` in fondo — **senza che parta una sola richiesta fuori dal
+    computer**.
+
+### Limiti previsti
+
+- **Non leggerà un documento vero.** Nessun caricamento di PDF, nessuna
+  foto, nessun riconoscimento del testo: l'agente che leggerebbe i documenti
+  reali (`02-data-ingest`) non è attivato, e `src/ingest/` resta vuota di
+  proposito. Il cedolino sarà uno solo, anonimo, scritto a mano in una
+  fixture; chi ha il proprio cedolino in mano dovrà confrontare le righe con
+  l'occhio — ed è anche il motivo per cui le etichette dovranno restare
+  identiche a quelle di un documento vero.
+- **Non porterà a un simulatore del netto in busta.** Quella pagina (la
+  futura funzionalità `08`) non esiste ancora: un collegamento verso una
+  pagina che non c'è sarebbe una promessa rotta. Quando `08` sarà pronta, il
+  ponte sarà una riga sola aggiunta alla navigazione.
+- **Non ricalcolerà le trattenute.** Userà solo gli importi già stampati sul
+  documento, e calcolerà esclusivamente i rapporti fra loro — pesi, totale,
+  quadratura. Rifare l'IRPEF con la formula a scaglioni direbbe
+  implicitamente «il numero sul tuo cedolino dovrebbe essere questo», che è
+  la consulenza che questo prodotto non dà: il calcolo dal lordo al netto
+  resta un'altra funzionalità, non questa.
+- **Non riscriverà le etichette del documento.** `Contributi IVS
+  c/dipendente 9,19%` resterà scritta così anche se non la capisce nessuno a
+  colpo d'occhio: la spiegazione comparirà accanto, mai al posto — perché chi
+  confronta lo schermo con il proprio cedolino deve ritrovare le stesse,
+  identiche parole, non una traduzione.
+- **Non nasconderà nessuna delle cinque righe.** Spiegarne quattro e far
+  sparire la quinta altererebbe il documento per sottrazione, non per
+  chiarezza.
+- **Non dirà se lo stipendio è giusto.** Nessun confronto con medie di
+  categoria o contratti collettivi, nessun giudizio sull'importo: dirà solo
+  da dove viene ogni numero di questo cedolino, e si fermerà lì — perché
+  valutare la cifra sarebbe giudicare la situazione della persona, non
+  spiegare il documento.
+- **Non sarà il cedolino di chi legge.** I numeri saranno quelli della
+  fixture: chi guadagna un importo diverso vedrà cifre diverse dalle
+  proprie, e la schermata lo dirà invece di lasciarlo intuire.
+- **Non chiederà né conserverà alcun dato.** Nessun campo da compilare,
+  nessun dato personale, nessun salvataggio: uscendo e rientrando il
+  riepilogo ripartirà vuoto, perché non esiste un profilo di chi lo usa da
+  ricordare.
+- **Non farà domande né assegnerà punteggi.** Il riepilogo sarà un
+  promemoria, non un quiz: la misura della comprensione appartiene a
+  `src/assessment/`, un'altra parte del sito con un altro agente.
+
+---
+
+## Verificato
+
+*Scritto da `doc-funzionale` in fase 2, al termine di `/implementa`, dopo aver
+letto codice e test ed **eseguito** i passi qui sopra. **Tutto al presente**:
+solo ciò che è stato confermato.*
+
+*Finché questa sezione non esiste, la funzionalità non è riconciliata e
+`/verifica` non la accetta come `implementato`.*
+
+### Cosa fa
+
+«…»
+
+### Come si prova
+
+«…»
+
+### Limiti
+
+«…»
+
+### Divergenze fra previsto e realizzato
+
+«Ogni scostamento, con il motivo. Si segnalano, non si appianano: riscrivere la
+previsione per farla combaciare con il risultato rende inutile l'esercizio.»

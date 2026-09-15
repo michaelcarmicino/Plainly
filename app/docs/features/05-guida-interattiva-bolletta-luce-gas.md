@@ -485,25 +485,189 @@ conseguenze, esplicite:
 *Scritto da `doc-funzionale` in fase 1, dalla sola specifica, mentre il codice
 viene costruito. **Tutto al futuro**: nulla qui è ancora verificato.*
 
+> Stato: **in sviluppo** · fase 1 scritta il 2026-09-15, dalla sola specifica.
+> La fase 2 — rilettura del codice e dei test, esecuzione dei passi qui sotto
+> e riscrittura al presente sotto «Verificato» — non è ancora stata fatta.
+
 ### Cosa farà
 
-«Due righe comprensibili a chi non vede il codice.»
+Aprendo questa guida comparirà, riga per riga, la bolletta della luce così
+come arriva davvero: cinque voci con il nome esatto stampato sul documento, e
+in cima il totale da pagare — **78,76 €**. Toccando una voce comparirà,
+accanto ad essa, quanto pesa sul totale e se dipende o no da quanto è stato
+consumato. In fondo, una barra dividerà il totale in due parti — quella
+legata al consumo e quella che resta uguale comunque — e dirà, in chiaro, che
+l'energia costa **0,25 €** per ogni kWh mentre l'intera bolletta, divisa per
+gli stessi kWh, viene **0,49 €**: quasi il doppio.
 
 ### Per chi
 
-«La persona, e il momento esatto in cui le serve.»
+Chi ha appena ricevuto la bolletta della luce e trova un totale più alto di
+quanto si aspettava, senza aver cambiato niente in casa: ha già fatto
+l'unica verifica che sa fare — ha guardato i kWh — e i kWh non sono
+aumentati abbastanza da spiegare la differenza. Le servirà nel momento in
+cui la sta confrontando con la bolletta di prima, in mano o sullo schermo
+del telefono, mentre cerca una riga che spieghi lo scarto — non in un
+momento di studio.
 
 ### Come si proverà
 
-«I passi esatti per vederla funzionare, dall'avvio in poi:
- 1. `/prepara` (solo la prima volta) · 2. `/avvia` · 3. apri … · 4. ti aspetti …
+Sono i **criteri di accettazione**: finché anche uno solo di questi passi non
+dà il risultato atteso, la funzionalità non è finita. I comandi vanno
+eseguiti da `app/`.
 
- Questi passi sono anche i CRITERI DI ACCETTAZIONE: `/implementa` li legge e li
- tratta come parte della richiesta.»
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (chi non usa Claude
+   Code ottiene lo stesso risultato con `npm run prepara`, che esegue
+   `node scripts/prepara.mjs`). Serve solo la prima volta.
+   *Risultato atteso:* lo script dirà che l'ambiente è pronto, oppure
+   elencherà i passi che ha installato, e il suo controllo di salute —
+   `tsc --noEmit` e poi `npm test` — finirà senza errori.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia` (che esegue
+   `node scripts/dev-server.mjs start`). Mai `npm run dev` a mano: è un
+   processo che non termina e lascia la sessione appesa.
+   *Risultato atteso:* lo script riporterà l'indirizzo
+   `http://localhost:5173`.
+
+3. **Raggiungere la guida dalla domanda vera, non da un indirizzo scritto a
+   mano.** Aprire quell'indirizzo, entrare nell'area «Il costo della vita» e
+   aprire la domanda già scritta lì oggi, «Perché la bolletta è così alta
+   questo mese?» — segnata, prima di questa funzionalità, come «in arrivo»
+   nel catalogo delle diciotto domande, senza un percorso vero.
+   *Risultato atteso:* la domanda porterà a una schermata vera, non a un
+   avviso «presto disponibile»: la guida alla bolletta della luce.
+
+4. **Il facsimile, con il totale in cima.** Guardare la parte alta della
+   schermata, poi scorrere le cinque righe sotto.
+   *Risultato atteso:* il numero più grande di tutta la schermata sarà il
+   totale da pagare, **78,76 €**, con accanto **160 kWh** — il dato che la
+   persona ha già controllato da sola. Sotto, cinque righe nell'ordine della
+   bolletta, ciascuna con l'etichetta **esattamente come stampata**: «Spesa
+   per la materia energia», «Spesa per il trasporto e la gestione del
+   contatore», «Spesa per oneri di sistema», «Accisa (imposta di consumo)»,
+   «IVA 10%». Nessuna sarà riscritta, nessuna mancherà — nemmeno la più
+   piccola, i 3,60 € dell'accisa — e sommandole a mano si otterrà lo stesso
+   78,76 € del totale, senza alcun avviso di scarto.
+
+5. **Aprire una voce.** Toccare o cliccare «Spesa per oneri di sistema», poi
+   provare a farlo anche con un'altra riga.
+   *Risultato atteso:* sotto la riga toccata — **accanto** all'etichetta
+   originale, mai al posto — comparirà una spiegazione con un numero e il
+   suo paragone: qualcosa come «12,70 € ogni 100 € di bolletta», più la
+   frase che dice che quella spesa non dipende da quanto si è consumato. La
+   spiegazione resterà visibile finché non se ne apre un'altra o non si
+   richiude la stessa riga: non scomparirà da sola né al passaggio del
+   mouse.
+
+6. **Il numero che risponde alla domanda.** Guardare in fondo alla
+   schermata, dove le due parti del totale sono scritte accanto a una
+   barra.
+   *Risultato atteso:* si leggeranno due cifre, non solo una barra
+   disegnata: **40,00 € · 50,79%** per la parte che dipende da quanto
+   consumato, **38,76 € · 49,21%** per quella che non ne dipende. Le due
+   percentuali sommeranno a 100%.
+
+7. **Il paragone sul prezzo dell'energia — il numero che la persona porta
+   via.** Cercare, nella spiegazione della materia energia o accanto alla
+   barra, il confronto fra il prezzo dell'energia e il prezzo dell'intera
+   bolletta.
+   *Risultato atteso:* si leggerà che l'energia costa **0,25 €** per ogni
+   kWh, ma l'intera bolletta, divisa per gli stessi 160 kWh, viene
+   **0,49 €** — quasi il doppio. I due numeri nasceranno dai valori già
+   stampati sulla bolletta — i 40,00 € della materia energia, i 78,76 € del
+   totale, i 160 kWh — e non da un prezzo dell'energia preso da altrove.
+
+8. **Nessun accenno all'offerta o al fornitore.** Rileggere tutta la
+   schermata: facsimile, ogni spiegazione aperta una alla volta, la barra
+   delle due parti.
+   *Risultato atteso:* in nessun punto comparirà un confronto fra tariffe,
+   una parola come «conviene» o «cambia fornitore», né un'indicazione su
+   che cosa fare. La schermata dirà da dove viene ogni euro di questa
+   bolletta, e si fermerà lì.
+
+9. **Da tastiera, senza mouse.** Premere Tab dall'inizio della pagina.
+   *Risultato atteso:* il fuoco si sposterà sulle righe apribili nello
+   stesso ordine in cui sono stampate, con un contorno netto sempre
+   visibile, e il testo resterà leggibile — bianco pieno su fondo scuro,
+   mai una tonalità sbiadita. Invio e anche la barra spaziatrice apriranno
+   la riga con il fuoco; nessuna informazione di questa schermata sarà
+   leggibile solo passando il mouse sopra qualcosa, senza cliccare o
+   premere un tasto.
+
+10. **A finestra stretta, come un telefono.** Restringere la finestra sotto
+    i 768 px di larghezza e rifare i passi 4 e 5.
+    *Risultato atteso:* nessuna barra di scorrimento orizzontale;
+    l'etichetta più lunga — «Spesa per il trasporto e la gestione del
+    contatore», trentaquattro caratteri — andrà a capo restando comunque
+    accanto al proprio importo; nessuna scritta scenderà sotto i 16 px;
+    ogni riga apribile resterà un bersaglio di almeno 44×44 px, anche
+    quando il testo è corto.
+
+11. **Vuoto e in caricamento — non devono far saltare il layout.**
+    Osservare la schermata nell'istante esatto in cui si apre.
+    *Risultato atteso:* nessuna rotellina che gira e sparisce. Il documento
+    è una fixture importata staticamente, quindi il facsimile e il
+    riepilogo delle due quote compariranno già pronti, con le cinque righe
+    chiuse: nessuno scatto del layout un istante dopo l'apertura.
+
+12. **Errore — la quadratura che non torna, verificabile solo in parte con
+    questa bolletta.** Controllare se compare un avviso di scarto.
+    *Risultato atteso:* nessuno, perché questa bolletta **quadra** — la
+    somma delle cinque righe è esattamente il totale stampato. È il
+    comportamento corretto per un documento che torna, ma **non mette alla
+    prova** il caso in cui i conti non tornano: quel comportamento
+    (l'avviso mostrato in linguaggio umano, senza correggere nulla) non è
+    raggiungibile cliccando su questa fixture, e andrà verificato in fase 2
+    leggendo il caso dedicato in
+    `src/core/__tests__/letturaBolletta.test.ts` — un documento con il
+    totale alterato di un centesimo. Se in fase 2 quel test non lo copre, è
+    una divergenza da segnalare, non un dato da inventare per poterlo
+    mostrare.
+
+13. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire la schermata.
+    *Risultato atteso:* la build finirà senza errori, e rifacendo i passi
+    3-8 si leggerà lo stesso identico contenuto — senza che parta una sola
+    richiesta fuori dal computer: nessun prezzo dell'energia scaricato da
+    nessuna parte, perché la bolletta e tutti i suoi numeri sono scritti
+    nel codice, non recuperati da una fonte esterna.
 
 ### Limiti previsti
 
-«Cosa non farà, e perché.»
+- **Non dirà nulla sull'offerta né sul fornitore.** Nessun confronto fra
+  tariffe, nessun accenno al mercato libero o tutelato, nessuna indicazione
+  su dove costerebbe meno. È il limite più delicato: la domanda «e allora
+  che faccio?» arriverà naturale subito dopo la scomposizione, e la
+  risposta non ci sarà.
+- **Non dirà come consumare meno.** Nessun elenco di accorgimenti, nessuna
+  fascia oraria da preferire, nessun elettrodomestico da evitare: spiegare
+  da dove viene un costo è informazione, dire che cosa farne non lo è.
+- **Non riscriverà le etichette della bolletta.** Resteranno identiche a
+  come sono stampate, anche quando non descrivono niente di riconoscibile
+  («Spesa per oneri di sistema»): la spiegazione si affiancherà, non le
+  sostituirà.
+- **Non nasconderà né arrotonderà via le voci piccole.** Anche i 3,60 €
+  dell'accisa resteranno una riga a sé, visibile quanto le altre.
+- **Non ricalcolerà gli importi della bolletta.** Userà solo i numeri già
+  stampati, per calcolarne i rapporti — pesi, le due quote, il prezzo per
+  kWh, la quadratura — mai per rifare il conto al posto del documento.
+- **Non rimanderà a un simulatore energia/spese.** Quel simulatore non
+  esiste e non è in programma: nessun collegamento verso una pagina che
+  non c'è.
+- **Non leggerà una bolletta vera.** Nessun caricamento di PDF o foto,
+  nessun riconoscimento del testo: la bolletta sarà una sola, anonima,
+  sempre uguale.
+- **Non sarà la bolletta di chi guarda.** Chi consuma diversamente vedrà
+  comunque questi stessi numeri, e la schermata lo dirà invece di
+  lasciarlo intuire.
+- **Non coprirà il gas.** Solo la luce: il gas ha un'unità di misura
+  diversa e una struttura diversa, ed è un lavoro a parte — non abbozzato
+  qui.
+- **Non chiederà né conserverà alcun dato.** Nessun campo da compilare,
+  nessun salvataggio: uscendo e rientrando, la schermata ripartirà come la
+  prima volta.
+- **Non farà domande né assegnerà punteggi.** Nessun quiz, nessuna misura
+  della comprensione: quella è un'altra parte del sito.
 
 ---
 
@@ -513,22 +677,18 @@ viene costruito. **Tutto al futuro**: nulla qui è ancora verificato.*
 letto codice e test ed **eseguito** i passi qui sopra. **Tutto al presente**:
 solo ciò che è stato confermato.*
 
-*Finché questa sezione non esiste, la funzionalità non è riconciliata e
-`/verifica` non la accetta come `implementato`.*
-
-### Cosa fa
-
-«…»
-
-### Come si prova
-
-«…»
-
-### Limiti
-
-«…»
-
-### Divergenze fra previsto e realizzato
-
-«Ogni scostamento, con il motivo. Si segnalano, non si appianano: riscrivere la
-previsione per farla combaciare con il risultato rende inutile l'esercizio.»
+> **Non ancora compilata.** Il codice di questa funzionalità non è ancora
+> stato scritto: non c'è niente da verificare, e scrivere qui qualcosa
+> significherebbe dichiarare fatto ciò che nessuno ha controllato.
+>
+> Questa sezione si riempie in **fase 2**, al termine di `/implementa`,
+> aprendo `src/core/letturaBolletta.ts` e i file di `src/ui/` che
+> costruiscono la guida, leggendo
+> `src/core/__tests__/letturaBolletta.test.ts` e
+> `tests/accettazione/05-guida-bolletta-luce-gas.test.ts`, e **rieseguendo
+> davvero** i tredici passi scritti sopra. Conterrà «Cosa fa», «Come si
+> prova», «Limiti» e «Divergenze fra previsto e realizzato», tutto al
+> presente, e solo allora lo stato passerà a `implementato`.
+>
+> Finché questa sezione resta vuota, `/verifica` non accetta la
+> funzionalità come `implementato`.
