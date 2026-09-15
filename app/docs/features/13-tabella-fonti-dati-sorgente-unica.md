@@ -460,21 +460,240 @@ da `app/`.
 letto codice e test ed **eseguito** i passi qui sopra. **Tutto al presente**:
 solo ciò che è stato confermato.*
 
-> **Non ancora compilata.** Il codice di questa funzionalità è in costruzione
-> proprio ora: non c'è niente da verificare, e scrivere qui qualcosa
-> significherebbe dichiarare fatto ciò che nessuno ha controllato.
+> Stato: **implementato** · fase 2 eseguita il 2026-09-15 aprendo
+> `src/core/registroFonti.ts`, `src/core/__tests__/registroFonti.test.ts`,
+> `src/core/inflazioneDichiarata.ts`, `src/core/esito.ts`,
+> `src/ui/PaginaFonti.tsx`, `src/ui/RigaRegistroFonte.tsx`,
+> `src/ui/testiFonti.ts`, `src/ui/dataInLettere.ts`, `src/ui/motiviFonti.ts`,
+> `src/ui/rotte.ts`, `src/ui/NotaTasso.tsx`, `src/ui/Navigazione.tsx` e
+> `src/ui/stiliFonti.css`, e **rieseguendo** gli undici passi di fase 1 con un
+> browser vero pilotato (Chromium via Playwright, non a occhio): server di
+> sviluppo, build di produzione servita da un server locale, e apertura
+> diretta di `dist/index.html`.
 >
-> Questa sezione si riempie in **fase 2**, al termine di `/implementa`,
-> aprendo `src/core/registroFonti.ts`, la modifica a
-> `src/core/inflazioneDichiarata.ts`, i file di `src/ui/` (`PaginaFonti.tsx`,
-> `testiFonti.ts`, `NotaTasso.tsx`, `rotte.ts`), leggendo
-> `src/core/__tests__/registroFonti.test.ts` e
-> `tests/accettazione/13-tabella-fonti.test.ts`, e **rieseguendo davvero** gli
-> undici passi scritti sopra — compresi i due segnalati come «verificabili
-> solo in parte con i dati di oggi», che in fase 2 vanno confermati leggendo
-> il test invece che usando l'app. Conterrà «Cosa fa», «Come si prova»,
-> «Limiti» e «Divergenze fra previsto e realizzato», tutto al presente, e solo
-> allora lo stato passerà a `implementato`.
+> **Dieci passi su undici danno il risultato atteso. L'undicesimo no, e non per
+> una causa di questa funzionalità.** `dist/index.html` genera lo stesso tag
+> `<script type="module" crossorigin>` già segnalato come difetto nella scheda
+> 01 (`docs/features/01-landing-page.md`, passo 8): un doppio clic vero apre
+> una pagina bianca per un blocco CORS sotto origine `null`. Servita da un
+> server locale qualunque — verificato con un piccolo server statico su
+> `127.0.0.1`, zero richieste fuori dal loopback — la stessa cartella `dist/`
+> funziona in modo identico al server di sviluppo. Causa ed effetto vivono
+> nella configurazione di build, fuori da `src/core/` e `src/ui/`: fuori dal
+> perimetro di questa funzionalità e di questo agente. Dettaglio nel passo 11
+> e in «Divergenze».
 >
-> Finché questa sezione resta vuota, `/verifica` non accetta la funzionalità
-> come `implementato`.
+> **Un secondo fatto, emerso durante questa stessa verifica e non introdotto né
+> corretto qui**: mentre scrivevo questa riconciliazione, il `tester` ha
+> aggiunto in parallelo `tests/accettazione/13-tabella-fonti-dati-formattazione.test.ts`,
+> che fa fallire `npm test` su 2 casi (125 totali): `dataInLettere('')` e
+> `dataInLettere('ieri')` lanciano un `TypeError` invece di restituire un
+> testo. Nessuno degli undici passi qui sotto lo incontra — usano tutti il
+> dato reale del registro, già in forma valida — ed è un difetto in
+> `src/ui/dataInLettere.ts`, non mio da correggere. È descritto per intero,
+> con causa e classificazione, in `docs/test/13-tabella-fonti-dati.md`
+> (sezione «Fallimenti»). Lo riporto qui solo perché a questa data `npm test`
+> non è verde e chi legge questa scheda deve saperlo senza cercare altrove.
+
+### Cosa fa
+
+Aprendo `#/da-dove-vengono-i-numeri` compare, per ogni riga del registro, un
+riquadro con tre risposte nell'ordine in cui una persona se le pone leggendo
+un numero scritto da qualcun altro: chi lo dice, su quale periodo vale, da
+quando è scritto qui dentro. Oggi il registro ha una sola riga — l'inflazione,
+2,00% — e la sua provenienza è incompleta: manca il periodo. La pagina lo
+dichiara con una frase esplicita in rosa (`#FF50A0`), invece di lasciar
+credere che il 2,00% sia già un dato verificabile: confermato anche
+programmaticamente che quel colore, in tutta la pagina, compare **soltanto**
+lì — nessun altro elemento lo usa.
+
+Il numero non vive in due posti: `INFLAZIONE_DICHIARATA.valoreBp` (letto dalla
+nota sotto il simulatore dei risparmi, funzionalità 07) e il campo `valore`
+della riga `'inflazione-nic'` del registro sono confrontati da un test
+dedicato, e coincidono sempre — chi corregge il 200 lo fa in un file solo. Il
+core stabilisce SE la provenienza è completa guardando i tre campi della riga
+(`provenienzaCompleta`, mai un flag scritto a mano); la UI decide solo COME
+scriverlo (`dataInLettere` trasforma `'2026-09-14'` in «14 settembre 2026»).
+
+Da qualunque punto del sito mostri quel numero — oggi, la nota sotto la
+simulazione dei risparmi fermi — un tocco solo apre questa pagina; «Indietro»
+torna al punto di partenza senza perdere i valori digitati lì.
+
+### Per chi
+
+La persona che è arrivata in fondo alla schermata dei risparmi fermi, ha letto
+«un aumento dei prezzi di 2,00% all'anno» e si chiede chi lo dice: tocca la
+nota sotto il risultato e in un passo solo arriva a questa pagina.
+
+Le serve anche, più raramente e in modo più delicato, quando la pagina
+dichiara che il periodo su cui è calcolata la media non è ancora stato
+stabilito: lì non sta approfondendo, sta verificando — ed è il momento in cui
+il prodotto ha più da perdere se nasconde la lacuna invece di dichiararla.
+Confermato: non la nasconde.
+
+### Come si prova
+
+Gli stessi undici passi della fase 1, eseguiti il 2026-09-15 da `app/` con un
+browser pilotato, non a occhio. Accanto a ciascuno, ciò che è successo
+davvero.
+
+1. **Preparare l'ambiente.** `npm run prepara` conferma Node, dipendenze,
+   browser Playwright e directory di lavoro già a posto, e `tsc --noEmit`
+   pulito. Il controllo dei test segnala 2 test falliti su 125 (114 passati,
+   9 ancora da scrivere) — non per una regressione di questa funzionalità:
+   vedi il richiamo qui sopra e «Divergenze». I 20 test di
+   `registroFonti.test.ts` sono fra quelli verdi. ✅ (con la nota qui sopra)
+
+2. **Avviare l'applicazione.** `node scripts/dev-server.mjs start` risponde
+   `Server avviato: http://localhost:5173` e lascia la sessione libera. ✅
+
+3. **Partire da un numero vero.** Scritti **10000** e **5** nella schermata
+   dei risparmi, compare la nota con «Il calcolo parte da un aumento dei
+   prezzi di 2,00% all'anno...» e, in fondo, il collegamento «Vedi da dove
+   vengono tutti i numeri di questo sito, uno per uno». ✅
+
+4. **Il tocco che porta alla pagina delle fonti.** Il collegamento ha
+   `href="#/da-dove-vengono-i-numeri"`; un click sposta davvero l'indirizzo
+   a quella pagina. Un tocco solo, nessun menu di mezzo. ✅
+
+5. **Lo stato di oggi — il criterio più importante di tutti.** La riga
+   mostra «2,00%» e «ISTAT»; al posto del periodo compare la frase «Su quali
+   anni sia calcolata questa media non è ancora stato stabilito da nessuno: è
+   un pezzo che manca, e qualcuno deve ancora recuperarlo e scriverlo qui»,
+   colorata `rgb(255, 80, 160)` — cioè esattamente `#FF50A0` — misurato con
+   `getComputedStyle`, non a occhio. Il 2,00% non è mai presentato come un
+   fatto già verificabile. ✅
+
+6. **Il resto della riga, nell'ordine giusto.** «Di quanto salgono i prezzi
+   in un anno» precede sempre «(indice NIC)», mai da solo; «2,00%» è
+   allineato a destra con cifre tabulari; la data è scritta «14 settembre
+   2026», non `2026-09-14`. Passata in rassegna ogni riga di testo della
+   pagina per colore: **una sola** usa `rgb(255, 80, 160)`, quella del
+   periodo mancante. ✅
+
+7. **Il ritorno.** «Indietro» compare nella stessa barra di navigazione di
+   ogni pagina, riporta a `#/valore-dei-risparmi`, e i due campi mostrano
+   ancora **10000** e **5**: nessun dato perso. ✅
+
+8. **Caricamento senza salto.** Aprendo direttamente
+   `#/da-dove-vengono-i-numeri` la riga è già presente al primo controllo,
+   senza rotellina né un secondo rendering che la sostituisce. ✅
+
+9. **Errore e dati lunghi — verificati solo in parte, come già previsto.**
+   Con l'unico registro reale di oggi (una riga, coerente) non si porta a
+   schermo né una riga rotta né trenta righe: contate, le righe sono una, gli
+   errori zero. Il comportamento per la riga rotta è confermato **leggendo**
+   `RigaRegistroFonte.tsx` (un id sconosciuto o un'unità incoerente
+   restituiscono un riquadro con una frase, non fanno sparire la riga) — ma
+   **non da un test**: né `registroFonti.test.ts` né i test del tester
+   istanziano quel componente con una riga rotta; solo la parte di *core*
+   (`fonteDi`, `valoreBpDiRiga`) è testata, ed è verde. Per «dati lunghi», la
+   tenuta resta affidata solo alla struttura CSS letta in `stiliFonti.css`
+   (`overflow-wrap: break-word`, nessuna larghezza fissa), mai messa alla
+   prova con dati reali. Verificabile solo in parte, come già scritto in fase
+   1 — con in più un dettaglio che la fase 1 non poteva prevedere: vedi
+   «Divergenze».
+
+10. **Finestra stretta e tastiera.** A 375 px la pagina non produce
+    scorrimento orizzontale (`scrollWidth` = `clientWidth` = 375), il testo
+    più piccolo misurato è 18 px, i due bottoni di navigazione misurano
+    183×45 e 133×45 px — sopra il minimo di 44. Con solo Tab si raggiunge il
+    collegamento alla pagina delle fonti, con un contorno di 3 px ben
+    visibile, e Invio lo attiva. ✅
+
+11. **Con il Wi-Fi spento — questo passo non dà il risultato atteso alla
+    lettera.** `npm run build` finisce senza errori (`index.html` 0,5 kB, CSS
+    8,4 kB, JS 173 kB). Servita da un server locale qualunque — anche in solo
+    loopback, senza alcuna rete esterna — la build funziona in modo identico
+    al server di sviluppo: nota, collegamento, riga, tutto corretto, zero
+    richieste diverse da quelle verso quel server. **Aperta con un doppio
+    clic reale su `dist/index.html`, cioè `file://`, la pagina resta
+    bianca**, per lo stesso motivo già noto dalla scheda 01: gli attributi
+    `type="module" crossorigin` sullo script e sul foglio di stile sono
+    bloccati dal browser sotto origine `null`. ❌ per la lettera del passo
+    («riaprire la schermata dalla cartella `dist/`»); ✅ per la sostanza che
+    il passo voleva provare («funziona offline, zero richieste di rete»).
+    Dettaglio in «Divergenze».
+
+### Limiti
+
+- **Non aggiorna niente da solo.** `registroFonti.ts` è un array scritto a
+  mano; nessuna chiamata di rete in nessun file della funzionalità
+  (confermato anche da `tests/accettazione/13-tabella-fonti-dati-conformita.test.ts`)
+  né nel bundle costruito — zero richieste diverse da quelle verso chi serve
+  la pagina, verificato ai passi 3-6 e 11.
+- **Non ha una colonna che promette una cadenza.** `testiFonti.ts` non
+  contiene nessuna chiave del genere; al suo posto solo la frase sui limiti e
+  la data di inserimento di ogni riga.
+- **Non include righe sui contenuti educativi.** `REGISTRO_FONTI` contiene un
+  solo elemento — verificato da un test che ne blocca la lunghezza a 1.
+- **Non traduce nomi di fonti o indicatori.** `riga.fonte` e
+  `riga.indicatore` sono stampati così come sono scritti nel registro
+  («ISTAT», «indice NIC»), mai passati da `testi.ts`.
+- **Non giudica le fonti.** Nessuna funzione le ordina o le confronta;
+  confermato anche da un test dedicato (`tests/lessico-fonti.test.ts`), che
+  verifica l'assenza di parole come «affidabile» o «autorevole» nelle
+  stringhe della pagina.
+- **Non inventa le righe che mancano.** Il registro parte con la sola riga
+  che esiste davvero nel codice, e un test lo blocca a lunghezza 1.
+- **Non tocca `types/`.** Nessuno dei due commit di questa funzionalità
+  (core-engine e ui-builder) modifica file sotto `types/` — confermato con
+  `git show --stat` su entrambi.
+- **Non risolve da sola il periodo mancante dell'inflazione.** `periodo`
+  resta `null` sulla riga `'inflazione-nic'`, e la pagina continua a
+  dichiararlo, non a nasconderlo.
+- **Limite non previsto in fase 1, trovato in fase 2.**
+  `src/ui/dataInLettere.ts` non gestisce una data scritta a mano senza
+  trattini (stringa vuota o testo libero): lancia un'eccezione invece di
+  mostrare una frase. Con il registro di oggi (una riga, data già valida) non
+  è raggiungibile, ma è una fragilità reale di fronte a un errore di
+  battitura futuro. Dettaglio in `docs/test/13-tabella-fonti-dati.md`.
+
+### Divergenze fra previsto e realizzato
+
+1. **Passo 11 — «con il Wi-Fi spento» non dà, alla lettera, il risultato
+   previsto.** La fase 1 prevedeva che riaprendo la build da `dist/` si
+   leggesse lo stesso contenuto senza alcuna richiesta esterna. È vero SOLO
+   se `dist/` è raggiunta tramite un server, locale o di sviluppo: un doppio
+   clic reale su `index.html` produce una pagina bianca, perché il tag
+   generato dalla build (`<script type="module" crossorigin>`) viene
+   bloccato dal browser sotto l'origine `null` di `file://`. **Non corretto
+   qui**: la causa vive nella configurazione di build (`vite.config.ts` e
+   l'HTML generato), fuori da `src/core/` e `src/ui/` — fuori dal perimetro
+   di questa funzionalità e di questo agente. **Non è un difetto nuovo**: è
+   lo stesso, identico problema già trovato e scritto nella scheda 01
+   (`docs/features/01-landing-page.md`, passo 8, stesso giorno), mai risolto
+   da allora. Lo strato applicativo di questa funzionalità — registro,
+   pagina, navigazione, contenuti — è verificato corretto: solo il
+   contenitore di consegna (`file://` puro) ha il buco.
+
+2. **Passo 9 — la fase 1 assumeva che leggere `registroFonti.test.ts`
+   bastasse a confermare il comportamento sulla riga rotta; non basta del
+   tutto.** Quel test copre solo la parte di *core* (`fonteDi`,
+   `valoreBpDiRiga` restituiscono il codice giusto — confermato, verde). La
+   parte di *interfaccia* — che `RigaRegistroFonte.tsx` mostri una frase al
+   posto della riga invece di farla sparire — è confermata **solo leggendo
+   il codice sorgente del componente**: nessun test, né unitario né di
+   accettazione, lo istanzia con una riga incoerente. Il comportamento c'è,
+   come promesso; il modo in cui la fase 1 pensava di poterlo confermare non
+   regge fino in fondo. Lo stesso vale per «trenta righe, nomi lunghi»: solo
+   la CSS lo prevede, nessun test o schermata reale lo mette alla prova.
+
+3. **Trovato durante questa riconciliazione, non prima: `src/ui/dataInLettere.ts`
+   lancia un'eccezione su una data scritta senza trattini** (stringa vuota o
+   testo libero), invece di restituire una frase leggibile. Scoperto dal
+   `tester` con `tests/accettazione/13-tabella-fonti-dati-formattazione.test.ts`
+   (2 test su 125 attualmente falliti in `npm test`), non da questa scheda:
+   nessuno degli undici passi di «come si prova» lo incontra, perché tutti
+   usano il dato reale del registro, già in forma valida. Riportato qui
+   **solo perché a questa data la suite non è verde** e chi legge questa
+   scheda deve saperlo senza cercare altrove; il difetto stesso, la causa e
+   la classificazione («non bloccante oggi con l'unica riga reale, da
+   correggere prima che 08 o 10 aggiungano righe scritte a mano») sono
+   descritti per intero in `docs/test/13-tabella-fonti-dati.md`, sezione
+   «Fallimenti». Non corretto qui: non è un file di questo agente.
+
+4. **Nessuna divergenza sui restanti nove passi, né su «Cosa farà» o «Limiti
+   previsti».** Quanto descritto in fase 1 corrisponde a quanto costruito,
+   incluso il criterio dichiarato «il più importante di tutti» (passo 5): la
+   pagina non presenta mai il 2,00% come un fatto già verificabile.
