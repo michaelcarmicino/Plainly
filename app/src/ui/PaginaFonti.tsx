@@ -20,6 +20,7 @@
 import type { ReactElement } from 'react';
 import { REGISTRO_FONTI, righeConProvenienzaIncompleta } from '../core/index.ts';
 import { RigaRegistroFonte } from './RigaRegistroFonte.tsx';
+import './stiliFonti.css';
 import { Testo } from './Testo.tsx';
 
 export function PaginaFonti(): ReactElement {

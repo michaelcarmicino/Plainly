@@ -7,37 +7,34 @@
  * «indietro» del browser, che per molte persone è l'unico che conoscono.
  *
  * `parseRotta` è pura: stessa stringa, stessa rotta, senza toccare il DOM.
+ *
+ * Dalla funzionalità 14 (docs/features/14-registro-delle-schermate.md) le
+ * schermate non sono più elencate qui a mano: `parseRotta` cerca il
+ * percorso nel registro (schermate/registro.ts), che le raccoglie da
+ * schermate/*.ts. Questo file può importare il registro — che importa i
+ * componenti — solo perché le costanti di percorso che i componenti usano
+ * vivono ora in percorsi.ts, un modulo foglia che non importa questo file:
+ * altrimenti si richiuderebbe il ciclo rotte.ts → registro → componente →
+ * rotte.ts descritto nella sezione 6 della specifica.
  */
 
 import { useSyncExternalStore } from 'react';
 import { ID_AREE, type IdArea } from './contenutiHome.ts';
+import { PERCORSO_HOME } from './percorsi.ts';
+import { trovaSchermataPerPercorso } from './schermate/registro.ts';
 
 export type Rotta =
   | { readonly tipo: 'home' }
   | { readonly tipo: 'macrocategoria'; readonly id: IdArea }
-  | { readonly tipo: 'lettura' }
-  | { readonly tipo: 'valore-risparmi' }
-  | { readonly tipo: 'fonti' };
-
-export const PERCORSO_HOME = '#/';
-export const PERCORSO_LETTURA = '#/lettura';
+  | { readonly tipo: 'schermata'; readonly id: string };
 
 /**
- * «Da dove vengono i numeri di questo sito» (funzionalità 13). Ci si arriva
- * con un tocco solo da sotto ogni numero del sito — oggi da NotaTasso.tsx —
- * mai digitando un id: la pagina elenca tutte le righe del registro.
- */
-export const PERCORSO_FONTI = '#/da-dove-vengono-i-numeri';
-
-/**
- * La schermata dei risparmi fermi. Nell'indirizzo non finisce MAI la cifra
- * digitata: i due numeri vivono nello stato della pagina e basta. Un importo
- * nell'hash resterebbe nella cronologia del browser senza che nessuno lo
- * abbia deciso, e la pagina promette il contrario.
+ * Tenuta qui solo per compatibilità con tests/catalogo.test.ts, che la
+ * confronta col percorso duplicato in catalogoDomande.ts. Deve restare
+ * identica al campo `percorso` dichiarato per la schermata 07 nel registro
+ * (src/ui/schermate/).
  */
 export const PERCORSO_VALORE_RISPARMI = '#/valore-dei-risparmi';
-
-export const percorsoArea = (id: IdArea): string => `#/${id}`;
 
 /**
  * Qualunque valore non riconosciuto porta alla home: chi arriva con un
@@ -45,9 +42,8 @@ export const percorsoArea = (id: IdArea): string => `#/${id}`;
  */
 export function parseRotta(hash: string): Rotta {
   const nome = hash.replace(/^#/, '').replace(/^\//, '');
-  if (nome === 'lettura') return { tipo: 'lettura' };
-  if (nome === 'valore-dei-risparmi') return { tipo: 'valore-risparmi' };
-  if (nome === 'da-dove-vengono-i-numeri') return { tipo: 'fonti' };
+  const schermata = trovaSchermataPerPercorso(`#/${nome}`);
+  if (schermata !== undefined) return { tipo: 'schermata', id: schermata.id };
   const area = ID_AREE.find((id) => id === nome);
   if (area !== undefined) return { tipo: 'macrocategoria', id: area };
   return { tipo: 'home' };

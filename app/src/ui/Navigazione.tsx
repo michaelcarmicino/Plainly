@@ -14,33 +14,45 @@
  * identiche di cui una risponde al click e l'altra no. Per lo stesso
  * motivo sulla prima pagina il percorso non si stampa affatto: un percorso
  * di un gradino solo non è un percorso.
+ *
+ * Dalla funzionalità 14, `passoCorrente` non conosce più le singole
+ * schermate registrate: per `rotta.tipo === 'schermata'` legge `passo`,
+ * già risolto una volta da App.tsx tramite il registro. I rami `home` e
+ * `macrocategoria` restano qui, invariati.
  */
 
 import type { ReactElement } from 'react';
 import { AREE } from './contenutiHome.ts';
 import { Icona } from './icone.tsx';
-import { PERCORSO_HOME, tornaIndietro, type Rotta } from './rotte.ts';
+import { PERCORSO_HOME } from './percorsi.ts';
+import { tornaIndietro, type Rotta } from './rotte.ts';
+import './stiliNavigazione.css';
 import { Testo } from './Testo.tsx';
 import { t, type ChiaveStringaUtente } from './testi.ts';
 
 /** Il gradino finale del percorso: dove ci si trova adesso. */
-function passoCorrente(rotta: Rotta): ChiaveStringaUtente | undefined {
+function passoCorrente(
+  rotta: Rotta,
+  passoSchermata: ChiaveStringaUtente | undefined,
+): ChiaveStringaUtente | undefined {
   switch (rotta.tipo) {
     case 'home':
       return undefined;
     case 'macrocategoria':
       return AREE[rotta.id].titolo;
-    case 'lettura':
-      return 'sezioneLettura';
-    case 'valore-risparmi':
-      return 'simulazioneRisparmioPasso';
-    case 'fonti':
-      return 'fontiPasso';
+    case 'schermata':
+      return passoSchermata;
   }
 }
 
-export function Navigazione({ rotta }: { rotta: Rotta }): ReactElement {
-  const corrente = passoCorrente(rotta);
+export function Navigazione({
+  rotta,
+  passo,
+}: {
+  rotta: Rotta;
+  passo?: ChiaveStringaUtente;
+}): ReactElement {
+  const corrente = passoCorrente(rotta, passo);
 
   return (
     <div className="barra-navigazione">

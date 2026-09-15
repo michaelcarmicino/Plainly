@@ -24,7 +24,7 @@ import {
   INFLAZIONE_DICHIARATA,
   periodoDaCompilare,
 } from '../core/index.ts';
-import { PERCORSO_FONTI } from './rotte.ts';
+import { PERCORSO_FONTI } from './percorsi.ts';
 import { Testo } from './Testo.tsx';
 
 export function NotaTasso(): ReactElement {

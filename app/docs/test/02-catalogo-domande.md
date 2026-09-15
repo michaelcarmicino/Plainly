@@ -167,7 +167,7 @@ niente — corretto riallineandolo al modello già in uso in
 | CL-08 | `area3Altra5` lunga 96 caratteri (calcolo a mano); va a capo senza troncarsi; corpo sopra i 16px | 96 confermato; `.domanda-testo` usa `overflow-wrap: break-word`, non `text-overflow`/`white-space: nowrap`; `.elenco-domande` a 1,0625rem (19,125px); `.elenco-domande li` con `min-height: 44px` — dopo la correzione sul parser CSS (difetto del test) | passato | `02-catalogo-domande-limite.test.ts` |
 | CL-09 | Nessuna voce `senza-fonte` è la prima della propria area | Corrispondenza esatta; in «Il lavoro» la voce `senza-fonte` è l'ultima | passato | `02-catalogo-domande-limite.test.ts` |
 | E-01 | Indirizzo d'area inesistente → home | Corrispondenza esatta | passato | `02-catalogo-domande-errori.test.ts` |
-| E-02 | `parseRotta(percorso)` della voce con-schermata restituisce esattamente `{ tipo: 'valore-risparmi' }` | Corrispondenza esatta | passato | `02-catalogo-domande-errori.test.ts` |
+| E-02 | `parseRotta(percorso)` della voce con-schermata restituisce esattamente `{ tipo: 'schermata', id: 'valore-risparmi' }` | Corrispondenza esatta | passato | `02-catalogo-domande-errori.test.ts` |
 | E-03 | Le voci `in-arrivo` e `senza-fonte` non sono dentro un'ancora | Corrispondenza esatta, sia nel caso misto («Il lavoro») sia nel caso uniforme («Il costo della vita», zero ancore) | passato | `02-catalogo-domande-errori.test.ts` |
 | E-04 | — | **Non coperto**, per costruzione (vedi sotto) | non coperto | — |
 | CF-01 | `verificaInsieme` sulle stringhe nuove del catalogo restituisce `[]` | Corrispondenza esatta | passato | `02-catalogo-domande-conformita.test.ts` |
@@ -185,6 +185,25 @@ niente — corretto riallineandolo al modello già in uso in
 **Totale: 28 passati (di cui 2 con scope o aggregazione dichiarati — CF-09
 e CF-10 — e 1 con una divergenza registrata, CF-04), 1 fallito, 2 non
 coperti.**
+
+### Aggiornamento — funzionalità 14 (registro delle schermate)
+
+*La 14 sostituisce le varianti per singola schermata di `Rotta` — inclusa
+`{ tipo: 'valore-risparmi' }`, usata qui sotto — con una sola forma generica,
+`{ tipo: 'schermata'; id }`. Nessun caso qui cambia esito: la forma si
+adegua, l'intento resta lo stesso.*
+
+- **E-02** — l'«Atteso» è stato riscritto nella forma nuova
+  (`{ tipo: 'schermata', id: 'valore-risparmi' }`): il caso continua a
+  verificare la stessa cosa, che il link vero non porti alla home.
+- **CL-02** — `Navigazione` non ricava più da sola il passo di una
+  schermata dal tipo di rotta: da questa funzionalità lo riceve come prop,
+  risolto da `App.tsx` tramite il registro. Il test ora lo passa
+  esplicitamente (`passo: 'sezioneLettura'`, lo stesso valore che il vecchio
+  ramo dello switch restituiva) per continuare a confrontare due percorsi di
+  navigazione davvero popolati, come faceva prima della 14: senza quel
+  valore il confronto sarebbe scaduto, senza che nessuno se ne accorgesse, a
+  «due percorsi vuoti» — un caso diverso da quello che CL-02 dimostra.
 
 ### Fallimenti
 

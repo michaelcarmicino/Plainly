@@ -15,7 +15,7 @@
 import type { ReactElement } from 'react';
 import { contaAltreDomande, type Area } from './contenutiHome.ts';
 import { Icona } from './icone.tsx';
-import { percorsoArea } from './rotte.ts';
+import { percorsoArea } from './percorsi.ts';
 import { Testo } from './Testo.tsx';
 
 export function CardMacrocategoria({ area }: { area: Area }): ReactElement {

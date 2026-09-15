@@ -6,24 +6,15 @@
  * documento, è un elenco che un test legge e su cui la build fallisce.
  *
  * Ogni voce ha: una radice (regex), il motivo del divieto, e una
- * riformulazione lecita da usare al suo posto.
+ * riformulazione lecita da usare al suo posto. Tipi e costruttore di
+ * radici in `struttura.ts`: qui restano solo i dati.
  */
 
-export type GravitaViolazione = 'blocco' | 'attenzione';
+import { confineParola, type GravitaViolazione, type TermineVietato } from './struttura.ts';
 
-export interface TermineVietato {
-  readonly id: string;
-  /** Radice case-insensitive. \p{L} per gestire gli accenti italiani. */
-  readonly radice: RegExp;
-  readonly motivo: string;
-  /** Come si dice la stessa cosa senza consigliare. */
-  readonly riformulazione: string;
-  readonly gravita: GravitaViolazione;
-}
+export type { GravitaViolazione, TermineVietato };
 
-/** Costruisce una regex su radice di parola, accent-safe. */
-const r = (pattern: string): RegExp =>
-  new RegExp(`(?<![\\p{L}])(?:${pattern})(?![\\p{L}])`, 'giu');
+const r = confineParola;
 
 export const LESSICO_PRESCRITTIVO: readonly TermineVietato[] = [
   {
@@ -86,8 +77,14 @@ export const LESSICO_PRESCRITTIVO: readonly TermineVietato[] = [
     gravita: 'blocco',
   },
   {
+    // «passa a» falliva su «passa al mercato libero»: le preposizioni
+    // articolate (al, allo, alla, ai, agli, alle) fondono "a" con
+    // l'articolo — non un limite di perimetro, una radice che non copriva
+    // la forma più comune. Stesso difetto risolto sotto in dovere-personale.
+    // «cambia offerta»: registro di «cambia fornitore» già bloccato, gap
+    // della 05 (CF-05). Zero occorrenze pregresse per entrambe le aggiunte.
     id: 'imperativo-scelta',
-    radice: r('scegli|scegliere|passa\\sa|cambia\\sfornitore|apri\\sun\\sconto|chiudi\\sil\\sconto'),
+    radice: r('scegli|scegliere|passa\\s(?:ad?|al|allo|alla|ai|agli|alle)|cambia\\sfornitore|cambia\\soffert\\p{L}*|apri\\sun\\sconto|chiudi\\sil\\sconto'),
     motivo: 'Imperativo che indica una scelta contrattuale.',
     riformulazione: 'Elenca le voci di costo; la scelta non è del software.',
     gravita: 'blocco',
@@ -100,8 +97,10 @@ export const LESSICO_PRESCRITTIVO: readonly TermineVietato[] = [
     gravita: 'blocco',
   },
   {
+    // Stesso difetto di «passa a» sopra, esteso alle forme articolate
+    // (al…alle; del…delle). Zero occorrenze pregresse per entrambe.
     id: 'dovere-personale',
-    radice: r('dovresti|dovrebbe\\p{L}*|ti\\sconviene|fai\\sbene\\sa|evita\\sdi'),
+    radice: r('dovresti|dovrebbe\\p{L}*|ti\\sconviene|fai\\sbene\\s(?:ad?|al|allo|alla|ai|agli|alle)|evita\\s(?:di|del|dello|della|dei|degli|delle)'),
     motivo: 'Consulenza personalizzata rivolta al singolo utente.',
     riformulazione: 'Frase impersonale e descrittiva: «la voce X è presente N volte».',
     gravita: 'blocco',

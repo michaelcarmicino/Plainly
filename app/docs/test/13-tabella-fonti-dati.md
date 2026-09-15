@@ -156,6 +156,35 @@ regressione sui file preesistenti. `35` dei `37` test nuovi sono verdi.
 
 **Totale: 30 passati (di cui 3 con scope o aggregazione dichiarati), 1 fallito, 3 non coperti.**
 
+### Aggiornamento — funzionalità 14 (registro delle schermate)
+
+*La 14 sostituisce le varianti per singola schermata di `Rotta`
+(`{ tipo: 'fonti' }`, `{ tipo: 'valore-risparmi' }`) con una sola forma
+generica, `{ tipo: 'schermata'; id }`. L'esito di CF-09 resta «passato», ma
+vale la pena scriverlo per esteso: qui sotto non è la semplice manutenzione
+che sembra.*
+
+- **CF-09 — il caso passava già, ma per una coincidenza, non perché
+  verificasse ciò che dichiara.** Le due rotte usate nel test
+  (`{ tipo: 'fonti' }`, `{ tipo: 'valore-risparmi' }`) non corrispondevano
+  più a nessun ramo dello switch di `passoCorrente` in `Navigazione.tsx`
+  (che dalla 14 riconosce solo `'home' | 'macrocategoria' | 'schermata'`):
+  entrambe degradavano allo stesso «nessun passo risolto», e il confronto fra
+  le due liste di classi risultava vero perché **i due lati erano vuoti allo
+  stesso modo**, non perché la struttura della barra di navigazione fosse
+  davvero identica su due pagine reali. Corretto passando la forma nuova
+  della rotta (`{ tipo: 'schermata', id }`) **e** il `passo` che `App.tsx`
+  risolverebbe davvero per ciascuna schermata (`fontiPasso` e
+  `simulazioneRisparmioPasso`, gli stessi valori dichiarati in
+  `schermate/13-fonti.ts` e `schermate/07-valore-risparmi.ts`) — così il
+  confronto torna a essere fra due percorsi di navigazione popolati, come
+  prima della 14.
+  **Verificato, non assunto**: rimuovendo temporaneamente il `passo` da un
+  solo lato, per simulare una schermata che smette di risolvere la propria
+  posizione, il test **fallisce davvero** (quattro classi contro otto,
+  `percorso-navigazione` e `percorso` presenti solo da un lato) — la prova è
+  stata poi ripristinata alla forma corretta, non lasciata nel file.
+
 ### Fallimenti
 
 *Che cosa è fallito, **con quale input**, e se è bloccante. Non si corregge il

@@ -29,7 +29,7 @@ describe('3. Errori attesi', () => {
     // Verifica indipendente che il percorso duplicato in catalogoDomande.ts
     // (per evitare un import circolare, dichiarato nel suo commento) punti
     // ancora alla rotta vera, non solo "non alla home".
-    expect(parseRotta(voce.percorso)).toEqual({ tipo: 'valore-risparmi' });
+    expect(parseRotta(voce.percorso)).toEqual({ tipo: 'schermata', id: 'valore-risparmi' });
   });
 
   it('E-03: le voci senza schermata non si comportano da link', () => {

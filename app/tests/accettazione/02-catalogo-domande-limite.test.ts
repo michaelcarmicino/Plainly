@@ -43,9 +43,18 @@ describe('2. Casi limite — regressione sulla 01 (CL-01, CL-02)', () => {
     // La barra resta la stessa: struttura di classi identica sulla rotta di
     // un'area e su una rotta già verificata da un'altra funzionalità.
     const perArea: Rotta = { tipo: 'macrocategoria', id: 'lavoro' };
-    const perLettura: Rotta = { tipo: 'lettura' };
+    const perLettura: Rotta = { tipo: 'schermata', id: 'lettura' };
     const navArea = renderToStaticMarkup(createElement(Navigazione, { rotta: perArea }));
-    const navLettura = renderToStaticMarkup(createElement(Navigazione, { rotta: perLettura }));
+    // Dalla 14 Navigazione non ricava più da sola il passo di una schermata:
+    // lo riceve come prop, già risolto da App.tsx tramite il registro.
+    // 'sezioneLettura' è lo stesso valore che il vecchio `case 'lettura'`
+    // restituiva qui dentro, ora dichiarato in schermate/01-lettura.ts: senza
+    // passarlo, navLettura non avrebbe nessun gradino e il confronto con
+    // navArea (che un gradino ce l'ha sempre) fallirebbe per un motivo che
+    // non ha niente a che fare con CL-02.
+    const navLettura = renderToStaticMarkup(
+      createElement(Navigazione, { rotta: perLettura, passo: 'sezioneLettura' }),
+    );
     expect(classiDi(navArea)).toEqual(classiDi(navLettura));
   });
 });

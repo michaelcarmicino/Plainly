@@ -108,10 +108,21 @@ describe('4. Conformità — la navigazione non cambia posizione (CF-09)', () =>
   it('la barra di navigazione ha la stessa struttura di classi su ogni rotta', () => {
     const classiDi = (markup: string): readonly string[] =>
       [...markup.matchAll(/class="([^"]*)"/g)].map((m) => m[1]);
-    const rottaFonti: Rotta = { tipo: 'fonti' };
-    const rottaRisparmi: Rotta = { tipo: 'valore-risparmi' };
-    const fonti = renderToStaticMarkup(createElement(Navigazione, { rotta: rottaFonti }));
-    const risparmi = renderToStaticMarkup(createElement(Navigazione, { rotta: rottaRisparmi }));
+    const rottaFonti: Rotta = { tipo: 'schermata', id: 'fonti' };
+    const rottaRisparmi: Rotta = { tipo: 'schermata', id: 'valore-risparmi' };
+    // Dalla 14 Navigazione non ricava più il passo dal tipo di rotta: lo
+    // riceve come prop, già risolto da App.tsx tramite il registro. Senza
+    // passarlo qui, sia 'fonti' sia 'valore-risparmi' finirebbero comunque
+    // nel ramo 'schermata' con passo assente, e il confronto tornerebbe a
+    // reggersi su una coincidenza (due percorsi vuoti) invece che su due
+    // percorsi di navigazione davvero mostrati. I due valori sono gli stessi
+    // dichiarati in schermate/13-fonti.ts e schermate/07-valore-risparmi.ts.
+    const fonti = renderToStaticMarkup(
+      createElement(Navigazione, { rotta: rottaFonti, passo: 'fontiPasso' }),
+    );
+    const risparmi = renderToStaticMarkup(
+      createElement(Navigazione, { rotta: rottaRisparmi, passo: 'simulazioneRisparmioPasso' }),
+    );
     expect(classiDi(fonti)).toEqual(classiDi(risparmi));
   });
 });
