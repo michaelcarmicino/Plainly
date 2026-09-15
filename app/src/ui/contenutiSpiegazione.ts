@@ -82,13 +82,17 @@ export interface PaginaSpiegazione {
 }
 
 /**
- * L'istanza di riferimento. Ingresso scelto apposta: 10.000 cent (100 €) fa
- * coincidere il valore reale con il paragone «su ogni 100 €» (vedi
- * spiegazioneEsempio.ts) — non due calcoli che potrebbero divergere, la
- * stessa cifra letta due volte.
+ * L'istanza di riferimento. Ingresso: 10.000 cent (100 €), 1 anno, 200 bp —
+ * lo stesso esempio che scrittura-e-accessibilita.md porta come modello
+ * della regola «ogni numero ha un paragone concreto»: una banconota che
+ * chiunque ha avuto in mano, non una cifra scelta per far tornare un conto.
  *
- * // 10.000 / 1,02 = 9.803,92… -> 9.804 cent = 98,04 €
- * // perdita: 10.000 - 9.804 = 196 cent = 1,96 €
+ * Frase (blocco 5) e paragone leggono due campi distinti dello stesso
+ * `Esito` di `simulaRisparmio` — non due calcoli separati che potrebbero
+ * divergere, ma due letture dello stesso risultato già verificato:
+ *
+ * // valore reale, in …Frase: 10.000 / 1,02 = 9.803,92… -> 9.804 cent = 98,04 €
+ * // perdita, in …Paragone:   10.000 - 9.804 = 196 cent = 1,96 €
  */
 export const ISTANZA_INFLAZIONE_SPESA: PaginaSpiegazione = {
   id: 'inflazione-spesa',

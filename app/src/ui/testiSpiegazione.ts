@@ -44,7 +44,7 @@ export const STRINGHE_SPIEGAZIONE = {
   spiegazioneInflazioneSpesaFrase:
     'Con gli stessi 100 € della spesa, oggi porti a casa quello che un anno fa costava {valore}.',
   spiegazioneInflazioneSpesaParagone:
-    "Su ogni 100 € di un anno fa, il potere d'acquisto reale oggi vale {resto}.",
+    "Fra le due cifre c'è una differenza di {perdita}: i 100 € sono ancora tutti lì, ma portano a casa meno roba di prima.",
   spiegazioneInflazioneSpesaFonte:
     "Il conto parte da un aumento dei prezzi di {tasso} l'anno, un valore medio scritto a mano dentro il sito e non preso da internet.",
   spiegazioneInflazioneSpesaAvvertenza:
