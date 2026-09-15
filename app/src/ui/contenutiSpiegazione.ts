@@ -4,47 +4,43 @@
  * Gemello di contenutiHome.ts: qui stanno SOLO chiavi e numeri, mai parole,
  * che vivono in testiSpiegazione.ts, il punto scandito dal guardrail.
  *
- * Otto blocchi, in un ordine fisso che il TIPO impone: 1 occhiello area (da
- * `area`) · 2 domanda (titolo, invariata) · 3 immagine (tupla non vuota) ·
- * 4 nomeTecnico (uno solo, o null) · 5+6 esempio (frase+paragone+fonte+
- * avvertenza insieme, o niente) · 7 passi (al più due) · 8 nonFa (tupla non
- * vuota, mai assente). L'ordine di STAMPA — «prima l'immagine, poi il nome
- * tecnico» — non lo decide questo file: lo impone PaginaSpiegazione.tsx.
+ * Otto blocchi, ordine fisso imposto dal TIPO: 1 occhiello (da `area`) ·
+ * 2 domanda · 3 immagine (tupla non vuota) · 4 nomeTecnico (uno o null) ·
+ * 5+6 esempio (frase+paragone+fonte+avvertenza insieme, o niente) · 7 passi
+ * (al più due) · 8 nonFa (tupla non vuota). L'ordine di STAMPA — immagine
+ * prima del nome tecnico — lo impone PaginaSpiegazione.tsx, non questo file.
  *
- * IdSpiegazione non è più un'unione scritta a mano: era il difetto che
- * bloccava 11 e 12, ognuna un'istanza nuova di questo stesso contenitore. Le
- * istanze vivono in CONTENUTI_SPIEGAZIONE, chiave->dati; la chiave FA da
- * identificatore, e `keyof typeof` deriva il tipo da lì.
+ * IdSpiegazione = `keyof typeof CONTENUTI_SPIEGAZIONE`: la chiave dell'oggetto
+ * FA da identificatore, così 11 e 12 aggiungono chiavi, non un'unione a mano.
  */
 
 import type { IngressoCostoFoglio, IngressoSimulazioneRisparmio } from '../core/index.ts';
+import type { IngressoConfrontoRateMutuo } from '../core/confrontoRateMutuo.ts';
 import type { IdArea } from './contenutiHome.ts';
+import { ISTANZE_MUTUO } from './contenutiMutuo.ts';
 import type { ChiaveStringaUtente } from './testi.ts';
 
-/** Blocco 7. Una rotta reale, non un'unione chiusa sulle costanti di
- *  rotte.ts: dalla 14 le schermate si scoprono a runtime da file. «Un
- *  rimando verso il nulla non è dichiarabile» resta vero, verificato da un
- *  test sulle rotte registrate, non dal compilatore. */
+/** Blocco 7: una rotta reale, non un'unione chiusa. Verificata a runtime
+ *  contro le rotte registrate, non dal compilatore. */
 export interface PassoSuccessivo {
   readonly percorso: string;
   readonly testo: ChiaveStringaUtente;
 }
 
-/** «Al massimo due» come vincolo del TIPO: un'unione di tuple di lunghezza
- *  0, 1 o 2, non un array libero. Un terzo elemento non si dichiara. */
+/** «Al più due», nel TIPO: tuple di lunghezza 0, 1 o 2. */
 export type PassiSuccessivi =
   | readonly []
   | readonly [PassoSuccessivo]
   | readonly [PassoSuccessivo, PassoSuccessivo];
 
 /**
- * Blocchi 5 e 6, indivisibili: «ogni numero ha un paragone e una provenienza»
- * è un campo che il compilatore pretende. Unione discriminata su `tipo`: chi
- * ne aggiunge uno estende l'unione (non un `unknown`), e lo switch esaustivo
- * in spiegazioneEsempio.ts smette di compilare finché non lo gestisce. Tre
- * casi: risparmio eroso dall'inflazione (03), quote di una rata di mutuo
- * (11, su quoteRata.ts), costo percentuale su un capitale (12, su
- * costoFoglio.ts). Campi comuni in `BloccoNumerico`, sotto.
+ * Blocchi 5+6, indivisibili. Unione discriminata su `tipo`, switch esaustivo
+ * in spiegazioneEsempio.ts. `valore-risparmi` (03) · `quote-rata-mutuo` (11,
+ * DUE capitali residui — prima e ultima rata — altrimenti «250,00 €/224,21 €
+ * nella prima, 1,18 € nell'ultima» richiederebbe un numero scritto a mano) ·
+ * `confronto-durata-mutuo` (11, due chiamate a `calcolaRataCent` di `10`) ·
+ * `confronto-tasso-mutuo` (11, chiama `calcolaConfrontoRateMutuo` di `10`,
+ * non la riscrive) · `costo-su-capitale` (12).
  */
 interface BloccoNumerico {
   readonly frase: ChiaveStringaUtente;
@@ -54,34 +50,45 @@ interface BloccoNumerico {
 }
 
 export type EsempioNumerico =
-  /** Argomenti FISSI: nessuna persona li digita, in nessuno dei tre casi. */
+  /** Argomenti FISSI: nessuna persona li digita, in nessuno dei cinque casi. */
   | (BloccoNumerico & { readonly tipo: 'valore-risparmi'; readonly ingresso: IngressoSimulazioneRisparmio })
   | (BloccoNumerico & {
       readonly tipo: 'quote-rata-mutuo';
       readonly ingresso: {
-        readonly capitaleResiduoCent: number;
+        readonly capitaleResiduoPrimaCent: number;
+        readonly capitaleResiduoUltimaCent: number;
         readonly tassoAnnuoBp: number;
         readonly rataCent: number;
         readonly numeroRate: number;
       };
     })
+  | (BloccoNumerico & {
+      readonly tipo: 'confronto-durata-mutuo';
+      readonly ingresso: {
+        readonly capitaleCent: number;
+        readonly tassoAnnuoBp: number;
+        readonly anniA: number;
+        readonly anniB: number;
+      };
+    })
+  | (BloccoNumerico & {
+      readonly tipo: 'confronto-tasso-mutuo';
+      readonly ingresso: IngressoConfrontoRateMutuo;
+    })
   | (BloccoNumerico & { readonly tipo: 'costo-su-capitale'; readonly ingresso: IngressoCostoFoglio });
 
-/** Ciò che un'istanza dichiara, id escluso: la chiave in
- *  CONTENUTI_SPIEGAZIONE fa già da identificatore. */
+/** Ciò che un'istanza dichiara, id escluso (la chiave in
+ *  CONTENUTI_SPIEGAZIONE fa già da identificatore): 2 domanda (stessa
+ *  chiave del catalogo) · 3 immagine (tupla non vuota) · 4 nomeTecnico (uno
+ *  o null) · 5+6 esempio (o niente) · 7 passi (al più due) · 8 nonFa (tupla
+ *  non vuota: il tipo rifiuta una pagina senza confini). */
 export interface DatiSpiegazione {
   readonly area: IdArea;
-  /** Blocco 2, la stessa chiave che l'elenco dell'area già mostra. */
   readonly domanda: ChiaveStringaUtente;
-  /** Blocco 3, tupla non vuota: da una a tre frasi. */
   readonly immagine: readonly [ChiaveStringaUtente, ...ChiaveStringaUtente[]];
-  /** Blocco 4, uno solo, `null` quando non serve nominare niente. */
   readonly nomeTecnico: ChiaveStringaUtente | null;
-  /** Blocchi 5 e 6, insieme o niente. */
   readonly esempio: EsempioNumerico | null;
-  /** Blocco 7, al più due rimandi. */
   readonly passi: PassiSuccessivi;
-  /** Blocco 8, tupla non vuota: il tipo rifiuta una pagina senza confini. */
   readonly nonFa: readonly [ChiaveStringaUtente, ...ChiaveStringaUtente[]];
 }
 
@@ -90,17 +97,9 @@ export interface PaginaSpiegazione extends DatiSpiegazione {
   readonly id: IdSpiegazione;
 }
 
-/**
- * TUTTE le istanze dichiarate, chiave = identificatore. Oggi una sola:
- * l'inflazione sulla spesa, ingresso 10.000 cent (100 €), 1 anno, 200 bp —
- * l'esempio-modello di scrittura-e-accessibilita.md. Chi aggiunge la 11 o
- * la 12 aggiunge una chiave qui sotto, con dati che soddisfino
- * `DatiSpiegazione` — non un'istanza da elencare altrove, non un caso in
- * più di un'unione a mano.
- *
- * // valore reale, in …Frase: 10.000 / 1,02 = 9.803,92… -> 9.804 cent = 98,04 €
- * // perdita, in …Paragone:   10.000 - 9.804 = 196 cent = 1,96 €
- */
+// TUTTE le istanze dichiarate, chiave = identificatore.
+// valore reale …Frase: 10.000/1,02 = 9.803,92… -> 9.804 cent = 98,04 €
+// perdita …Paragone:   10.000-9.804 = 196 cent = 1,96 €
 export const CONTENUTI_SPIEGAZIONE = {
   'inflazione-spesa': {
     area: 'costo-della-vita',
@@ -122,21 +121,24 @@ export const CONTENUTI_SPIEGAZIONE = {
     passi: [],
     nonFa: ['spiegazioneInflazioneSpesaNonFa1', 'spiegazioneInflazioneSpesaNonFa2'],
   },
+
+  // Le sette istanze della 11 («approfondimento sul mutuo»), dichiarate in
+  // contenutiMutuo.ts e spandute qui con lo stesso meccanismo di
+  // STRINGHE_UTENTE: il registro resta UN oggetto solo.
+  ...ISTANZE_MUTUO,
 } as const satisfies Record<string, DatiSpiegazione>;
 
 /** Deriva dalle chiavi sopra: un'istanza in più, nessuna unione a mano. */
 export type IdSpiegazione = keyof typeof CONTENUTI_SPIEGAZIONE;
 
-/** Un'istanza completa a partire dal suo identificatore: la funzione che
- *  ogni file di schermata (03, 11, 12, …) chiama per il proprio contenuto. */
+/** Istanza completa dal suo id: la chiama ogni file di schermata (03, 11, 12). */
 export function paginaSpiegazione(id: IdSpiegazione): PaginaSpiegazione {
   return { id, ...CONTENUTI_SPIEGAZIONE[id] };
 }
 
 /** Per spread, non con `paginaSpiegazione`: senza l'annotazione
- *  `: PaginaSpiegazione` (che allargherebbe `esempio` all'unione) i test che
- *  leggono `.esempio.ingresso` senza controllare `tipo` vedono il tipo
- *  stretto di questa istanza, non l'unione a tre casi. */
+ *  `: PaginaSpiegazione` un test che legge `.esempio.ingresso` senza
+ *  controllare `tipo` vede il tipo stretto di questa istanza. */
 export const ISTANZA_INFLAZIONE_SPESA = {
   id: 'inflazione-spesa' as const,
   ...CONTENUTI_SPIEGAZIONE['inflazione-spesa'],

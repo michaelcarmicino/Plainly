@@ -29,6 +29,8 @@ import {
   simulaRisparmio,
   traduciCostoInEuro,
 } from '../core/index.ts';
+import { calcolaConfrontoRateMutuo } from '../core/confrontoRateMutuo.ts';
+import { calcolaRataCent } from '../core/rataMutuo.ts';
 import { quoteDellaRata, totaleRestituitoCent } from '../core/quoteRata.ts';
 import type { EsempioNumerico } from './contenutiSpiegazione.ts';
 
@@ -58,18 +60,64 @@ export function calcolaEsempio(esempio: EsempioNumerico): EsitoEsempio {
       };
     }
     case 'quote-rata-mutuo': {
-      const { capitaleResiduoCent, tassoAnnuoBp, rataCent, numeroRate } = esempio.ingresso;
-      const quote = quoteDellaRata(capitaleResiduoCent, tassoAnnuoBp, rataCent);
+      const { capitaleResiduoPrimaCent, capitaleResiduoUltimaCent, tassoAnnuoBp, rataCent, numeroRate } =
+        esempio.ingresso;
+      const prima = quoteDellaRata(capitaleResiduoPrimaCent, tassoAnnuoBp, rataCent);
+      const ultima = quoteDellaRata(capitaleResiduoUltimaCent, tassoAnnuoBp, rataCent);
       return {
         ok: true,
         periodoMancante: false,
         valori: {
+          valore: formattaEuro(rataCent),
           rata: formattaEuro(rataCent),
-          interesse: formattaEuro(quote.interesseCent),
-          capitale: formattaEuro(quote.capitaleCent),
+          interessePrima: formattaEuro(prima.interesseCent),
+          capitalePrima: formattaEuro(prima.capitaleCent),
+          interesseUltima: formattaEuro(ultima.interesseCent),
+          capitaleUltima: formattaEuro(ultima.capitaleCent),
           totale: formattaEuro(totaleRestituitoCent(rataCent, numeroRate)),
           numeroRate,
           tasso: formattaPercentuale(tassoAnnuoBp),
+        },
+      };
+    }
+    case 'confronto-durata-mutuo': {
+      const { capitaleCent, tassoAnnuoBp, anniA, anniB } = esempio.ingresso;
+      const rataACent = calcolaRataCent({ capitaleCent, anni: anniA, tassoAnnuoBp });
+      const rataBCent = calcolaRataCent({ capitaleCent, anni: anniB, tassoAnnuoBp });
+      const totaleACent = totaleRestituitoCent(rataACent, anniA * 12);
+      const totaleBCent = totaleRestituitoCent(rataBCent, anniB * 12);
+      return {
+        ok: true,
+        periodoMancante: false,
+        valori: {
+          valore: formattaEuro(rataACent - rataBCent),
+          anniA,
+          anniB,
+          rataA: formattaEuro(rataACent),
+          rataB: formattaEuro(rataBCent),
+          differenzaRata: formattaEuro(rataACent - rataBCent),
+          totaleA: formattaEuro(totaleACent),
+          totaleB: formattaEuro(totaleBCent),
+          differenzaTotale: formattaEuro(totaleBCent - totaleACent),
+          tasso: formattaPercentuale(tassoAnnuoBp),
+        },
+      };
+    }
+    case 'confronto-tasso-mutuo': {
+      const r = calcolaConfrontoRateMutuo(esempio.ingresso);
+      const differenzaMensileCent = Math.abs(r.differenzaMensileCent);
+      const differenzaAnnuaCent = Math.abs(r.differenzaSu12MesiCent);
+      return {
+        ok: true,
+        periodoMancante: false,
+        valori: {
+          valore: formattaEuro(differenzaMensileCent),
+          rataFissa: formattaEuro(r.rataFissaCent),
+          rataVariabile: formattaEuro(r.rataVariabileOggiCent),
+          differenzaMensile: formattaEuro(differenzaMensileCent),
+          differenzaAnnua: formattaEuro(differenzaAnnuaCent),
+          tassoFisso: formattaPercentuale(r.tassoFissoAnnuoBp),
+          tassoVariabile: formattaPercentuale(r.tassoVariabilePartenzaAnnuoBp),
         },
       };
     }
