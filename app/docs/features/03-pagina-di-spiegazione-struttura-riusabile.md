@@ -423,25 +423,229 @@ non entrano.
 *Scritto da `doc-funzionale` in fase 1, dalla sola specifica, mentre il codice
 viene costruito. **Tutto al futuro**: nulla qui è ancora verificato.*
 
+> Stato: **in sviluppo** · fase 1 scritta il 2026-09-15, dalla sola specifica.
+> La fase 2 — rilettura del codice e dei test, esecuzione dei passi qui sotto e
+> riscrittura al presente sotto «Verificato» — non è ancora stata fatta.
+
 ### Cosa farà
 
-«Due righe comprensibili a chi non vede il codice.»
+Toccando, nell'area «Il costo della vita», la domanda «Con gli stessi soldi
+della spesa, quanto porto a casa rispetto a un anno fa?» comparirà una pagina
+intera che risponde — non più un rimando a vuoto. Prima il carrello della
+spesa fatto oggi con la stessa cifra di un anno fa, **poi**, non prima, la
+parola tecnica «inflazione»; poi un numero solo con il paragone accanto — «con
+gli stessi 100 € della spesa, oggi porti a casa quello che un anno fa costava
+98,04 €» — la fonte di quel numero, e **in fondo, sempre in rosa**, che cosa
+questa pagina non dice.
+
+Non sarà solo una pagina: sarà lo **stampo** di ogni pagina di spiegazione che
+verrà. Gli stessi otto blocchi, nello stesso ordine, si ripeteranno per il
+mutuo (`11`), gli strumenti per i risparmi (`12`) e le voci spiegate delle tre
+guide (`04`, `05`, `06`) — e chi scriverà quei contenuti non potrà invertire
+l'ordine, dimenticare i confini o mettere due numeri in una pagina sola: sarà
+la forma dei dati a impedirlo, prima ancora che qualcuno lo rilegga.
 
 ### Per chi
 
-«La persona, e il momento esatto in cui le serve.»
+La stessa persona della `01`: è arrivata con un'ansia già formata, ha toccato
+una delle tre porte e adesso guarda l'elenco delle domande di quell'area. Ne
+sceglie una aspettandosi una risposta, non un rimando — e le servirà nel
+secondo o terzo tocco dall'apertura del sito, che per la regola dei due-tre
+tap è anche l'ultimo disponibile: quello che non starà in questa pagina non
+avrà più un posto dove stare.
+
+Di riflesso servirà anche a chi scriverà le prossime pagine di spiegazione, che
+potrà dichiarare un contenuto senza poter sbagliare la forma. Ma il
+destinatario resta la persona che legge: se la struttura servisse solo a chi
+scrive, sarebbe un file di appunti, non una funzionalità.
 
 ### Come si proverà
 
-«I passi esatti per vederla funzionare, dall'avvio in poi:
- 1. `/prepara` (solo la prima volta) · 2. `/avvia` · 3. apri … · 4. ti aspetti …
+Sono i **criteri di accettazione**: finché anche uno solo di questi passi non
+dà il risultato atteso, la funzionalità non è finita. I comandi vanno eseguiti
+da `app/`.
 
- Questi passi sono anche i CRITERI DI ACCETTAZIONE: `/implementa` li legge e li
- tratta come parte della richiesta.»
+Alcuni criteri dichiarati dalla specifica **non si potranno verificare in
+nessun browser**, con nessuna quantità di clic: sono garanzie del tipo dei
+dati o riguardano un'istanza diversa da quella di riferimento. Sono raccolti
+nel passo 15, segnalati come tali invece di far finta che si vedano a schermo.
+
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (chi non usa Claude
+   Code ottiene lo stesso risultato con `npm run prepara`). Serve solo la
+   prima volta.
+   *Risultato atteso:* lo script confermerà Node, le dipendenze e i browser
+   già a posto, e il suo controllo di salute — `tsc --noEmit` e poi
+   `npm test` — finirà senza errori.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia` (che esegue
+   `node scripts/dev-server.mjs start`). Mai `npm run dev` a mano: è un
+   processo che non termina e lascia la sessione appesa.
+   *Risultato atteso:* lo script riporterà l'indirizzo
+   `http://localhost:5173`.
+
+3. **Dalla home alla domanda, non alla pagina direttamente.** Aprire
+   quell'indirizzo, toccare la porta «Il costo della vita», e nell'elenco
+   delle domande di quell'area toccare «Con gli stessi soldi della spesa,
+   quanto porto a casa rispetto a un anno fa?».
+   *Risultato atteso:* si aprirà una pagina vera all'indirizzo
+   `#/spiegazione/inflazione-spesa`, che risponde invece di restare testo
+   piatto. Sarà, insieme alla domanda che porta ai risparmi fermi (`07`),
+   una delle prime dell'elenco a diventare un collegamento cliccabile invece
+   di restare ferma con la nota «in arrivo» sotto.
+
+4. **Il percorso in cima, di tre gradini.** Guardare la barra di
+   navigazione, senza cliccare nulla.
+   *Risultato atteso:* si leggerà «Pagina iniziale › Il costo della vita ›
+   Con gli stessi soldi della spesa, quanto porto a casa rispetto a un anno
+   fa?» — tre gradini, non due: saltare il nome dell'area direbbe una strada
+   diversa da quella davvero percorsa. Nessun gradino sarà cliccabile,
+   tranne «Pagina iniziale» e «Indietro», nella stessa posizione di ogni
+   altra pagina del sito.
+
+5. **I primi due blocchi: dove si è, poi di che cosa si parla.** Guardare le
+   prime righe della pagina.
+   *Risultato atteso:* in alto, in maiuscolo con lettere spaziate, il nome
+   dell'area da cui si è arrivati — «IL COSTO DELLA VITA» — e subito sotto,
+   come titolo, **la stessa identica domanda** già letta nell'elenco: non
+   una sua riformulazione.
+
+6. **L'immagine prima del nome tecnico — il criterio più importante di
+   tutti.** Continuare a leggere il corpo della pagina dall'alto, senza
+   saltare righe.
+   *Risultato atteso:* da una a tre frasi racconteranno il carrello della
+   spesa fatto oggi con la stessa cifra di un anno fa — oggetti quotidiani,
+   nessuna parola difficile lasciata sola — e **solo dopo** comparirà, in
+   una frase sola, il nome «inflazione». Mai il nome tecnico letto per
+   primo.
+
+7. **Il numero e il suo paragone, nello stesso posto.** Continuare a
+   leggere.
+   *Risultato atteso:* comparirà **98,04 €**, allineato a destra con cifre
+   tabulari, e **accanto**, non più sotto o in un'altra sezione, il
+   paragone in parole: che con gli stessi 100 € della spesa di un anno fa
+   oggi si porta a casa quella cifra. Il numero e il paragone compariranno
+   sempre insieme: non sarà possibile vedere l'uno senza l'altro.
+
+8. **Da dove viene quel numero.** Continuare a leggere, subito sotto
+   l'esempio.
+   *Risultato atteso:* una riga dirà la fonte — ISTAT, la stessa già letta
+   sotto il simulatore dei risparmi — e l'avvertenza che non è un
+   pronostico. Sul periodo è atteso lo stesso comportamento onesto già
+   visto in quella pagina: oggi gli anni su cui è calcolata la media non
+   sono ancora stati stabiliti, quindi al posto del periodo comparirà la
+   stessa dichiarazione esplicita, non un dato inventato per l'occasione.
+
+9. **Il blocco dei limiti, sempre in fondo e sempre in rosa.** Arrivare
+   alla fine della pagina.
+   *Risultato atteso:* comparirà una sezione con almeno una voce — non sarà
+   mai vuota — che dice che cosa questa pagina non dice, in rosa
+   `#FF50A0`. Passata in rassegna ogni riga della pagina per colore, quel
+   rosa comparirà **soltanto** lì.
+
+10. **Il ritorno.** Usare «Indietro».
+    *Risultato atteso:* riporterà all'elenco delle domande dell'area «Il
+    costo della vita», nella stessa posizione di navigazione di ogni altra
+    pagina.
+
+11. **Nessuna attesa, nessun salto di layout.** Aprire direttamente
+    `#/spiegazione/inflazione-spesa` (senza passare dall'elenco) e
+    osservarla nell'istante in cui compare.
+    *Risultato atteso:* tutti i blocchi compariranno già pronti al primo
+    disegno — nessuna rotellina, nessuno scatto del layout un istante
+    dopo: il numero non arriva da nessuna rete, è già scritto nel codice.
+
+12. **Da tastiera e a finestra stretta come un telefono.** Restringere la
+    finestra sotto i 768 px di larghezza, rifare i passi 5-9, poi, senza
+    toccare il mouse, premere Tab dall'inizio della pagina.
+    *Risultato atteso:* i blocchi si impileranno a riquadro, senza barra di
+    scorrimento orizzontale; nessuna scritta scenderà sotto i 16 px; con
+    Tab si raggiungeranno «Indietro» e ogni collegamento della pagina,
+    ciascuno con un contorno del focus ben visibile e attivabile anche con
+    Invio, senza bisogno del mouse.
+
+13. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire la pagina dalla cartella
+    `dist/`.
+    *Risultato atteso:* la build finirà senza errori, e rifacendo i passi
+    3-9 si leggerà esattamente lo stesso contenuto, senza che parta una
+    sola richiesta fuori dal computer.
+
+14. **Nessuna regressione sulle domande senza pagina.** Tornare all'elenco
+    di un'altra area (per esempio «Il lavoro») e guardare le sue domande.
+    *Risultato atteso:* continueranno a comparire come testo semplice, con
+    la nota che dice se la risposta arriverà o se il sito dichiara di non
+    averla — esattamente come oggi, senza che l'arrivo di questa pagina ne
+    cambi una sola.
+
+15. **Ciò che nessun clic può dimostrare — si verifica in fase 2 leggendo
+    il codice e i test, non nel browser.**
+    - **Il blocco «dove porta questa pagina» (7).** L'istanza di
+      riferimento non dichiara alcuno dei suoi rimandi: il blocco non
+      comparirà affatto sulla pagina pubblicata. Il vincolo «al massimo
+      due, ciascuno un blocco cliccabile di almeno 44×44 px con testo
+      accanto all'icona, verso una rotta che esiste davvero» non sarà
+      quindi osservabile con l'app in esecuzione oggi: si verificherà
+      leggendo `tests/spiegazione.test.ts`.
+    - **Una pagina senza esempio numerico** (`esempio: null`, blocchi 5 e 6
+      del tutto assenti, non vuoti). L'istanza di riferimento ne ha uno:
+      questo stato si verificherà solo leggendo il tipo `PaginaSpiegazione`
+      e il test che lo esercita, non cliccando in giro.
+    - **Lo stato «errore»** (il core risponde `ok: false` e la pagina
+      stampa una frase al posto del numero). Con gli argomenti fissi
+      dell'istanza di riferimento (10.000 centesimi, 1 anno) il calcolo
+      riuscirà sempre: questo stato non sarà raggiungibile con i dati
+      reali, e si verificherà leggendo il test che lo forza con un
+      argomento fuori dai limiti.
+    - **Il caso «dati lunghi»** dichiarato dalla specifica — la domanda più
+      lunga delle dodici (103 caratteri), tre frasi d'immagine, sei voci
+      nel blocco 8, una cifra a sette cifre — non userà l'istanza di
+      riferimento: si verificherà leggendo `tests/spiegazione.test.ts`, non
+      sulla pagina pubblicata.
+    - **Le due tuple non vuote** (`immagine`, `nonFa`) **e i due campi
+      singolari** (`nomeTecnico`, `esempio`, non liste). Sono vincoli che
+      il compilatore imporrà su *ogni* istanza presente e futura: nessuna
+      quantità di clic sulla pagina di oggi li dimostra. Si confermeranno
+      leggendo `contenutiSpiegazione.ts` e verificando che TypeScript
+      rifiuti un'istanza scritta senza uno di questi campi.
+    - **Che l'ordine «immagine prima del nome tecnico» sia deciso dal
+      componente e non da chi scrive l'istanza.** Il passo 6 mostra che
+      *oggi*, con l'unica pagina che esiste, è così; che sia
+      strutturalmente impossibile invertirlo per qualunque istanza futura
+      si conferma leggendo il **markup reso** nel test (`indexOf`
+      sull'HTML statico), non leggendo l'ordine dei campi in
+      `contenutiSpiegazione.ts` — un oggetto non ha un ordine di stampa,
+      quello lo decide solo il componente.
 
 ### Limiti previsti
 
-«Cosa non farà, e perché.»
+- **Non scriverà i contenuti delle altre pagine.** Consegnerà il
+  contenitore e **una sola** istanza di riferimento, quella sull'inflazione.
+  Mutuo (`11`), strumenti per i risparmi (`12`) e le voci spiegate delle tre
+  guide-documento (`04`, `05`, `06`) resteranno specifiche loro, con i testi
+  riletti da `guardrail-officer`.
+- **Non sarà una ricerca interna e non avrà un campo di domanda libera.** Le
+  domande restano un elenco dichiarato: il titolo è una domanda che il sito
+  pone per conto della persona, non un posto dove scriverne una lei.
+- **Non prenderà niente dalla rete**, né i numeri né le fonti: si scrivono
+  come testo dichiarato, con il periodo, e si aggiornano a mano.
+- **Non aggiungerà nessuna funzione al core e non toccherà `types/`.**
+  L'unico numero che mostrerà viene da una funzione già scritta e già
+  coperta da test per la funzionalità `07`.
+- **Non riscriverà le dodici domande della `01`** né le loro chiavi: le
+  userà come sono.
+- **Non risolverà il periodo mancante del tasso d'inflazione.** Mostrerà la
+  stessa dichiarazione onesta già presente nella schermata dei risparmi
+  (`07`), perché la fonte del numero è la stessa: resta un buco dichiarato,
+  non uno che questa pagina chiude.
+- **Non prometterà che ogni argomento entri in questa forma.** Se un
+  contenuto non starà in otto blocchi con un concetto solo, il difetto sarà
+  del contenuto, non del contenitore: andrà spezzato in due pagine — e
+  questa specifica non prevede un'eccezione a questa regola.
+- **Non deciderà da sola l'ordine fra `02` e `03`.** Se il catalogo delle
+  domande (`02`) sarà già entrato, il collegamento fra la domanda e questa
+  pagina si scriverà **nel catalogo**, non in una mappa dentro il
+  componente: per la persona che tocca la domanda il risultato sarà
+  identico, cambia solo dove vive quell'unica riga di collegamento.
 
 ---
 

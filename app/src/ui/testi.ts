@@ -18,6 +18,7 @@
  * spread: il registro da scandire resta UN oggetto solo.
  */
 
+import { STRINGHE_CATALOGO } from './testiCatalogo.ts';
 import { STRINGHE_FONTI } from './testiFonti.ts';
 import { STRINGHE_SIMULAZIONE } from './testiSimulazione.ts';
 
@@ -52,7 +53,7 @@ export const STRINGHE_UTENTE = {
 
   // --- Area 2: il lavoro --------------------------------------------------
   area2Titolo: 'Il lavoro',
-  area2Domanda: 'Il mio settore è a rischio nei prossimi anni?',
+  area2Domanda: 'Nel mio settore, quante persone hanno perso il lavoro negli ultimi anni?',
   area2Altra1: 'Se perdo il lavoro, quanto prendo ogni mese e per quanto tempo?',
   area2Altra2:
     'Sulla busta paga c\'è un numero grande, sul conto ne arriva uno più piccolo: dove va la differenza?',
@@ -109,6 +110,7 @@ export const STRINGHE_UTENTE = {
 
   ...STRINGHE_SIMULAZIONE,
   ...STRINGHE_FONTI,
+  ...STRINGHE_CATALOGO,
 } as const satisfies Record<string, string>;
 
 export type ChiaveStringaUtente = keyof typeof STRINGHE_UTENTE;

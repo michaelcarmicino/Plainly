@@ -70,9 +70,14 @@ describe('lessico nelle stringhe rivolte all\'utente', () => {
     const problemi: string[] = [];
     for (const f of fileSorgente(join(APP, 'src'))) {
       const sorgente = readFileSync(f, 'utf8');
-      // letterali di stringa e testo JSX fra tag
-      for (const m of sorgente.matchAll(/'([^'\n]{12,})'|"([^"\n]{12,})"|>([^<>{}\n]{12,})</g)) {
-        const testo = m[1] ?? m[2] ?? m[3] ?? '';
+      // letterali di stringa, testo JSX fra tag, e citazioni fra caporali
+      // «...» — la virgoletta tipografica italiana, usata nei commenti
+      // tanto quanto gli apici dritti: un letterale copiato lì dentro non
+      // deve sfuggire alla scansione solo per come è stato citato.
+      for (const m of sorgente.matchAll(
+        /'([^'\n]{12,})'|"([^"\n]{12,})"|>([^<>{}\n]{12,})<|«([^»\n]{12,})»/g,
+      )) {
+        const testo = m[1] ?? m[2] ?? m[3] ?? m[4] ?? '';
         const esito = verificaTestoUtente(testo);
         if (!esito.conforme) {
           problemi.push(formattaViolazioni(relative(APP, f), esito));

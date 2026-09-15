@@ -48,8 +48,32 @@ export const LESSICO_PRESCRITTIVO: readonly TermineVietato[] = [
     gravita: 'blocco',
   },
   {
+    // «preferibile» aggiunto in occasione della 02 (vedi
+    // docs/features/02-catalogo-domande-reali-per-macrocategoria.md, punto 3
+    // delle dichiarazioni tecniche): stessa famiglia semantica di
+    // «conveniente», quasi sempre un giudizio di valore o un consiglio
+    // travestito da impersonale («è preferibile fare X»), con un registro
+    // formale che questo sito non usa mai per spiegare — zero occorrenze
+    // verificate in src/, tests/, types/, fixtures/ al momento dell'aggiunta.
+    //
+    // «meglio» valutato nella stessa occasione e DELIBERATAMENTE escluso:
+    // è un avverbio a uso quasi sempre innocuo e centrale nel registro
+    // «amico che spiega» che questo progetto impone («si capisce meglio con
+    // un esempio», «spiegare meglio un calcolo») — bloccarlo produrrebbe
+    // falsi positivi sistematici proprio contro il tono richiesto. La
+    // formulazione comparativa dell'area investimenti nel documento
+    // d'origine (task 02, sezione 6 — il confronto fra tre prodotti per
+    // nome) è già neutralizzata dalla riscrittura in `area3Altra5`; che non
+    // ricompaia in `src/`, commenti compresi, lo sorveglia CF-03 in
+    // docs/test/02-catalogo-domande.md — un'asserzione ricontrollata a ogni
+    // build, non un'affermazione scritta qui una volta e mai più verificata.
+    // Il rischio concreto che «meglio» dovrebbe coprire resta comunque già
+    // chiuso altrove. Decisione di guardrail-officer, non dell'architetto:
+    // si aggiunge un termine, non se ne toglie uno già bloccato.
     id: 'comparativo-valore',
-    radice: r('miglior\\p{L}*|peggior\\p{L}*|ottim\\p{L}*|convenient\\p{L}*'),
+    radice: r(
+      'miglior\\p{L}*|peggior\\p{L}*|ottim\\p{L}*|convenient\\p{L}*|preferibil\\p{L}*',
+    ),
     motivo: 'Giudizio di valore su un prodotto finanziario.',
     riformulazione: 'Confronto numerico esplicito: «costa X € in più su 12 mesi».',
     gravita: 'blocco',

@@ -5,7 +5,7 @@
 > Le fonti sono i file in `docs/features/`, scritti dall'agente
 > `doc-funzionale`.
 >
-> Ultima generazione: 2026-09-15T08:38:26.608Z
+> Ultima generazione: 2026-09-15T10:47:34.100Z
 
 **Come si legge il tempo verbale.** Ciò che è scritto al **futuro** è previsto
 e non ancora verificato; ciò che è al **presente** è stato confermato leggendo
@@ -17,7 +17,7 @@ reale.
 | | Stato | Funzionalità |
 | --- | --- | --- |
 | ● | implementato | [01 — «La landing page: tre porte e una navigazione che non cambia mai»](#01-la-landing-page-tre-porte-e-una-navigazione-che-non-cambia-mai) |
-| ◌ | in sviluppo | [02 — «Il catalogo delle domande vere, e che cosa il sito sa rispondere»](#02-il-catalogo-delle-domande-vere-e-che-cosa-il-sito-sa-rispondere) |
+| ● | implementato | [02 — «Il catalogo delle domande vere, e che cosa il sito sa rispondere»](#02-il-catalogo-delle-domande-vere-e-che-cosa-il-sito-sa-rispondere) |
 | ◌ | in sviluppo | [03 — «La pagina che risponde a una domanda: il contenitore, non il contenuto»](#03-la-pagina-che-risponde-a-una-domanda-il-contenitore-non-il-contenuto) |
 | ◌ | in sviluppo | [04 — «Sulla busta paga c'è un numero grande, sul conto ne arriva uno più piccolo: dove va la differenza?»](#04-sulla-busta-paga-c-un-numero-grande-sul-conto-ne-arriva-uno-pi-piccolo-dove-va-la-differenza) |
 | ◌ | in sviluppo | [05 — «Ho consumato poco e la bolletta è alta: che cosa sto pagando?»](#05-ho-consumato-poco-e-la-bolletta-alta-che-cosa-sto-pagando) |
@@ -30,7 +30,7 @@ reale.
 | ◌ | in sviluppo | [12 — «Il foglio che ti danno prima di firmare»](#12-il-foglio-che-ti-danno-prima-di-firmare) |
 | ● | implementato | [13 — «Da dove vengono i numeri di questo sito»](#13-da-dove-vengono-i-numeri-di-questo-sito) |
 
-**Totali** — in sviluppo: 11 · implementate: 2 · verificate: 0
+**Totali** — in sviluppo: 10 · implementate: 3 · verificate: 0
 
 ---
 
@@ -221,22 +221,54 @@ confronto fra le due ad avere valore.
 ---
 
 ## 02 — «Il catalogo delle domande vere, e che cosa il sito sa rispondere»
-**Stato:** ◌ in sviluppo  
+**Stato:** ● implementato  
 **Origine:** [`docs/features/02-catalogo-domande-reali-per-macrocategoria.md`](features/02-catalogo-domande-reali-per-macrocategoria.md)
 ### Cosa fa
 
-Le pagine delle tre aree mostreranno diciotto domande al posto delle dodici di
-oggi — cinque per «il costo della vita», sei per «il lavoro», sette per «il
-futuro», sei in più di adesso — e sotto ognuna comparirà una riga scritta a
-parole, non a colori, che dirà se il sito sa già rispondere, se risponderà
-presto, oppure se dichiara di non avere ancora una fonte per quel numero.
+Le pagine delle tre aree mostrano diciotto domande, non più dodici: cinque in
+«Il costo della vita», sei in «Il lavoro», sette in «Il futuro». Il totale e
+la ripartizione sono un dato dichiarato in `src/ui/catalogoDomande.ts`
+(`CATALOGO_DOMANDE`, 18 oggetti), non un conteggio a mano: contato riga per
+riga nel file, e confermato a schermo con un browser (18 `<li>` in tutto
+sulle tre pagine).
 
-Sette domande che oggi chiedono «che cosa mi conviene» o provano a indovinare
-il futuro di chi legge diventeranno domande su un meccanismo — la differenza
-fra due percorsi, non la scelta fra loro. E «Il mio settore è a rischio nei
-prossimi anni?» lascerà il posto in evidenza sulla card «Il lavoro» a una
-domanda a cui si può rispondere con i fatti: scenderà in fondo all'elenco della
-sua area, riscritta e segnata «senza fonte» — resterà visibile, non sparirà.
+Sotto ogni domanda compare una riga di stato scritta a parole, mai in un
+colore soltanto: **«La schermata che risponde a questa domanda non c'è
+ancora.»** per le sedici voci `in-arrivo`; **«Su questa il sito non ha una
+risposta con una fonte dichiarata, e non la inventa.»**, in rosa, per
+l'unica voce `senza-fonte`; un link vero e **sottolineato** per l'unica voce
+`con-schermata`. `PaginaMacrocategoria.tsx` sceglie quale delle tre stampare
+con uno `switch` sul campo `stato` del catalogo, non più con la vecchia
+mappa `SCHERMATA_DELLA_DOMANDA` che conosceva un solo percorso scritto a
+mano.
+
+Il numero dei tre badge — **4 · 5 · 6**, letto a schermo — è la lunghezza di
+ciascuna lista meno uno, calcolata da `contaAltreDomande()` in
+`contenutiHome.ts`: la funzione non contiene nessuna cifra, solo
+`AREE[id].domande.length - 1`, e `domande` a sua volta è filtrato dal
+catalogo tramite la nuova `chiaviDiArea()`. Prima di questa funzionalità le
+tre aree leggevano tutte «altre 3 domande qui dentro»; adesso leggono tre
+numeri diversi, e `tests/home.test.ts` verifica il caso «lavoro»
+(`contaAltreDomande('lavoro') === 5`).
+
+La card «Il lavoro» mostra ora «Se perdo il lavoro, quanto prendo ogni mese e
+per quanto tempo?», non più «Il mio settore è a rischio nei prossimi anni?»,
+che è scesa in fondo alla sua area — sesta e ultima voce — riscritta in «Nel
+mio settore, quante persone hanno perso il lavoro negli ultimi anni?» e
+segnata «senza fonte». Confermato leggendo `testi.ts` (`area2Domanda` è
+l'unica chiave già a schermo il cui valore cambia) e verificato a schermo, in
+entrambi i punti.
+
+Le sette domande che sceglievano per chi legge o indovinavano il suo futuro
+sono sparite dal codice sorgente — cercate una per una su tutte e quattro le
+pagine toccate (home e tre aree): zero occorrenze — e sostituite dalle sette
+riscritture della tabella «Le diciotto domande», verificate parola per
+parola a schermo.
+
+Il catalogo è compilato nel pacchetto, non caricato da altrove: ricaricando
+una pagina d'area il contenuto compare già completo al primo
+`domcontentloaded`, senza alcun elemento che somigli a un indicatore di
+caricamento.
 
 ### Per chi
 
@@ -256,177 +288,192 @@ dice onestamente che oggi non ha una fonte per farlo.
 
 ### Come si prova
 
-Sono i criteri di accettazione: finché anche uno solo di questi passi non dà
-il risultato atteso, la funzionalità non è finita. I comandi vanno eseguiti da
-`app/`.
+Sono gli stessi quattordici passi della fase 1, eseguiti il 2026-09-15 da
+`app/`, con un Chromium pilotato da Playwright dove serviva una misura
+invece di una lettura a occhio.
 
-1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (chi non usa Claude
-   Code ottiene lo stesso risultato con `npm run prepara`).
-   *Risultato atteso:* lo script dirà «Ambiente già pronto», oppure elencherà i
-   passi che ha installato, e il suo controllo di salute — `tsc --noEmit` e poi
-   `npm test` — finirà senza errori. Se fallisce, ci si ferma qui.
-
-2. **Avviare l'applicazione.** Lanciare la skill `/avvia`. Mai `npm run dev` a
-   mano: è un processo che non termina e lascia la sessione appesa.
-   *Risultato atteso:* lo script riporterà l'indirizzo `http://localhost:5173`.
-   Aprendolo comparirà la home.
-
-3. **Il numero sui tre badge, e perché non è più lo stesso ovunque.** Sulla
-   home, leggere la riga in fondo a ciascuna delle tre card.
-   *Risultato atteso:* oggi le tre card leggono tutte «altre 3 domande qui
-   dentro», lo stesso numero ovunque. Dopo, si leggeranno tre numeri diversi:
-   **«altre 4 domande qui dentro»** su «Il costo della vita», **«altre 5
-   domande qui dentro»** su «Il lavoro» (la funzione che lo calcola,
-   `contaAltreDomande('lavoro')`, passerà da 3 a 5) e **«altre 6 domande qui
-   dentro»** su «Il futuro». Tre liste di lunghezza diversa, tre badge diversi:
-   è il segno che il numero si deriva dalla lista invece di essere scritto a
-   mano.
-
-4. **Diciotto domande in tutto, non più dodici.** Entrare in ciascuna delle tre
-   aree ed elencare tutte le voci, quella già letta sulla card compresa.
-   *Risultato atteso:* «Il costo della vita» ne conterà **5**, «Il lavoro»
-   **6**, «Il futuro» **7** — 5 + 6 + 7 fa **18**, sei domande in più delle
-   dodici di prima. Le liste non saranno lunghe uguali, ed è voluto: pareggiarle
-   avrebbe voluto dire inventare una domanda o buttarne via una vera.
-
-5. **La card «Il lavoro» ha cambiato domanda, e quella vecchia non è sparita.**
-   Sulla home, leggere la domanda in evidenza sulla card «Il lavoro»; poi
-   entrare nell'area e scorrere fino all'ultima voce dell'elenco.
-   *Risultato atteso:* sulla card si leggerà **«Se perdo il lavoro, quanto
-   prendo ogni mese e per quanto tempo?»**, non più «Il mio settore è a rischio
-   nei prossimi anni?». Quella domanda non sarà sparita: comparirà come
-   **ultima** voce dell'elenco, riscritta in **«Nel mio settore, quante persone
-   hanno perso il lavoro negli ultimi anni?»**, con sotto la frase «Su questa
-   il sito non ha una risposta con una fonte dichiarata, e non la inventa.»
-
-6. **Le sette domande che sceglievano per chi legge, tutte con una nuova
-   formulazione.** Cercare, nelle tre aree, se compare ancora una delle sette
-   domande d'origine qui sotto; se non compare, verificare che al suo posto
-   compaia la riscrittura.
-
-   | Non comparirà più | Comparirà al suo posto |
-   | --- | --- |
-   | «Mutuo o affitto, cosa mi conviene?» | «Quanto mi costa la casa ogni mese, tutto compreso?» |
-   | «Come proteggo i miei risparmi dall'inflazione?» | «I risparmi fermi sul conto: che cosa succede loro mentre i prezzi salgono?» |
-   | «Conviene cambiare fornitore o offerta?» | «Che cosa cambia in bolletta fra un'offerta a prezzo fisso e una a prezzo variabile?» |
-   | «Conviene aprire una partita IVA o restare dipendente?» | «Con lo stesso importo, quanto resta a un dipendente e quanto a chi lavora in proprio?» |
-   | «Il mio contratto a termine verrà rinnovato? Cosa cambia rispetto a un indeterminato?» | «Contratto a termine e a tempo indeterminato: che cosa cambia, in concreto, fra i due?» |
-   | «Il mio settore è a rischio nei prossimi anni?» | «Nel mio settore, quante persone hanno perso il lavoro negli ultimi anni?» |
-   | «Meglio conto deposito, ETF o BTP per i miei risparmi?» | «Se i soldi mi servono fra sei mesi, che cosa cambia rispetto a quando mi servono fra dieci anni?» |
-
-   *Risultato atteso:* nessuna delle sette frasi di sinistra comparirà in
-   nessuna delle tre aree; ognuna delle sette di destra sì. Le nuove
-   formulazioni descriveranno un meccanismo o una differenza fra due percorsi,
-   mai una scelta da fare o un pronostico sulla persona che legge — coerente
-   con il fatto che il sito spiega e calcola, non consiglia.
-
-7. **Ogni voce dice il proprio stato a parole, senza bisogno del mouse.**
-   Scorrere l'elenco di un'area intera senza mai avvicinare il puntatore a
-   nessuna riga.
-   *Risultato atteso:* sotto ogni domanda **con schermata** ci sarà un link
-   vero, riconoscibile perché **sottolineato** — non da un colore diverso, che
-   da lontano, al proiettore, si vedrebbe peggio di una riga sotto la parola.
-   Sotto ogni domanda **in arrivo** si leggerà «La schermata che risponde a
-   questa domanda non c'è ancora.» Sotto l'unica domanda **senza fonte** si
-   leggerà «Su questa il sito non ha una risposta con una fonte dichiarata, e
-   non la inventa.» Tutte e tre le frasi si leggeranno stando fermi, senza
-   passare il mouse su niente: al proiettore e su un telefono il passaggio del
-   mouse non esiste.
-
-8. **L'unico link vero porta dove promette.** Entrare in «Il futuro» e
-   cliccare sulla domanda «I risparmi fermi sul conto: che cosa succede loro
-   mentre i prezzi salgono?».
-   *Risultato atteso:* il click porterà alla schermata della funzionalità 07
-   (`#/valore-dei-risparmi`), quella già costruita per calcolare quanto valgono
-   i risparmi fermi nel tempo. È l'unica delle diciotto voci raggiungibile oggi
-   con un link vero: una su diciotto, non zero e non finta.
-
-9. **Lo stato vuoto — un'area dove nessuna voce ha ancora una schermata.**
-   Entrare in «Il costo della vita» oppure in «Il lavoro»: oggi nessuna delle
-   due ha una voce «con schermata».
-   *Risultato atteso:* l'elenco delle domande comparirà comunque per intero, e
-   una frase dirà che cosa manca e che arriverà — non «nessun risultato», che è
-   una porta chiusa e non una spiegazione.
-
-10. **Lo stato «in caricamento» non esiste, e non dovrà comparire.** Ricaricare
-    la pagina di un'area e guardarla nell'istante in cui appare.
-    *Risultato atteso:* l'elenco comparirà **subito, già completo**: nessuna
-    rotellina, nessun lampeggio, nessun testo che cambia un attimo dopo. Il
-    catalogo è compilato dentro il pacchetto della pagina, non arriva da
-    nessuna parte: se comparisse un'attesa, sarebbe un difetto nuovo, non una
-    cosa prevista.
-
-11. **L'errore — un indirizzo d'area che non esiste.** Scrivere a mano nella
-    barra dell'indirizzo qualcosa come `#/un-area-inventata`.
-    *Risultato atteso:* si aprirà la home, non una pagina bianca né un
-    messaggio d'errore tecnico: è lo stesso comportamento già garantito per
-    ogni indirizzo storto, e questa funzionalità non dovrà romperlo.
-
-12. **Dati lunghi — le domande più lunghe non rompono la griglia.** Aprire «Il
-    futuro», che con sette voci è l'elenco più lungo dei tre, e cercare la
-    domanda su che cosa cambia se i soldi servono fra sei mesi o fra dieci
-    anni: la sua riga misurerà più di 90 caratteri — più del doppio di «Perché
-    la bolletta è così alta questo mese?», che oggi sta per intero su una card.
-    *Risultato atteso:* il testo andrà a capo su più righe senza tagliarsi a
-    metà parola, resterà leggibile sopra i 16 px, e l'area toccabile — link o
-    meno — resterà larga almeno 44×44 px anche quando occupa due righe: quanto
-    un polpastrello, non meno.
-
-13. **Il resto della home resta come prima.** Ripetere, su questa versione, i
-    controlli già superati dalla funzionalità 01: le tre card restano
-    identiche per dimensione, colore e stile; il bottone «Pagina iniziale» e
-    «Indietro» restano nello stesso punto su ogni pagina; stringendo la
-    finestra sotto i 768 px le tre card si impilano nello stesso ordine; con
-    solo Tab il focus attraversa le card e poi le voci dell'elenco in ordine di
-    lettura, con un contorno visibile a ogni passaggio.
-    *Risultato atteso:* nessuna di queste cose sarà cambiata. Le uniche
-    differenze rispetto a prima saranno i numeri dei badge (passo 3), la
-    domanda sulla card «Il lavoro» (passo 5) e il contenuto delle liste (passi
-    4 e 6): tutto il resto della funzionalità 01 continuerà a funzionare
-    esattamente come il giorno in cui è stata verificata.
-
-14. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
-    `npm run build`, spegnere il Wi-Fi e riaprire la pagina dalla cartella
-    `dist/` servita da un server locale.
-    *Risultato atteso:* la build finirà senza errori, e rifacendo i passi 3–9
-    si vedrà lo stesso risultato, **senza che parta una sola richiesta fuori
-    dal computer**: il catalogo è testo dichiarato nel codice, non un dato
-    preso da qualche parte. Il caso del doppio clic diretto su
-    `dist/index.html` è un difetto già noto e registrato nella funzionalità 01
-    (passo 8): qui si verifica solo che questa funzionalità non ne aggiunga
-    uno nuovo, non lo si risolve.
+1. **Preparare l'ambiente.** `npm run prepara` risponde «Ambiente già pronto.
+   Niente da fare.» ✅
+2. **Avviare l'applicazione.** `node scripts/dev-server.mjs start` risponde
+   `Server avviato: http://localhost:5173` e lascia la sessione libera;
+   all'indirizzo compare la home. ✅
+3. **I tre badge.** Letti a schermo: **«altre 4 domande qui dentro»** su «Il
+   costo della vita», **«altre 5 domande qui dentro»** su «Il lavoro»,
+   **«altre 6 domande qui dentro»** su «Il futuro» — tre numeri diversi, dove
+   prima erano tre volte lo stesso «3». `contaAltreDomande('lavoro')`
+   restituisce `5`, confermato sia dal codice sia da `tests/home.test.ts`. ✅
+4. **Diciotto domande in tutto.** Contate a schermo, area per area: «Il costo
+   della vita» **5**, «Il lavoro» **6**, «Il futuro» **7** — somma **18**,
+   sei più delle dodici di prima. Le tre liste restano di lunghezza diversa,
+   come previsto. ✅
+5. **La card «Il lavoro» e la domanda spostata.** Sulla card si legge **«Se
+   perdo il lavoro, quanto prendo ogni mese e per quanto tempo?»**; entrando
+   nell'area, l'ultima delle sei voci è **«Nel mio settore, quante persone
+   hanno perso il lavoro negli ultimi anni?»**, seguita da «Su questa il sito
+   non ha una risposta con una fonte dichiarata, e non la inventa.», in
+   rosa. ✅
+6. **Le sette riscritture.** Verificate una per una, su tutte e quattro le
+   pagine: nessuna delle sette frasi d'origine (compresa «Meglio conto
+   deposito, ETF o BTP») compare più; tutte e sette le riscritture compaiono,
+   parola per parola come nella tabella della specifica. ✅
+7. **Stato a parole, senza mouse.** Il testo di stato è stato letto
+   direttamente dal DOM, senza simulare nessun passaggio del mouse: compare
+   comunque, per tutte e tre le voci di esempio. ✅
+8. **L'unico link vero.** In «Il futuro», la voce «I risparmi fermi sul
+   conto: che cosa succede loro mentre i prezzi salgono?» è un `<a>`
+   sottolineato con `href="#/valore-dei-risparmi"`; `tests/catalogo.test.ts`
+   verifica che `parseRotta` di quel percorso non torni mai alla home. ✅
+9. **Stato vuoto.** Su «Il costo della vita» e su «Il lavoro» — le due aree
+   senza ancora nessuna voce `con-schermata` — compare, sopra l'elenco
+   completo, la riga «In quest'area, oggi, nessuna domanda ha ancora una
+   schermata di risposta pronta: arriveranno una alla volta.» Su «Il
+   futuro», che una voce con schermata ce l'ha già, quella riga non
+   compare. ✅
+10. **Nessuno stato di caricamento.** Al primo `domcontentloaded`, sia alla
+    prima apertura sia dopo un ricaricamento, le sei voci di «Il lavoro» sono
+    già tutte presenti nel DOM e nessun elemento che richiami «spinner»,
+    «loading» o «caricamento» esiste in pagina. ✅
+11. **Errore.** Un indirizzo inventato (`#/un-area-inventata`) mostra il
+    contenuto della home (`.griglia-aree` presente); l'indirizzo nella barra
+    resta quello digitato, esattamente come già succedeva prima di questa
+    funzionalità. ✅
+12. **Dati lunghi.** A 375 px di larghezza, la domanda più lunga di «Il
+    futuro» va a capo su più righe restando a corpo **19,1 px** (misurato,
+    sopra il minimo di 16), senza tagli a metà parola; ogni voce misura più
+    di 44 px di altezza anche su più righe, misurato con le coordinate del
+    browser. Uno screenshot alla stessa larghezza mostra inoltre che il
+    pallino di ogni voce — link compreso — si allinea alla **prima** riga
+    del testo, non all'ultima: vedi «Divergenze» per la correzione che lo
+    rende vero. ✅
+13. **Il resto della home invariato.** Le tre card restano tre, con la stessa
+    struttura di classi (`tests/home.test.ts`, ancora verde); «Pagina
+    iniziale» e «Indietro» restano in alto, nello stesso ordine, su ogni
+    pagina; a 375 px le tre card si impilano nell'ordine dichiarato — costo
+    della vita, lavoro, futuro; premendo Tab dalla pagina «Il futuro» il
+    fuoco passa da «Pagina iniziale» a «Indietro» all'unico link vero, con un
+    contorno rosa (`solid 3px rgb(255, 80, 160)`, cioè `#FF50A0`) visibile a
+    ogni passaggio. ✅
+14. **Con il Wi-Fi spento.** Fermato il server (`node scripts/dev-server.mjs
+    stop`), `npm run build` produce `dist/` senza errori (`index.html` 0,50
+    kB · foglio di stile 8,61 kB · pacchetto JS 176,27 kB). Nel pacchetto non
+    compare nessun indirizzo da scaricare, a parte gli URI dello schema
+    XML/SVG e il link — mai richiesto — del decoder degli errori di React:
+    la stessa situazione già registrata per `01`, senza nulla di nuovo.
+    Servendo `dist/` con `npm run preview` e riaprendo home, «Il lavoro» e
+    «Il futuro» con un browser che registra ogni richiesta: **tre richieste
+    in tutto, tutte verso `localhost`, zero verso l'esterno**; badge e
+    contenuti restano gli stessi della build di sviluppo. Non è stato
+    possibile spegnere davvero l'interfaccia di rete della macchina da questo
+    ambiente: la verifica sostituisce la disconnessione fisica con la prova,
+    più stringente, che nessuna richiesta lasci mai `localhost`. Il caso già
+    noto del doppio clic diretto su `dist/index.html` (registrato nella fase
+    2 di `01`) non è stato ripetuto qui, come la specifica stessa richiede:
+    si è verificato solo che questa funzionalità non ne introduca uno nuovo,
+    non che quello esistente sia risolto. ✅
 
 ### Limiti
 
-- **Non introdurrà nessun campo di domanda libera né una ricerca a testo.** Un
-  campo così, senza un modello che gira sul dispositivo, produrrebbe l'attesa
-  di una risposta che il sito non può dare: resterà un elenco a tocco, non una
-  casella da riempire.
-- **Non risponderà a nessuna delle diciotto domande.** Costruirà solo l'indice
-  e il suo stato: le risposte vere sono compito delle pagine di spiegazione
-  (funzionalità 03) e dei simulatori (08–12).
-- **Non aggiungerà nessuna schermata nuova e nessuna rotta.** L'unico percorso
-  citato resterà quello che la funzionalità 07 ha già aperto.
-- **Non calcolerà nessun numero di dominio.** Il catalogo è contenuto
-  redazionale: nessuna fixture, nessun euro, nessuna voce di un documento.
-- **Non ordinerà le domande per quanto contano.** L'ordine resterà una scelta
-  dichiarata — la più frequente per prima — non una classifica: dire a
-  qualcuno che la sua domanda è l'ultima della lista la farebbe sentire
-  giudicata, ed è proprio ciò che il sito non deve mai far succedere.
-- **Non separerà «quanto sarà la mia pensione» da «a che età potrò andare in
-  pensione» in due voci distinte.** Restano un'unica voce finché una specifica
-  dedicata alla pensione non deciderà diversamente, con i dati sotto gli occhi.
-- **Non dichiarerà da quale fonte arriverà ciascuna risposta ancora da
-  scrivere.** Le voci «in arrivo» diranno solo che la risposta arriverà, non
-  quando né da quale numero: la tabella delle fonti è compito della
-  funzionalità 13.
-- **Non riscriverà le domande già a schermo, a un'unica eccezione:** quella in
-  evidenza sulla card «Il lavoro», spostata e riscritta perché restava un
-  pronostico sulla situazione di chi legge, travestito da domanda.
-- **Non toccherà `types/`.** Il catalogo resterà contenuto redazionale dentro
-  `src/ui/`, come già oggi le dodici domande esistenti.
+- **Non introduce nessun campo di domanda libera né una ricerca a testo.** In
+  nessuna delle pagine toccate esiste un elemento di input testuale: le
+  diciotto domande si raggiungono solo scorrendo un elenco a tocco.
+- **Non risponde a nessuna delle diciotto domande.** Le sedici voci
+  `in-arrivo` e l'unica `senza-fonte` restano testo con una nota di stato;
+  l'unica risposta vera è quella già costruita dalla funzionalità 07, a cui
+  il catalogo si limita a collegarsi.
+- **Non aggiunge nessuna schermata né nessuna rotta.** `src/ui/rotte.ts` non
+  fa parte del diff di questa funzionalità: l'unico percorso citato,
+  `PERCORSO_VALORE_RISPARMI`, esisteva già.
+- **Non calcola nessun numero di dominio.** `catalogoDomande.ts` e
+  `contenutiHome.ts` non importano nulla da `src/core/` e non leggono
+  nessuna fixture: l'unico numero a schermo resta il conteggio delle domande
+  nei tre badge.
+- **Non ordina le domande per importanza.** L'ordine dichiarato in
+  `CATALOGO_DOMANDE` è quello di stampa; nessun criterio di rilevanza compare
+  nel codice.
+- **Non separa «quanto sarà la mia pensione» da «a che età potrò andare in
+  pensione».** `area3Domanda` resta un'unica voce, identica a prima.
+- **Non dichiara la fonte delle risposte non ancora scritte.** Il testo delle
+  voci `in-arrivo` non nomina mai un dato o un ente: solo che la schermata
+  arriverà.
+- **Non riscrive nessun'altra domanda già a schermo.** `area2Domanda` è
+  l'unica chiave preesistente il cui valore cambia; confermato dal diff di
+  `testi.ts`, che tocca quella riga sola oltre alle due righe di import.
+- **Non tocca `types/`.** Il diff di questa funzionalità non include nessun
+  file sotto `types/`.
 
----
+### Divergenze fra previsto e realizzato
+
+1. **Il foglio di stile toccato è `stiliNavigazione.css`, non
+   `stiliHome.css`.** Le dichiarazioni tecniche della specifica ipotizzavano
+   «`stiliHome.css` o un foglio affiancato»: `stiliNavigazione.css`
+   conteneva già, da `01`, le regole `.elenco-domande`, ed è lì che le nuove
+   regole di stato e la correzione del pallino sono state aggiunte, senza
+   creare un file in più.
+
+2. **Una correzione visiva non richiesta dalla fase 1.** Il pallino
+   dell'elenco su una voce collegata che va a capo su più righe si allineava
+   alla propria **ultima** riga invece che alla prima, per via del
+   `display: inline-block` di `.domanda-collegata` ereditato da
+   `stiliRisultato.css`. È stato aggiunto, dentro `stiliNavigazione.css`,
+   `.elenco-domande .domanda-collegata { display: block; }`, che riporta il
+   pallino alla prima riga **solo** dentro un elenco. Verificato in due modi:
+   uno screenshot a 375 px su «Il futuro» mostra il pallino allineato alla
+   prima riga della voce collegata; e su `#/valore-dei-risparmi`
+   (funzionalità 07, che riusa la stessa classe `.domanda-collegata` fuori
+   da un `.elenco-domande`) `getComputedStyle` restituisce ancora
+   `inline-block` — quella pagina non è stata toccata dalla correzione.
+
+3. **Il lessico si allarga di una parola sola, non di due.** Le dichiarazioni
+   tecniche della specifica (punto 3) prevedevano di bloccare sia
+   «preferibile» sia «meglio». `guardrail-officer` ha aggiunto solo la radice
+   `preferibil*` alla voce `comparativo-valore` di `src/guardrails/lessico.ts`
+   ed **esclude deliberatamente** «meglio»: il motivo, scritto nel commento
+   sopra quella voce, è che «meglio» è un avverbio quasi sempre innocuo e
+   centrale nel registro «amico che spiega» di questo progetto («si capisce
+   meglio con un esempio»), e bloccarlo produrrebbe falsi allarmi
+   sistematici; la frase pericolosa d'origine, «Meglio conto deposito, ETF o
+   BTP», è comunque già neutralizzata dalla riscrittura in `area3Altra5` e
+   non compare in `src/`. È una divergenza rispetto a un'ipotesi tecnica
+   della specifica, non rispetto a un comportamento a schermo: verificato che
+   `tests/lessico-ui.test.ts` resti verde e che zero occorrenze di «meglio» o
+   «preferibile» esistessero già in `src/` prima dell'aggiunta. Nota per chi
+   legge il referto del `tester`: il caso `CF-04` in
+   `docs/test/02-catalogo-domande.md` ipotizza il blocco di entrambi i
+   termini — questa è la ragione per cui, alla prova, solo metà di
+   quell'ipotesi risulta vera.
+
+4. **Il messaggio di stato «vuoto» è comparso sopra l'elenco, non sotto.**
+   Nella versione precedente di `PaginaMacrocategoria.tsx` (quella di `01`)
+   il placeholder «contenuto in costruzione» compariva **dopo** l'elenco; il
+   nuovo `areaNessunaSchermata` compare **prima**, in testa alla sezione. Non
+   era un impegno della fase 1, che si limitava a chiedere «una frase in
+   testa» senza dettagliare la posizione precedente: lo si registra qui
+   perché è un cambiamento reale di comportamento visto leggendo il diff, non
+   solo un dettaglio di stile.
+
+5. **Un difetto scoperto rileggendo la suite dopo la riconciliazione,
+   segnalato e non corretto: `npm test` non è verde.** Mentre questa scheda
+   veniva scritta, `tester` ha completato la propria fase 2 aggiungendo
+   `tests/accettazione/02-catalogo-domande-conformita.test.ts`. Rilanciando
+   `npm test` **un file fallisce** (1 fallito, 18 verdi, su 19): il caso
+   CF-03 trova la frase «Meglio conto deposito, ETF o BTP» dentro
+   `src/guardrails/lessico.ts` — non nel codice di questa funzionalità, ma
+   nel commento che `guardrail-officer` ha scritto sopra `comparativo-valore`
+   per spiegare perché «meglio» resta escluso (la stessa nota citata nella
+   divergenza 3 qui sopra): quel commento cita la frase pericolosa **per
+   intero, fra virgolette**, dentro `src/`, ed è esattamente ciò che CF-03
+   vieta — «nessuna delle sette frasi d'origine compare in `src/`, in nessuna
+   forma, nemmeno come commento che spiega la riscrittura». Nessuno dei file
+   che questa scheda documenta è coinvolto: `catalogoDomande.ts`,
+   `testiCatalogo.ts`, `contenutiHome.ts`, `PaginaMacrocategoria.tsx`,
+   `testi.ts` e `stiliNavigazione.css` restano quelli letti sopra, invariati
+   da quando sono stati verificati, e i quattordici passi restano tutti
+   confermati. Per questo lo stato di **questa scheda** resta
+   `implementato`. Ma **la funzionalità nel suo complesso non supera
+   `/verifica`** finché `src/guardrails/lessico.ts` non viene riformulato
+   senza citare la frase per intero — file che appartiene a
+   `guardrail-officer`, non a `doc-funzionale`: per questo si segnala qui e
+   non si corregge.
 
 ---
 
@@ -439,7 +486,17 @@ il risultato atteso, la funzionalità non è finita. I comandi vanno eseguiti da
 
 ### Per chi
 
-«La persona, e il momento esatto in cui le serve.»
+La stessa persona della `01`: è arrivata con un'ansia già formata, ha toccato
+una delle tre porte e adesso guarda l'elenco delle domande di quell'area. Ne
+sceglie una aspettandosi una risposta, non un rimando — e le servirà nel
+secondo o terzo tocco dall'apertura del sito, che per la regola dei due-tre
+tap è anche l'ultimo disponibile: quello che non starà in questa pagina non
+avrà più un posto dove stare.
+
+Di riflesso servirà anche a chi scriverà le prossime pagine di spiegazione, che
+potrà dichiarare un contenuto senza poter sbagliare la forma. Ma il
+destinatario resta la persona che legge: se la struttura servisse solo a chi
+scrive, sarebbe un file di appunti, non una funzionalità.
 
 ### Come si prova
 
