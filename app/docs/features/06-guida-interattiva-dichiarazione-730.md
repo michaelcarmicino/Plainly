@@ -558,25 +558,275 @@ apre è peggio di una parete.
 *Scritto da `doc-funzionale` in fase 1, dalla sola specifica, mentre il codice
 viene costruito. **Tutto al futuro**: nulla qui è ancora verificato.*
 
+> Stato: **in sviluppo** · fase 1 scritta il 2026-09-15, dalla sola specifica.
+> La fase 2 — rilettura del codice e dei test, esecuzione dei passi qui sotto e
+> riscrittura al presente sotto «Verificato» — non è ancora stata fatta.
+
 ### Cosa farà
 
-«Due righe comprensibili a chi non vede il codice.»
+Aprendo questa guida comparirà il quadro E di un 730 già compilato,
+riprodotto riga per riga con le stesse identiche parole del modulo: tre spese
+che danno diritto a una detrazione — gli interessi del mutuo, le spese
+sanitarie, le spese di istruzione — e, sopra l'elenco, il numero più grande
+di tutta la schermata: il rimborso, **665,00 €**. Toccando una riga comparirà
+sotto di essa quanto è stato speso, quanto di quella spesa torna indietro e
+quanto torna ogni 100 € spesi — per esempio sugli interessi del mutuo:
+**2.000,00 €** spesi, **380,00 €** che tornano, **19,00 €** ogni 100 €, con
+accanto la precisazione che quel 19% è il numero stampato sul modulo, non
+un'ipotesi di questo sito. Due riquadri in più, apribili allo stesso modo,
+mostreranno il reddito complessivo (**27.243,00 €**) e le ritenute IRPEF già
+trattenute in busta paga (**4.683,00 €**): il ponte fra questo modulo e il
+cedolino della funzionalità 04. In fondo, una barra dividerà le tre spese in
+due parti — quanto torna con il 730 e quanto resta comunque a carico — per
+correggere con un numero solo l'idea più diffusa su questo documento, che una
+spesa detratta sia una spesa recuperata per intero: su ogni 100 € di queste
+spese, **19,00 €** torneranno e **81,00 €** resteranno pagati da chi ha
+dichiarato.
 
 ### Per chi
 
-«La persona, e il momento esatto in cui le serve.»
+Una persona dipendente che riceve il 730 **già compilato** ogni anno: lo
+guarda, cerca l'ultima riga, vede scritto «rimborso» e la accetta senza
+sapere da dove venga — non ha modo di dire se quella cifra sia grande o
+piccola, giusta o sbagliata, perché il modulo è fatto di righi numerati,
+sigle e rimandi ad altri righi.
+
+Due cose la bloccano, ed è a queste due che la guida risponderà: non saprà
+che quel rimborso è una **restituzione**, non un regalo né un premio dello
+Stato; e non collegherà il 730 alla busta paga, cioè non saprà che le righe
+`IRPEF` trattenute ogni mese sono esattamente i soldi di cui una parte torna
+indietro qui. Le servirà fra aprile e luglio, con il 730 precompilato aperto
+e la sensazione di dover «solo confermare» — il momento esatto in cui sta per
+chiuderlo senza averlo letto.
+
+È la stessa persona della funzionalità 04: la fixture di questa guida userà
+l'anno dello stesso cedolino anonimo — dodici mesi da 2.500,00 € di lordo —
+così da poter mostrare i due documenti in fila e far vedere che i numeri si
+tengono.
 
 ### Come si proverà
 
-«I passi esatti per vederla funzionare, dall'avvio in poi:
- 1. `/prepara` (solo la prima volta) · 2. `/avvia` · 3. apri … · 4. ti aspetti …
+Sono i **criteri di accettazione**: finché anche uno solo di questi passi non
+dà il risultato atteso, la funzionalità non è finita. I comandi vanno
+eseguiti da `app/`.
 
- Questi passi sono anche i CRITERI DI ACCETTAZIONE: `/implementa` li legge e li
- tratta come parte della richiesta.»
+1. **Preparare l'ambiente.** Lanciare la skill `/prepara` (chi non usa Claude
+   Code ottiene lo stesso risultato con `npm run prepara`, che esegue
+   `node scripts/prepara.mjs`). Serve solo la prima volta.
+   *Risultato atteso:* lo script dirà che l'ambiente è pronto, oppure
+   elencherà i passi che ha installato, e il suo controllo di salute —
+   `tsc --noEmit` e poi `npm test` — finirà senza errori.
+
+2. **Avviare l'applicazione.** Lanciare la skill `/avvia` (che esegue
+   `node scripts/dev-server.mjs start`). Mai `npm run dev` a mano: è un
+   processo che non termina e lascia la sessione appesa.
+   *Risultato atteso:* lo script riporterà l'indirizzo
+   `http://localhost:5173`.
+
+3. **Raggiungere la guida.** Aprire quell'indirizzo e navigare fino alla
+   guida alla dichiarazione 730, all'indirizzo che `rotte.ts` le assegnerà.
+   *Risultato atteso:* si aprirà la schermata del 730, con le sue righe
+   leggibili da subito — non un avviso «presto disponibile», non una pagina
+   bianca. **Nota sulla specifica, da leggere prima di considerare questo
+   passo scontato**: a differenza delle guide 04 (cedolino) e 05 (bolletta),
+   che si raggiungono toccando una domanda già scritta sulla home, questa
+   specifica non lega la guida a nessuna voce del catalogo delle diciotto
+   domande — verificato: né `src/ui/catalogoDomande.ts` né
+   `src/ui/testi.ts`/`testiCatalogo.ts` contengono oggi una domanda sul 730 o
+   sulla dichiarazione dei redditi, in nessuna area. Questo criterio verifica
+   quindi l'indirizzo diretto della guida, non un percorso dalla home: se in
+   fase 2 risultasse comunque presente un collegamento dalla home, sarebbe
+   un'aggiunta rispetto a quanto scritto qui, da segnalare come tale.
+
+4. **Il facsimile, prima di toccare qualunque riga — lo stato vuoto.**
+   Guardare la schermata subito dopo l'apertura, senza toccare niente.
+   *Risultato atteso:* compariranno le tre righe del quadro E, con le
+   etichette **identiche**, carattere per carattere, a quelle di un modulo
+   vero: `Interessi passivi su mutuo ipotecario - abitazione principale`,
+   `Spese sanitarie (al netto della franchigia di 129,11)`, `Spese di
+   istruzione - iscrizione scolastica`. Gli importi saranno allineati a
+   destra, con cifre tabulari e l'euro accanto al valore: `2.000,00 €`,
+   `1.000,00 €`, `500,00 €`. Sopra l'elenco, **665,00 €** — il rimborso —
+   sarà il numero più grande di tutta la schermata. Il riquadro del
+   riepilogo sarà già presente, con una riga che dirà che si riempirà via
+   via che si aprono le voci — non «nessun risultato».
+
+5. **Il caricamento non sposterà il layout.** Osservare lo stesso istante
+   del passo precedente, con attenzione a eventuali scatti del layout.
+   *Risultato atteso:* nessuna rotellina né alcun indicatore di attesa: il
+   730 è una fixture importata staticamente, quindi le tre righe, i due
+   riquadri del prospetto e il riepilogo compariranno già pronti. Il
+   riquadro dove poi comparirà la spiegazione occuperà già il suo spazio da
+   chiuso, così aprire la prima riga non sposterà il resto della schermata
+   verso il basso.
+
+6. **Aprire il rigo degli interessi del mutuo.** Toccare
+   `Interessi passivi su mutuo ipotecario - abitazione principale`.
+   *Risultato atteso:* la riga si evidenzierà con un bordo **e** un fondo
+   diversi, non il solo colore, e sotto comparirà un riquadro con
+   l'etichetta ripetuta identica, la spesa `2.000,00 €`, la detrazione
+   `380,00 €` e il paragone `19,00 € ogni 100 €`, con accanto la frase che
+   dichiara che quel 19% è il numero **stampato sul modulo**, non
+   un'ipotesi di questo sito. La spiegazione partirà dall'immagine di tutti
+   i giorni — la rata fatta di prestito restituito più interessi — prima
+   della sigla.
+
+7. **Il controllo che conta più di tutti.** Con una calcolatrice qualunque,
+   dividere `380,00` per `2.000,00` e moltiplicare per 100.
+   *Risultato atteso:* il risultato sarà `19`, lo stesso numero già
+   stampato dentro l'etichetta del modulo. Sarà la prova che la percentuale
+   scritta sul documento e i due importi del documento raccontano la stessa
+   cosa, e non due cose diverse per caso vicine.
+
+8. **Le altre due righe, guardando il riepilogo dopo ognuna.** Toccare
+   `Spese sanitarie (al netto della franchigia di 129,11)`, poi `Spese di
+   istruzione - iscrizione scolastica`.
+   *Risultato atteso:* sulle spese sanitarie si leggerà `1.000,00 €` di
+   spesa — già al netto della franchigia di 129,11 €, spiegata con il
+   paragone della franchigia dell'assicurazione dell'auto — e `190,00 €`
+   che tornano; sull'istruzione, `500,00 €` di spesa e `95,00 €` che
+   tornano. Ogni tocco sostituirà il contenuto del riquadro di spiegazione
+   con quello della riga appena aperta — una spiegazione visibile alla
+   volta — ma il riepilogo sotto **aggiungerà** una riga per ogni voce
+   toccata finora, senza perdere quelle di prima: nessuna domanda, nessun
+   punteggio, nessuna barra di avanzamento.
+
+9. **I due riquadri sul prospetto — il ponte con la busta paga.** Toccare
+   il riquadro del reddito complessivo, poi quello delle ritenute IRPEF.
+   *Risultato atteso:* si leggerà **27.243,00 €** di reddito complessivo,
+   con la spiegazione che è il lordo dell'anno meno i contributi, e
+   **4.683,00 €** di ritenute IRPEF, con la spiegazione che è la somma
+   delle dodici righe `IRPEF netta` del cedolino, `390,25 €` al mese. Sarà
+   il punto in cui, se si è già vista la funzionalità 04, si riconoscono
+   gli stessi numeri.
+
+10. **La barra delle due parti.** Guardare in fondo alla schermata.
+    *Risultato atteso:* due cifre scritte accanto a una barra sola, non
+    solo disegnata: **665,00 € · 19,00%** per la parte che torna con il
+    730, **2.835,00 € · 81,00%** per quella che resta comunque a carico. Le
+    due percentuali sommeranno esattamente a 100%, e la frase accanto dirà
+    che una spesa che si detrae non è una spesa che si recupera per
+    intero.
+
+11. **Nessuna consulenza fiscale — il criterio più delicato di tutti.**
+    Rileggere tutta la schermata: le tre righe aperte una alla volta, i due
+    riquadri del prospetto, la barra finale.
+    *Risultato atteso:* in nessun punto comparirà un'indicazione su quali
+    spese portare in detrazione, su quale modello usare, su quali ricevute
+    procurarsi, né un giudizio se il 730 è compilato bene o se manca
+    qualcosa. Nessun ricalcolo dell'imposta lorda con gli scaglioni IRPEF:
+    gli unici numeri saranno rapporti fra cifre già stampate sul modulo.
+    Nessuna parola come «dovresti», «ti conviene», «ricordati di»,
+    «potresti recuperare»: il lessico di blocco le intercetta già, ma qui
+    la rilettura di `guardrail-officer` è dichiarata bloccante proprio
+    perché il lessico prende le parole, non le intenzioni.
+
+12. **Errore — verificabile solo in parte con questa fixture.** Cercare,
+    nel facsimile, un punto in cui la somma delle tre spese non coincida
+    con il totale stampato, oppure una riga senza la sua percentuale.
+    *Risultato atteso:* non se ne troverà nessuno: questa fixture **quadra
+    per costruzione** — la somma delle tre voci, `3.500,00 €`, è
+    esattamente il totale degli oneri stampato sul modulo — e tutte e tre
+    le righe hanno la loro aliquota. **I due comportamenti d'errore non
+    sono quindi eseguibili end-to-end con questo documento**: (a) una
+    quadratura che non torna dovrà essere dichiarata in linguaggio umano,
+    con lo scarto mostrato e **mai corretto**, esattamente come su un
+    cedolino o una bolletta che non tornano; (b) un rigo senza aliquota
+    stampata non dovrà mostrare nessuna detrazione, **né assumerla al 19%
+    per analogia**: la riga resterà con la sua spesa, e al posto della
+    detrazione ci sarà scritto che il modulo non stampa quel numero.
+    Andranno verificati in fase 2 leggendo
+    `src/core/__tests__/letturaDichiarazione.test.ts`. Se in fase 2 quei
+    casi non risultano coperti, va segnalato come divergenza, non
+    inventato un modulo finto solo per poterlo mostrare.
+
+13. **Dati lunghi — in parte verificabile oggi, in parte no.** Guardare
+    come va a capo l'etichetta più lunga, `Interessi passivi su mutuo
+    ipotecario - abitazione principale` (sessanta caratteri).
+    *Risultato atteso:* andrà a capo su più righe restando accanto al
+    proprio importo, senza rompere la griglia né staccarsi dall'importo.
+    **Il quadro E pieno — venti righi, aliquote diverse fra loro, importi a
+    sei cifre — non è invece riproducibile con questa fixture di tre
+    righe**, e andrà verificato in fase 2 leggendo la struttura pensata per
+    reggerlo in `stiliDichiarazione.css`.
+
+14. **Da tastiera e a finestra stretta come un telefono.** Restringere la
+    finestra sotto i 768 px di larghezza e rifare i passi 4-10 leggendo con
+    attenzione la riga del mutuo; poi, senza toccare il mouse, premere Tab
+    più volte fino a raggiungere e attivare la prima riga, e passare il
+    mouse su una riga **senza** cliccarla.
+    *Risultato atteso:* le etichette andranno a capo restando accanto al
+    proprio importo, senza barra di scorrimento orizzontale; nessuna
+    scritta scenderà sotto i 16 px, il contrasto resterà leggibile (almeno
+    4,5:1), e nessun bersaglio sarà più piccolo di 44×44 px. Ogni riga
+    apribile sarà un `<button>` vero, raggiungibile con Tab, apribile con
+    Invio **e** con Spazio, con `aria-expanded` che passa a `true` e la
+    spiegazione collegata da `aria-controls`; il fuoco avrà un contorno
+    netto sempre visibile, nello stesso ordine della lettura del modulo,
+    rigo per rigo. Passando il mouse senza cliccare non comparirà nessuna
+    informazione nuova: l'unico modo di aprire una riga sarà il tocco, il
+    clic o l'attivazione da tastiera.
+
+15. **Con il Wi-Fi spento.** Fermare il server con `/avvia stop`, lanciare
+    `npm run build`, spegnere il Wi-Fi e riaprire la stessa schermata
+    servita da un server locale qualunque.
+    *Risultato atteso:* la build finirà senza errori, e rifacendo i passi
+    3-10 si leggerà esattamente lo stesso contenuto — **senza che parta una
+    sola richiesta fuori dal computer**: nessuna lettura di un 730 vero,
+    nessuna chiamata all'Agenzia delle Entrate, perché il modulo e tutti i
+    suoi numeri sono scritti in una fixture dentro il codice.
 
 ### Limiti previsti
 
-«Cosa non farà, e perché.»
+- **Non dirà a nessuno che cosa mettere nella dichiarazione.** È il confine
+  che definisce questo task: spiegare che gli interessi del mutuo prima casa
+  rientrano fra gli oneri al 19% è informazione, perché sta scritta sul
+  modulo e nella legge; dire quali spese portare in detrazione, quale
+  modello usare, quali ricevute procurarsi o se si potrebbero recuperare
+  altri soldi è consulenza fiscale, che il prodotto non dà. Spiegherà solo i
+  righi già scritti su questo modulo, e si fermerà lì.
+- **Non dirà se il 730 è compilato bene.** Nessuna verifica di completezza,
+  nessun «sembra mancare qualcosa», nessun confronto con quello che
+  dichiarano altre persone: la quadratura confronterà solo la somma dei
+  righi con il totale stampato sullo stesso documento.
+- **Non calcolerà l'imposta.** Nessuna IRPEF a scaglioni, nessuna detrazione
+  per lavoro dipendente, nessuna addizionale, nessun ricalcolo del
+  rimborso: gli importi saranno quelli stampati sul modulo, e il conto
+  riguarderà solo i rapporti fra loro. Ricalcolare l'imposta lorda
+  richiederebbe gli scaglioni IRPEF e trasformerebbe questa guida in un
+  calcolatore di tasse — un'altra funzionalità, la 08.
+- **Non assumerà aliquote che il modulo non stampa.** Un rigo senza
+  percentuale stampata non riceverà il 19% per analogia: la sua detrazione
+  semplicemente non comparirà.
+- **Non tratterà il caso «a debito».** Questa fixture esce a rimborso: un
+  730 a debito è una domanda diversa — «perché devo pagare?» — con un tono
+  che va pensato da zero, non una variante di questa schermata.
+- **Non coprirà il resto del modulo.** Solo il quadro E, e di quello solo
+  tre righi al 19%: niente familiari a carico, redditi di altra natura,
+  quadro B degli immobili, oneri deducibili.
+- **Non riscriverà le etichette del documento.** `etichettaOriginale`
+  comparirà identica, franchigia compresa: la spiegazione si metterà
+  accanto, mai al posto.
+- **Non nasconderà i righi che non spiega** né arrotonderà via le spese
+  piccole: anche i 500,00 € di istruzione resteranno un rigo a sé, visibile
+  quanto gli altri.
+- **Non leggerà un 730 vero e non si collegherà a nessun servizio.** Nessun
+  PDF, nessuno SPID, nessuna chiamata all'Agenzia delle Entrate: il modulo
+  sarà uno solo, anonimo, scritto a mano in una fixture.
+- **Non sarà il 730 di chi legge.** I numeri saranno quelli della fixture:
+  chi ha altre spese vedrà cifre diverse dalle sue, e la schermata lo dirà
+  invece di lasciarlo intuire.
+- **Non avrà nessun collegamento verso un simulatore o verso la guida 04.**
+  Il ponte più utile — verso la busta paga, per chiudere il cerchio fra
+  ritenute e rimborso — si farà solo dopo che `04` sarà stata unita a
+  `develop`: fino ad allora nessun bottone disattivato, nessun «presto
+  disponibile» — una porta che non si apre è peggio di una parete.
+- **Non chiederà e non conserverà niente.** Nessun campo da compilare,
+  nessun dato personale, nessun salvataggio: uscendo e rientrando il
+  riepilogo ripartirà vuoto.
+- **Non farà domande e non assegnerà punteggi.** Il riepilogo sarà un
+  promemoria, non un quiz: la misura della comprensione appartiene a
+  `src/assessment/`, un'altra parte del sito.
 
 ---
 
@@ -586,22 +836,18 @@ viene costruito. **Tutto al futuro**: nulla qui è ancora verificato.*
 letto codice e test ed **eseguito** i passi qui sopra. **Tutto al presente**:
 solo ciò che è stato confermato.*
 
-*Finché questa sezione non esiste, la funzionalità non è riconciliata e
-`/verifica` non la accetta come `implementato`.*
-
-### Cosa fa
-
-«…»
-
-### Come si prova
-
-«…»
-
-### Limiti
-
-«…»
-
-### Divergenze fra previsto e realizzato
-
-«Ogni scostamento, con il motivo. Si segnalano, non si appianano: riscrivere la
-previsione per farla combaciare con il risultato rende inutile l'esercizio.»
+> **Non ancora compilata.** Il codice di questa funzionalità non è ancora
+> stato scritto: non c'è niente da verificare, e scrivere qui qualcosa
+> significherebbe dichiarare fatto ciò che nessuno ha controllato.
+>
+> Questa sezione si riempie in **fase 2**, al termine di `/implementa`,
+> aprendo `src/core/letturaDichiarazione.ts` e i file di `src/ui/` che
+> costruiscono la guida, leggendo
+> `src/core/__tests__/letturaDichiarazione.test.ts` e
+> `tests/accettazione/06-guida-dichiarazione-730.test.ts`, e **rieseguendo
+> davvero** i quindici passi scritti sopra. Conterrà «Cosa fa», «Come si
+> prova», «Limiti» e «Divergenze fra previsto e realizzato», tutto al
+> presente, e solo allora lo stato passerà a `implementato`.
+>
+> Finché questa sezione resta vuota, `/verifica` non accetta la
+> funzionalità come `implementato`.

@@ -33,6 +33,8 @@ import {
 } from './motiviRisparmio.ts';
 import { NotaTasso } from './NotaTasso.tsx';
 import { RisultatoRisparmio } from './RisultatoRisparmio.tsx';
+import './stiliRisultato.css';
+import './stiliSimulazione.css';
 import { Testo } from './Testo.tsx';
 import { t } from './testi.ts';
 

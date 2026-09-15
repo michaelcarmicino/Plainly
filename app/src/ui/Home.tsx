@@ -12,7 +12,8 @@
 import type { ReactElement } from 'react';
 import { CardMacrocategoria } from './CardMacrocategoria.tsx';
 import { AREE_IN_ORDINE } from './contenutiHome.ts';
-import { PERCORSO_LETTURA } from './rotte.ts';
+import { PERCORSO_LETTURA } from './percorsi.ts';
+import './stiliHome.css';
 import { Testo } from './Testo.tsx';
 
 export function Home(): ReactElement {
