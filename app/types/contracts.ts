@@ -23,13 +23,17 @@
  *   layer di presentazione, mai del dominio.
  */
 
-/** Scenario applicativo. L'idea non è ancora congelata: il core deve
- *  reggere tutti e quattro i casi dentro il tema. */
+/** Scenario applicativo. I quattro del brief restano il nucleo;
+ *  `busta-paga` e `dichiarazione-730` sono un'estensione di perimetro
+ *  dichiarata dalle spec 04 e 06, non un ripensamento del tema — vedi
+ *  docs/decisioni.md, D29. */
 export type Scenario =
   | 'bolletta'          // lettura di una bolletta (energia, gas, telco)
   | 'estratto-conto'    // costi e commissioni di un conto corrente
   | 'budget'            // budget personale mensile
-  | 'simulazione-risparmio'; // accantonamento nel tempo
+  | 'simulazione-risparmio' // accantonamento nel tempo
+  | 'busta-paga'          // guida interattiva al cedolino (spec 04)
+  | 'dichiarazione-730';  // guida interattiva alla dichiarazione (spec 06)
 
 /** Come è stata ottenuta una voce. A T+0:15 esiste solo 'fixture':
  *  l'agente data-ingest NON è attivato (vedi agents/02-data-ingest.md). */
@@ -92,8 +96,19 @@ export interface VoceCalcolata {
   readonly importoCent: number;
   /** Peso sul totale, in punti base. */
   readonly pesoBp: number;
-  /** Spiegazione FATTUALE di come si ottiene il numero.
-   *  Descrive il calcolo, non che cosa l'utente dovrebbe fare. */
+  /** Spiegazione FATTUALE di come si ottiene il numero. Descrive il calcolo,
+   *  non che cosa l'utente dovrebbe fare.
+   *
+   *  NON è testo per lo schermo: è prosa di tracciabilità (finisce in
+   *  `Evidence.lettura` e nel confronto con le fixture), composta a runtime
+   *  e quindi fuori dalla scansione lessicale di `tests/lessico-ui.test.ts`,
+   *  che scandisce i letterali scritti in `src/`, non le stringhe assemblate
+   *  da una funzione. La schermata NON stampa questo campo così com'è:
+   *  compone il proprio testo in `src/ui/testi.ts` a partire dagli altri
+   *  campi della stessa voce (`importoCent`, `pesoBp`, `categoria`,
+   *  `etichettaOriginale`) — lo stesso pattern già in uso fra
+   *  `src/core/inflazioneDichiarata.ts` e `src/ui/NotaTasso.tsx`. Deciso in
+   *  `docs/decisioni.md`, D30. */
   readonly spiegazione: string;
   /** Riferimento alla riga del documento originale, per tracciabilità. */
   readonly rifOriginale: string;
