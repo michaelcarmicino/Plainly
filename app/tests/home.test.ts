@@ -39,20 +39,21 @@ const classi = (frammento: string): readonly string[] =>
   [...frammento.matchAll(/class="([^"]*)"/g)].map((m) => m[1]);
 
 describe('il badge conta le domande, non le scrive a mano', () => {
-  it('contaAltreDomande("lavoro") vale 3', () => {
-    // L'area «lavoro» dichiara 4 domande — area2Domanda, area2Altra1,
-    // area2Altra2, area2Altra3 — e la prima è già stampata sulla card.
-    // 4 − 1 = 3
-    expect(contaAltreDomande('lavoro')).toBe(3);
+  it('contaAltreDomande("lavoro") vale 5', () => {
+    // La 02 porta l'area «lavoro» a 6 domande — area2Altra1, area2Altra2,
+    // area2Altra3, area2Altra4, area2Altra5, area2Domanda (quest'ultima
+    // spostata in fondo e riscritta, «senza fonte») — e la prima è già
+    // stampata sulla card. 6 − 1 = 5
+    expect(contaAltreDomande('lavoro')).toBe(5);
   });
 
-  it('il badge della card «lavoro» legge «altre 3 domande qui dentro»', () => {
+  it('il badge della card «lavoro» legge «altre 5 domande qui dentro»', () => {
     const markup = renderToStaticMarkup(
       createElement(CardMacrocategoria, { area: AREE.lavoro }),
     );
-    // Il 3 non compare in testi.ts: se il segnaposto non venisse sostituito
+    // Il 5 non compare in testi.ts: se il segnaposto non venisse sostituito
     // qui si leggerebbe «altre {n} domande qui dentro».
-    expect(markup).toContain('altre 3 domande qui dentro');
+    expect(markup).toContain('altre 5 domande qui dentro');
     expect(markup).not.toContain('{n}');
   });
 

@@ -118,20 +118,132 @@ questa funzionalità introduce e che quella suite, oggi, non copre ancora.*
 
 ## Referto
 
-*Scritto da `tester` in **fase 2**, dopo aver implementato in
-`tests/accettazione/02-catalogo-domande.test.ts` ed **eseguito** i casi qui
-sopra. Finché questa sezione è vuota, la fase 2 non è stata fatta e la
-funzionalità non è finita.*
+*Scritto da `tester` in **fase 2**, dopo aver implementato ed **eseguito** i
+casi qui sopra. Il codice (`src/ui/catalogoDomande.ts`, `testiCatalogo.ts`,
+`contenutiHome.ts`, `PaginaMacrocategoria.tsx`, `src/guardrails/lessico.ts`)
+è stato letto solo ora, in fase 2 — mai in fase 1.
+Diviso in **cinque file**, non uno solo, per restare sotto le 150 righe per
+file (`standard-codice.md`, che si applica anche a `tests/`):
+`tests/accettazione/02-catalogo-domande.test.ts` (percorso nominale più due
+derivazioni del catalogo, CL-03/CL-04), `-limite.test.ts` (il resto dei casi
+limite), `-errori.test.ts` (errori attesi), `-conformita.test.ts` (lessico,
+identificatori, origine delle formulazioni, CF-04) e `-accessibilita.test.ts`
+(interazione, semaforo, rete, accessibilità di base).
+
+`npx tsc --noEmit`: nessun errore. `npm test` completo: **18 file di test
+passati, 1 con 1 test fallito su 4** (il file `-conformita.test.ts`, per il
+difetto CF-03 qui sotto) — nessuna regressione sui file preesistenti,
+`tests/catalogo.test.ts` di `guardrail-officer` compreso (10 test, verde).
+**28 dei 29 test nuovi sono verdi.**
+
+Due difetti trovati **nei miei stessi test** durante l'esecuzione, corretti
+qui (non nel prodotto, per cui non c'entrano con il divieto di correggere il
+codice): `react-dom/server` esegue l'escape dell'apostrofo nel testo
+(`'` → `&#x27;`), quindi un confronto diretto fra una stringa di
+`STRINGHE_UTENTE` e il markup renderizzato va fatto sulla forma con l'entità
+(C-07, CL-06, CF-06); e il parser dei blocchi CSS scritto per i controlli
+sul foglio di stile (CL-08, CF-07, CF-10) non toglieva i commenti prima di
+isolare i blocchi — un commento fra due regole finiva catturato dentro il
+«selettore» successivo, e nessun confronto per uguaglianza trovava più
+niente — corretto riallineandolo al modello già in uso in
+`13-tabella-fonti-dati-pagina.test.ts`.
 
 | ID | Atteso | Ottenuto | Esito | File di test |
 | --- | --- | --- | --- | --- |
+| C-01 | Lunghezza totale 18; costo della vita 5, lavoro 6, futuro 7 | Corrispondenza esatta | passato | `02-catalogo-domande.test.ts` |
+| C-02 | La card «lavoro» contiene `area2Altra1`; non contiene più «Il mio settore è a rischio nei prossimi anni?» | Corrispondenza esatta | passato | `02-catalogo-domande.test.ts` |
+| C-03 | Badge «altre 4/5/6 domande qui dentro» sulle tre card | Corrispondenza esatta | passato | `02-catalogo-domande.test.ts` |
+| C-04 | La voce con-schermata (`area3Altra3`) ha `percorso`; `parseRotta` non restituisce `home`; è un `<a class="domanda-collegata" href="...">` reale nel markup | Corrispondenza esatta | passato | `02-catalogo-domande.test.ts` |
+| C-05 | Ultima voce di «Il lavoro» = `area2Domanda`, stato `senza-fonte`, testo riscritto, seguito dalla nota «senza fonte» | Corrispondenza esatta | passato | `02-catalogo-domande.test.ts` |
+| C-06 | Le sei stringhe nuove sono identiche, parola per parola, al testo della specifica | Corrispondenza esatta, zero scarti | passato | `02-catalogo-domande.test.ts` |
+| C-07 | Ogni voce in-arrivo (5 in «Il costo della vita») porta «La schermata che risponde a questa domanda non c'è ancora.» | Corrispondenza esatta, una volta per voce, dopo la correzione sull'escape dell'apostrofo (difetto del test, non del prodotto) | passato | `02-catalogo-domande.test.ts` |
+| CL-01 | 3 card, stesse classi | Corrispondenza esatta | passato | `02-catalogo-domande-limite.test.ts` |
+| CL-02 | La pagina di un'area non introduce navigazione propria; la barra ha la stessa struttura di classi sulla rotta di un'area e su «lettura» | Corrispondenza esatta | passato | `02-catalogo-domande-limite.test.ts` |
+| CL-03 | `contaAltreDomande` deriva 4/5/6 dalla lunghezza reale della lista; il modello del badge conserva `{n}`, nessuna cifra | Corrispondenza esatta | passato | `02-catalogo-domande.test.ts` |
+| CL-04 | Le 18 chiavi attese, per area, coincidono esattamente: nessuna mancante, nessuna duplicata al posto di un'altra | Corrispondenza esatta | passato | `02-catalogo-domande.test.ts` |
+| CL-05 | Nessuna area con lista vuota | 5, 6, 7 | passato | `02-catalogo-domande-limite.test.ts` |
+| CL-06 | In «Il costo della vita» e «Il lavoro» (zero voci con-schermata) l'elenco compare per intero, con una riga in testa che dice che cosa manca | Corrispondenza esatta in entrambe le aree, dopo la correzione sull'escape dell'apostrofo | passato | `02-catalogo-domande-limite.test.ts` |
+| CL-07 | «Il costo della vita»: 5 voci tutte `in-arrivo`, badge coerente (4) | Corrispondenza esatta | passato | `02-catalogo-domande-limite.test.ts` |
+| CL-08 | `area3Altra5` lunga 96 caratteri (calcolo a mano); va a capo senza troncarsi; corpo sopra i 16px | 96 confermato; `.domanda-testo` usa `overflow-wrap: break-word`, non `text-overflow`/`white-space: nowrap`; `.elenco-domande` a 1,0625rem (19,125px); `.elenco-domande li` con `min-height: 44px` — dopo la correzione sul parser CSS (difetto del test) | passato | `02-catalogo-domande-limite.test.ts` |
+| CL-09 | Nessuna voce `senza-fonte` è la prima della propria area | Corrispondenza esatta; in «Il lavoro» la voce `senza-fonte` è l'ultima | passato | `02-catalogo-domande-limite.test.ts` |
+| E-01 | Indirizzo d'area inesistente → home | Corrispondenza esatta | passato | `02-catalogo-domande-errori.test.ts` |
+| E-02 | `parseRotta(percorso)` della voce con-schermata restituisce esattamente `{ tipo: 'valore-risparmi' }` | Corrispondenza esatta | passato | `02-catalogo-domande-errori.test.ts` |
+| E-03 | Le voci `in-arrivo` e `senza-fonte` non sono dentro un'ancora | Corrispondenza esatta, sia nel caso misto («Il lavoro») sia nel caso uniforme («Il costo della vita», zero ancore) | passato | `02-catalogo-domande-errori.test.ts` |
+| E-04 | — | **Non coperto**, per costruzione (vedi sotto) | non coperto | — |
+| CF-01 | `verificaInsieme` sulle stringhe nuove del catalogo restituisce `[]` | Corrispondenza esatta | passato | `02-catalogo-domande-conformita.test.ts` |
+| CF-02 | Nessuna radice vietata sui 5 identificatori nuovi | Corrispondenza esatta | passato | `02-catalogo-domande-conformita.test.ts` |
+| CF-03 | Nessuno dei sette frammenti d'origine in `src/`, commenti compresi | **Trovato**: «Meglio conto deposito, ETF o BTP» in `src/guardrails/lessico.ts` (commento sopra `'comparativo-valore'`, che spiega perché «meglio» resta fuori dal lessico) | fallito | `02-catalogo-domande-conformita.test.ts` |
+| CF-04 | *(fase 1)* «meglio» e «preferibile» diventano entrambi radici bloccate | **Divergenza rispetto all'ipotesi di fase 1**: guardrail-officer ha aggiunto solo `preferibil*`, escludendo deliberatamente «meglio» (motivo scritto in `lessico.ts`). Verificato che «È preferibile il conto deposito.» risulta non conforme e che «Meglio conto deposito, ETF o BTP per i miei risparmi?» risulta conforme: il test misura la decisione presa, l'ipotesi originaria resta scritta qui, non cancellata | passato (adeguato alla decisione presa) | `02-catalogo-domande-conformita.test.ts` |
+| CF-05 | Nessun campo di domanda libera nella pagina di un'area | Corrispondenza esatta | passato | `02-catalogo-domande-accessibilita.test.ts` |
+| CF-06 | I tre stati compaiono nel markup statico, senza hover simulato | Corrispondenza esatta, dopo la correzione sull'escape dell'apostrofo | passato | `02-catalogo-domande-accessibilita.test.ts` |
+| CF-07 | Nessuna parola o classe da semaforo; solo `--purple-light` e `--rose` sulle etichette di stato | Corrispondenza esatta, dopo la correzione sul parser CSS (stesso difetto di CL-08) | passato | `02-catalogo-domande-accessibilita.test.ts` |
+| CF-08 | Nessuna chiamata di rete nei 6 file toccati da questa funzionalità | Corrispondenza esatta | passato | `02-catalogo-domande-accessibilita.test.ts` |
+| CF-09 | I quattro stati obbligatori, tutti individuati | Vuoto → CL-06 confermato. In caricamento → assente per costruzione, senza un caso dedicato. Errore → E-01 confermato, invariato dalla 01. Dati lunghi → CL-08 confermato. Tutti e quattro individuati, nessuno omesso | passato (aggregazione) | n/a — aggregazione di CL-06, E-01, CL-08 |
+| CF-10 | Corpo, focus, area cliccabile: soglie di `design.md` | **Parziale.** Verificato in automatico: nessun `outline: none` nel foglio di navigazione; `min-height: 44px` su `.elenco-domande li` e su `.domanda-collegata`; contrasto delle stesse coppie di colori già accertate altrove (`--purple-light` e `--rose` su fondo scuro), richiamato e non ricalcolato una terza volta. **Non verificato**: contrasto di ogni altro testo, ordine di tabulazione con una tastiera reale, misura dei bersagli in un browser vero | passato (parziale) | `02-catalogo-domande-accessibilita.test.ts` |
+| CF-11 | — | **Non coperto**, rilettura umana dichiarata (vedi sotto) | non coperto | — |
+
+**Totale: 28 passati (di cui 2 con scope o aggregazione dichiarati — CF-09
+e CF-10 — e 1 con una divergenza registrata, CF-04), 1 fallito, 2 non
+coperti.**
 
 ### Fallimenti
 
 *Che cosa è fallito, **con quale input**, e se è bloccante. Non si corregge il
 codice: si riporta.*
 
+- **CF-03 — «Meglio conto deposito, ETF o BTP» compare in un commento di
+  `src/guardrails/lessico.ts`.** Input: la scansione di tutti i file `.ts`/
+  `.tsx` sotto `src/` alla ricerca dei sette frammenti distintivi delle
+  domande d'origine. Il frammento «Meglio conto deposito, ETF o BTP» (senza
+  la clausola finale «per i miei risparmi?») compare letteralmente nel
+  commento che sopra `'comparativo-valore'` spiega perché «meglio» resta
+  escluso dal lessico (righe 59-68 del file, circa). Le altre sei frasi
+  d'origine, e la frase 4 per intero con la clausola finale, non compaiono da
+  nessuna parte in `src/`.
+
+  La specifica lo vieta in due punti distinti e a lettere: «la formulazione
+  vecchia non resta da nessuna parte in `src/`, nemmeno in un commento che
+  spiega il cambio» e «In `src/` non entra nemmeno come commento, perché il
+  guardrail cerca «conviene» e «scegli» anche lì». Quest'ultima frase
+  registra anche perché il buco è passato inosservato finora:
+  `tests/lessico-ui.test.ts` scandisce i commenti solo quando delimitati da
+  apici singoli o doppi dritti, e comunque «meglio» non è (per scelta
+  dichiarata) una radice bloccata — il commento incriminato usa virgolette
+  a caporale (« »), non apici dritti, e la frase non contiene nessun'altra
+  radice vietata: **nessun controllo automatico esistente lo avrebbe mai
+  intercettato** prima di questo caso.
+
+  **Classificazione: bloccante.** È la violazione di un vincolo di conformità
+  dichiarato due volte nella specifica di questa stessa funzionalità, dentro
+  il file che quel vincolo dovrebbe imporre agli altri. Una volta che questo
+  test entra nella suite, `npm test` resta rosso finché la formulazione non
+  viene tolta dal commento — non serve toccare il lessico né la sua logica,
+  basta descrivere il meccanismo senza citare la frase originale (lo stesso
+  principio che la funzionalità applica alle domande stesse). Non è stato
+  corretto: non è materiale di `tests/accettazione/`.
+
 ### Non coperti
 
 *Ogni caso non implementabile, **con il motivo**. Un buco dichiarato vale più
 di un test finto che passa, e alimenta i limiti dichiarati del prodotto.*
+
+- **E-04 — chiave di testo mancante.** Dichiarato non applicabile a runtime
+  già in fase 1: ogni voce del catalogo porta una `chiave: ChiaveStringaUtente`
+  tipizzata, e un riferimento a una chiave inesistente non compila.
+  `npx tsc --noEmit` è verde su tutto il progetto, incluso il catalogo: è la
+  conferma indiretta che oggi non esiste, da nessuna parte, un tale
+  riferimento. Un test a runtime per un caso che il sistema di tipi impedisce
+  a monte misurerebbe una garanzia che non appartiene a questa funzionalità.
+- **CF-11 — il significato non si perde nelle riscritture.** Non verificabile
+  da una regex o da un confronto di stringhe: richiede la rilettura umana di
+  `guardrail-officer` sulle sei domande nuove e sulla riscrittura di
+  `area2Domanda`, come impone `scrittura-e-accessibilita.md`. Stesso limite
+  già dichiarato dalla funzionalità `07` nel proprio CF-04, e dalla `13` nel
+  proprio CF-08 (parte): nessuno strumento automatico distingue una buona
+  spiegazione da un giudizio travestito.
+- **CF-10 (parte) — accessibilità non misurabile da markup statico.** Il
+  contrasto di ogni testo diverso da `--purple-light`/`--rose` su fondo
+  scuro, la misura reale dei bersagli in un browser, e l'ordine di
+  tabulazione con una tastiera reale non sono ottenibili da
+  `renderToStaticMarkup` né dalla sola lettura del foglio di stile: restano
+  alla rilettura umana di `guardrail-officer`, come già per la `13`.

@@ -592,19 +592,260 @@ il risultato atteso, la funzionalità non è finita. I comandi vanno eseguiti da
 letto codice e test ed **eseguito** i passi qui sopra. **Tutto al presente**:
 solo ciò che è stato confermato.*
 
-> **Non ancora compilata.** Il codice di questa funzionalità non esiste ancora:
-> non c'è niente da verificare, e scrivere qui qualcosa significherebbe
-> dichiarare fatto ciò che nessuno ha controllato.
->
-> Questa sezione si riempie in **fase 2**, al termine di `/implementa`, aprendo
+> Stato: **implementato** · fase 2 eseguita il 2026-09-15, aprendo
 > `src/ui/catalogoDomande.ts`, `src/ui/testiCatalogo.ts`,
-> `src/ui/contenutiHome.ts`, `src/ui/PaginaMacrocategoria.tsx` e
-> `src/guardrails/lessico.ts`, leggendo `tests/catalogo.test.ts` e le due
-> asserzioni cambiate in `tests/home.test.ts`, e **rieseguendo davvero** i
-> quattordici passi scritti sopra — badge compresi, Wi-Fi spento compreso.
-> Conterrà «Cosa fa», «Come si prova», «Limiti» e «Divergenze fra previsto e
-> realizzato», tutto al presente, e solo allora lo stato passerà a
-> `implementato`.
+> `src/ui/contenutiHome.ts`, `src/ui/PaginaMacrocategoria.tsx`,
+> `src/ui/testi.ts`, `src/ui/stiliNavigazione.css` e
+> `src/guardrails/lessico.ts`; leggendo `tests/catalogo.test.ts` (nuovo, dieci
+> casi) e le due asserzioni cambiate in `tests/home.test.ts`; e
+> **rieseguendo** i quattordici passi scritti in fase 1 con un Chromium
+> pilotato da Playwright, sul server avviato con
+> `node scripts/dev-server.mjs start`.
 >
-> Finché questa sezione resta vuota, `/verifica` non accetta la funzionalità
-> come `implementato`.
+> **Tutti e quattordici i passi danno il risultato atteso.** Cinque cose non
+> promesse dalla fase 1 sono emerse leggendo il codice e la suite, e sono
+> registrate qui sotto in «Divergenze»: il foglio di stile toccato non è
+> quello ipotizzato dalle dichiarazioni tecniche, una correzione visiva non
+> richiesta è stata applicata di passaggio, il lessico si allarga di una
+> parola sola invece delle due ipotizzate, il messaggio di area vuota è
+> comparso sopra l'elenco invece che sotto — e, scoperto solo a
+> riconciliazione quasi conclusa, **`npm test` non è più verde**: un
+> commento in `src/guardrails/lessico.ts` cita per intero una delle sette
+> frasi vietate. Non è un file di questa scheda: si segnala e non si
+> corregge (divergenza 5).
+
+### Cosa fa
+
+Le pagine delle tre aree mostrano diciotto domande, non più dodici: cinque in
+«Il costo della vita», sei in «Il lavoro», sette in «Il futuro». Il totale e
+la ripartizione sono un dato dichiarato in `src/ui/catalogoDomande.ts`
+(`CATALOGO_DOMANDE`, 18 oggetti), non un conteggio a mano: contato riga per
+riga nel file, e confermato a schermo con un browser (18 `<li>` in tutto
+sulle tre pagine).
+
+Sotto ogni domanda compare una riga di stato scritta a parole, mai in un
+colore soltanto: **«La schermata che risponde a questa domanda non c'è
+ancora.»** per le sedici voci `in-arrivo`; **«Su questa il sito non ha una
+risposta con una fonte dichiarata, e non la inventa.»**, in rosa, per
+l'unica voce `senza-fonte`; un link vero e **sottolineato** per l'unica voce
+`con-schermata`. `PaginaMacrocategoria.tsx` sceglie quale delle tre stampare
+con uno `switch` sul campo `stato` del catalogo, non più con la vecchia
+mappa `SCHERMATA_DELLA_DOMANDA` che conosceva un solo percorso scritto a
+mano.
+
+Il numero dei tre badge — **4 · 5 · 6**, letto a schermo — è la lunghezza di
+ciascuna lista meno uno, calcolata da `contaAltreDomande()` in
+`contenutiHome.ts`: la funzione non contiene nessuna cifra, solo
+`AREE[id].domande.length - 1`, e `domande` a sua volta è filtrato dal
+catalogo tramite la nuova `chiaviDiArea()`. Prima di questa funzionalità le
+tre aree leggevano tutte «altre 3 domande qui dentro»; adesso leggono tre
+numeri diversi, e `tests/home.test.ts` verifica il caso «lavoro»
+(`contaAltreDomande('lavoro') === 5`).
+
+La card «Il lavoro» mostra ora «Se perdo il lavoro, quanto prendo ogni mese e
+per quanto tempo?», non più «Il mio settore è a rischio nei prossimi anni?»,
+che è scesa in fondo alla sua area — sesta e ultima voce — riscritta in «Nel
+mio settore, quante persone hanno perso il lavoro negli ultimi anni?» e
+segnata «senza fonte». Confermato leggendo `testi.ts` (`area2Domanda` è
+l'unica chiave già a schermo il cui valore cambia) e verificato a schermo, in
+entrambi i punti.
+
+Le sette domande che sceglievano per chi legge o indovinavano il suo futuro
+sono sparite dal codice sorgente — cercate una per una su tutte e quattro le
+pagine toccate (home e tre aree): zero occorrenze — e sostituite dalle sette
+riscritture della tabella «Le diciotto domande», verificate parola per
+parola a schermo.
+
+Il catalogo è compilato nel pacchetto, non caricato da altrove: ricaricando
+una pagina d'area il contenuto compare già completo al primo
+`domcontentloaded`, senza alcun elemento che somigli a un indicatore di
+caricamento.
+
+### Come si prova
+
+Sono gli stessi quattordici passi della fase 1, eseguiti il 2026-09-15 da
+`app/`, con un Chromium pilotato da Playwright dove serviva una misura
+invece di una lettura a occhio.
+
+1. **Preparare l'ambiente.** `npm run prepara` risponde «Ambiente già pronto.
+   Niente da fare.» ✅
+2. **Avviare l'applicazione.** `node scripts/dev-server.mjs start` risponde
+   `Server avviato: http://localhost:5173` e lascia la sessione libera;
+   all'indirizzo compare la home. ✅
+3. **I tre badge.** Letti a schermo: **«altre 4 domande qui dentro»** su «Il
+   costo della vita», **«altre 5 domande qui dentro»** su «Il lavoro»,
+   **«altre 6 domande qui dentro»** su «Il futuro» — tre numeri diversi, dove
+   prima erano tre volte lo stesso «3». `contaAltreDomande('lavoro')`
+   restituisce `5`, confermato sia dal codice sia da `tests/home.test.ts`. ✅
+4. **Diciotto domande in tutto.** Contate a schermo, area per area: «Il costo
+   della vita» **5**, «Il lavoro» **6**, «Il futuro» **7** — somma **18**,
+   sei più delle dodici di prima. Le tre liste restano di lunghezza diversa,
+   come previsto. ✅
+5. **La card «Il lavoro» e la domanda spostata.** Sulla card si legge **«Se
+   perdo il lavoro, quanto prendo ogni mese e per quanto tempo?»**; entrando
+   nell'area, l'ultima delle sei voci è **«Nel mio settore, quante persone
+   hanno perso il lavoro negli ultimi anni?»**, seguita da «Su questa il sito
+   non ha una risposta con una fonte dichiarata, e non la inventa.», in
+   rosa. ✅
+6. **Le sette riscritture.** Verificate una per una, su tutte e quattro le
+   pagine: nessuna delle sette frasi d'origine (compresa «Meglio conto
+   deposito, ETF o BTP») compare più; tutte e sette le riscritture compaiono,
+   parola per parola come nella tabella della specifica. ✅
+7. **Stato a parole, senza mouse.** Il testo di stato è stato letto
+   direttamente dal DOM, senza simulare nessun passaggio del mouse: compare
+   comunque, per tutte e tre le voci di esempio. ✅
+8. **L'unico link vero.** In «Il futuro», la voce «I risparmi fermi sul
+   conto: che cosa succede loro mentre i prezzi salgono?» è un `<a>`
+   sottolineato con `href="#/valore-dei-risparmi"`; `tests/catalogo.test.ts`
+   verifica che `parseRotta` di quel percorso non torni mai alla home. ✅
+9. **Stato vuoto.** Su «Il costo della vita» e su «Il lavoro» — le due aree
+   senza ancora nessuna voce `con-schermata` — compare, sopra l'elenco
+   completo, la riga «In quest'area, oggi, nessuna domanda ha ancora una
+   schermata di risposta pronta: arriveranno una alla volta.» Su «Il
+   futuro», che una voce con schermata ce l'ha già, quella riga non
+   compare. ✅
+10. **Nessuno stato di caricamento.** Al primo `domcontentloaded`, sia alla
+    prima apertura sia dopo un ricaricamento, le sei voci di «Il lavoro» sono
+    già tutte presenti nel DOM e nessun elemento che richiami «spinner»,
+    «loading» o «caricamento» esiste in pagina. ✅
+11. **Errore.** Un indirizzo inventato (`#/un-area-inventata`) mostra il
+    contenuto della home (`.griglia-aree` presente); l'indirizzo nella barra
+    resta quello digitato, esattamente come già succedeva prima di questa
+    funzionalità. ✅
+12. **Dati lunghi.** A 375 px di larghezza, la domanda più lunga di «Il
+    futuro» va a capo su più righe restando a corpo **19,1 px** (misurato,
+    sopra il minimo di 16), senza tagli a metà parola; ogni voce misura più
+    di 44 px di altezza anche su più righe, misurato con le coordinate del
+    browser. Uno screenshot alla stessa larghezza mostra inoltre che il
+    pallino di ogni voce — link compreso — si allinea alla **prima** riga
+    del testo, non all'ultima: vedi «Divergenze» per la correzione che lo
+    rende vero. ✅
+13. **Il resto della home invariato.** Le tre card restano tre, con la stessa
+    struttura di classi (`tests/home.test.ts`, ancora verde); «Pagina
+    iniziale» e «Indietro» restano in alto, nello stesso ordine, su ogni
+    pagina; a 375 px le tre card si impilano nell'ordine dichiarato — costo
+    della vita, lavoro, futuro; premendo Tab dalla pagina «Il futuro» il
+    fuoco passa da «Pagina iniziale» a «Indietro» all'unico link vero, con un
+    contorno rosa (`solid 3px rgb(255, 80, 160)`, cioè `#FF50A0`) visibile a
+    ogni passaggio. ✅
+14. **Con il Wi-Fi spento.** Fermato il server (`node scripts/dev-server.mjs
+    stop`), `npm run build` produce `dist/` senza errori (`index.html` 0,50
+    kB · foglio di stile 8,61 kB · pacchetto JS 176,27 kB). Nel pacchetto non
+    compare nessun indirizzo da scaricare, a parte gli URI dello schema
+    XML/SVG e il link — mai richiesto — del decoder degli errori di React:
+    la stessa situazione già registrata per `01`, senza nulla di nuovo.
+    Servendo `dist/` con `npm run preview` e riaprendo home, «Il lavoro» e
+    «Il futuro» con un browser che registra ogni richiesta: **tre richieste
+    in tutto, tutte verso `localhost`, zero verso l'esterno**; badge e
+    contenuti restano gli stessi della build di sviluppo. Non è stato
+    possibile spegnere davvero l'interfaccia di rete della macchina da questo
+    ambiente: la verifica sostituisce la disconnessione fisica con la prova,
+    più stringente, che nessuna richiesta lasci mai `localhost`. Il caso già
+    noto del doppio clic diretto su `dist/index.html` (registrato nella fase
+    2 di `01`) non è stato ripetuto qui, come la specifica stessa richiede:
+    si è verificato solo che questa funzionalità non ne introduca uno nuovo,
+    non che quello esistente sia risolto. ✅
+
+### Limiti
+
+- **Non introduce nessun campo di domanda libera né una ricerca a testo.** In
+  nessuna delle pagine toccate esiste un elemento di input testuale: le
+  diciotto domande si raggiungono solo scorrendo un elenco a tocco.
+- **Non risponde a nessuna delle diciotto domande.** Le sedici voci
+  `in-arrivo` e l'unica `senza-fonte` restano testo con una nota di stato;
+  l'unica risposta vera è quella già costruita dalla funzionalità 07, a cui
+  il catalogo si limita a collegarsi.
+- **Non aggiunge nessuna schermata né nessuna rotta.** `src/ui/rotte.ts` non
+  fa parte del diff di questa funzionalità: l'unico percorso citato,
+  `PERCORSO_VALORE_RISPARMI`, esisteva già.
+- **Non calcola nessun numero di dominio.** `catalogoDomande.ts` e
+  `contenutiHome.ts` non importano nulla da `src/core/` e non leggono
+  nessuna fixture: l'unico numero a schermo resta il conteggio delle domande
+  nei tre badge.
+- **Non ordina le domande per importanza.** L'ordine dichiarato in
+  `CATALOGO_DOMANDE` è quello di stampa; nessun criterio di rilevanza compare
+  nel codice.
+- **Non separa «quanto sarà la mia pensione» da «a che età potrò andare in
+  pensione».** `area3Domanda` resta un'unica voce, identica a prima.
+- **Non dichiara la fonte delle risposte non ancora scritte.** Il testo delle
+  voci `in-arrivo` non nomina mai un dato o un ente: solo che la schermata
+  arriverà.
+- **Non riscrive nessun'altra domanda già a schermo.** `area2Domanda` è
+  l'unica chiave preesistente il cui valore cambia; confermato dal diff di
+  `testi.ts`, che tocca quella riga sola oltre alle due righe di import.
+- **Non tocca `types/`.** Il diff di questa funzionalità non include nessun
+  file sotto `types/`.
+
+### Divergenze fra previsto e realizzato
+
+1. **Il foglio di stile toccato è `stiliNavigazione.css`, non
+   `stiliHome.css`.** Le dichiarazioni tecniche della specifica ipotizzavano
+   «`stiliHome.css` o un foglio affiancato»: `stiliNavigazione.css`
+   conteneva già, da `01`, le regole `.elenco-domande`, ed è lì che le nuove
+   regole di stato e la correzione del pallino sono state aggiunte, senza
+   creare un file in più.
+
+2. **Una correzione visiva non richiesta dalla fase 1.** Il pallino
+   dell'elenco su una voce collegata che va a capo su più righe si allineava
+   alla propria **ultima** riga invece che alla prima, per via del
+   `display: inline-block` di `.domanda-collegata` ereditato da
+   `stiliRisultato.css`. È stato aggiunto, dentro `stiliNavigazione.css`,
+   `.elenco-domande .domanda-collegata { display: block; }`, che riporta il
+   pallino alla prima riga **solo** dentro un elenco. Verificato in due modi:
+   uno screenshot a 375 px su «Il futuro» mostra il pallino allineato alla
+   prima riga della voce collegata; e su `#/valore-dei-risparmi`
+   (funzionalità 07, che riusa la stessa classe `.domanda-collegata` fuori
+   da un `.elenco-domande`) `getComputedStyle` restituisce ancora
+   `inline-block` — quella pagina non è stata toccata dalla correzione.
+
+3. **Il lessico si allarga di una parola sola, non di due.** Le dichiarazioni
+   tecniche della specifica (punto 3) prevedevano di bloccare sia
+   «preferibile» sia «meglio». `guardrail-officer` ha aggiunto solo la radice
+   `preferibil*` alla voce `comparativo-valore` di `src/guardrails/lessico.ts`
+   ed **esclude deliberatamente** «meglio»: il motivo, scritto nel commento
+   sopra quella voce, è che «meglio» è un avverbio quasi sempre innocuo e
+   centrale nel registro «amico che spiega» di questo progetto («si capisce
+   meglio con un esempio»), e bloccarlo produrrebbe falsi allarmi
+   sistematici; la frase pericolosa d'origine, «Meglio conto deposito, ETF o
+   BTP», è comunque già neutralizzata dalla riscrittura in `area3Altra5` e
+   non compare in `src/`. È una divergenza rispetto a un'ipotesi tecnica
+   della specifica, non rispetto a un comportamento a schermo: verificato che
+   `tests/lessico-ui.test.ts` resti verde e che zero occorrenze di «meglio» o
+   «preferibile» esistessero già in `src/` prima dell'aggiunta. Nota per chi
+   legge il referto del `tester`: il caso `CF-04` in
+   `docs/test/02-catalogo-domande.md` ipotizza il blocco di entrambi i
+   termini — questa è la ragione per cui, alla prova, solo metà di
+   quell'ipotesi risulta vera.
+
+4. **Il messaggio di stato «vuoto» è comparso sopra l'elenco, non sotto.**
+   Nella versione precedente di `PaginaMacrocategoria.tsx` (quella di `01`)
+   il placeholder «contenuto in costruzione» compariva **dopo** l'elenco; il
+   nuovo `areaNessunaSchermata` compare **prima**, in testa alla sezione. Non
+   era un impegno della fase 1, che si limitava a chiedere «una frase in
+   testa» senza dettagliare la posizione precedente: lo si registra qui
+   perché è un cambiamento reale di comportamento visto leggendo il diff, non
+   solo un dettaglio di stile.
+
+5. **Un difetto scoperto rileggendo la suite dopo la riconciliazione,
+   segnalato e non corretto: `npm test` non è verde.** Mentre questa scheda
+   veniva scritta, `tester` ha completato la propria fase 2 aggiungendo
+   `tests/accettazione/02-catalogo-domande-conformita.test.ts`. Rilanciando
+   `npm test` **un file fallisce** (1 fallito, 18 verdi, su 19): il caso
+   CF-03 trova la frase «Meglio conto deposito, ETF o BTP» dentro
+   `src/guardrails/lessico.ts` — non nel codice di questa funzionalità, ma
+   nel commento che `guardrail-officer` ha scritto sopra `comparativo-valore`
+   per spiegare perché «meglio» resta escluso (la stessa nota citata nella
+   divergenza 3 qui sopra): quel commento cita la frase pericolosa **per
+   intero, fra virgolette**, dentro `src/`, ed è esattamente ciò che CF-03
+   vieta — «nessuna delle sette frasi d'origine compare in `src/`, in nessuna
+   forma, nemmeno come commento che spiega la riscrittura». Nessuno dei file
+   che questa scheda documenta è coinvolto: `catalogoDomande.ts`,
+   `testiCatalogo.ts`, `contenutiHome.ts`, `PaginaMacrocategoria.tsx`,
+   `testi.ts` e `stiliNavigazione.css` restano quelli letti sopra, invariati
+   da quando sono stati verificati, e i quattordici passi restano tutti
+   confermati. Per questo lo stato di **questa scheda** resta
+   `implementato`. Ma **la funzionalità nel suo complesso non supera
+   `/verifica`** finché `src/guardrails/lessico.ts` non viene riformulato
+   senza citare la frase per intero — file che appartiene a
+   `guardrail-officer`, non a `doc-funzionale`: per questo si segnala qui e
+   non si corregge.

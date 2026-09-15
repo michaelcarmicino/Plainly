@@ -3,43 +3,64 @@
  *
  * Mostra il titolo dell'area e l'elenco completo delle sue domande, quella
  * della card compresa: è da lì che si vede da dove viene il numero del
- * badge (quattro domande, meno quella già letta, fa tre).
+ * badge (in «lavoro», sei domande meno quella già letta fa cinque). Stato
+ * e percorso di ogni voce vengono dal catalogo dichiarato in
+ * catalogoDomande.ts, non da una mappa dentro questo componente: i task
+ * futuri cambieranno una riga del catalogo, non questo file.
  *
- * Le domande che hanno già una schermata dietro sono link veri; le altre
- * restano testo, e sotto di loro la nota dice che il contenuto non c'è
- * ancora. Un elenco onesto vale più di link che non portano da nessuna
- * parte: il confine fra le due categorie si vede senza passare il mouse e
- * senza distinguere un colore, perché il link è sottolineato.
+ * Le domande «con schermata» sono link veri, sottolineati — non da un
+ * colore diverso, che al proiettore si distingue peggio di una riga sotto
+ * la parola. Le altre restano testo, e sotto ognuna una riga dice A PAROLE
+ * se la risposta arriverà o se il sito dichiara di non averla: leggibile
+ * stando fermi, senza passare il mouse. Nessun semaforo di colore: il rosa
+ * segna solo il limite dichiarato, non un giudizio sulla domanda.
+ *
+ * Stato «vuoto»: se in un'area nessuna voce ha ancora una schermata, una
+ * riga in testa lo dice, e l'elenco compare comunque per intero.
  */
 
 import type { ReactElement } from 'react';
+import { domandeDiArea, type DomandaCatalogo } from './catalogoDomande.ts';
 import { AREE, type IdArea } from './contenutiHome.ts';
-import { PERCORSO_VALORE_RISPARMI } from './rotte.ts';
 import { Testo } from './Testo.tsx';
-import type { ChiaveStringaUtente } from './testi.ts';
 
-/** La domanda che questa schermata risponde, e l'indirizzo che ci porta. */
-const SCHERMATA_DELLA_DOMANDA: Partial<Record<ChiaveStringaUtente, string>> = {
-  area3Altra3: PERCORSO_VALORE_RISPARMI,
-};
-
-function VoceDomanda({ chiave }: { chiave: ChiaveStringaUtente }): ReactElement {
-  const percorso = SCHERMATA_DELLA_DOMANDA[chiave];
-  if (percorso === undefined) {
-    return <Testo chiave={chiave} />;
+function VoceDomanda({ voce }: { voce: DomandaCatalogo }): ReactElement {
+  switch (voce.stato) {
+    case 'con-schermata':
+      return (
+        <a className="domanda-collegata" href={voce.percorso}>
+          <Testo chiave={voce.chiave} />
+        </a>
+      );
+    case 'in-arrivo':
+      return (
+        <>
+          <p className="domanda-testo">
+            <Testo chiave={voce.chiave} />
+          </p>
+          <p className="stato-domanda">
+            <Testo chiave="domandaInArrivo" />
+          </p>
+        </>
+      );
+    case 'senza-fonte':
+      return (
+        <>
+          <p className="domanda-testo">
+            <Testo chiave={voce.chiave} />
+          </p>
+          <p className="stato-domanda stato-domanda-limite">
+            <Testo chiave="domandaSenzaFonte" />
+          </p>
+        </>
+      );
   }
-  return (
-    <a className="domanda-collegata" href={percorso}>
-      <Testo chiave={chiave} />
-    </a>
-  );
 }
 
 export function PaginaMacrocategoria({ id }: { id: IdArea }): ReactElement {
   const area = AREE[id];
-  const inCostruzione = area.domande.some(
-    (chiave) => SCHERMATA_DELLA_DOMANDA[chiave] === undefined,
-  );
+  const voci = domandeDiArea(id);
+  const nessunaConSchermata = voci.every((voce) => voce.stato !== 'con-schermata');
 
   return (
     <section className="sezione">
@@ -47,19 +68,19 @@ export function PaginaMacrocategoria({ id }: { id: IdArea }): ReactElement {
         <Testo chiave={area.titolo} />
       </h2>
 
+      {nessunaConSchermata && (
+        <p className="placeholder">
+          <Testo chiave="areaNessunaSchermata" />
+        </p>
+      )}
+
       <ul className="elenco-domande">
-        {area.domande.map((chiave) => (
-          <li key={chiave}>
-            <VoceDomanda chiave={chiave} />
+        {voci.map((voce) => (
+          <li key={voce.chiave}>
+            <VoceDomanda voce={voce} />
           </li>
         ))}
       </ul>
-
-      {inCostruzione && (
-        <p className="placeholder">
-          <Testo chiave="statoPlaceholder" />
-        </p>
-      )}
     </section>
   );
 }

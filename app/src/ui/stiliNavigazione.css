@@ -91,3 +91,42 @@
 .elenco-domande li + li {
   margin-top: 0.6rem;
 }
+
+/* Ogni voce resta larga quanto un polpastrello anche quando il testo va a
+   capo su più righe: la regola vale per il link vero e per il testo semplice
+   allo stesso modo, non solo per ciò che è cliccabile. */
+.elenco-domande li {
+  min-height: 44px;
+}
+
+/* Una domanda senza schermata dietro: testo semplice, non un link — non deve
+   sembrare cliccabile quando non lo è. */
+.domanda-testo {
+  margin: 0 0 0.3rem;
+  overflow-wrap: break-word;
+}
+
+/* .domanda-collegata è inline-block (vedi stiliRisultato.css): su più righe
+   il pallino dell'elenco si allinea alla SUA ultima riga, non alla prima —
+   un vero difetto visto nello screenshot di verifica, non un dettaglio.
+   Qui, e solo dentro un elenco, torna a un blocco pieno: il pallino segue
+   di nuovo la prima riga, e l'area cliccabile guadagna tutta la larghezza
+   della riga invece di stringersi al testo. */
+.elenco-domande .domanda-collegata {
+  display: block;
+}
+
+/* Lo stato di una voce, scritto a parole: leggibile stando fermi, senza
+   passare il mouse. Colore secondario, non un semaforo. */
+.stato-domanda {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--purple-light);
+}
+
+/* Rosa: è il colore di ciò che il prodotto non fa — stesso uso già in
+   .nota-periodo e .riga-fonte-mancante. Qui dichiara che manca una fonte
+   per rispondere: un limite, non un giudizio sulla domanda. */
+.stato-domanda-limite {
+  color: var(--rose);
+}
