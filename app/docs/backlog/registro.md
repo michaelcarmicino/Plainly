@@ -217,3 +217,93 @@ Il `tester` della `03` l'ha classificata bloccante, oltre i 44 casi previsti.
 
 **Da fare in un passaggio coordinato**: due righe in `catalogoDomande.ts` e
 l'aggiornamento dei cinque test. Serve che `src/ui/` e `tests/` siano liberi.
+
+---
+
+# PUNTO DI RIPRESA — fine sessione
+
+Tutto ciò che serve per riprendere è nei file. Non serve la memoria della
+conversazione.
+
+## Stato delle quattordici funzionalità
+
+| | Stato |
+| --- | --- |
+| `01` `02` `07` `13` `14` | **unite a master**, complete |
+| `03` `05` `09` `10` `12` | **codice verde e committato**, fasi 2 non fatte |
+| `08` | **solo il calcolo** (36 test verdi). Manca la schermata |
+| `11` | **interrotta a metà**, su `wip/11-approfondimento-mutuo` — non unita |
+| `04` `06` | **mai iniziate**. Ora sbloccate: `Scenario` è stato esteso |
+
+## Il primo lavoro da fare, prima di aggiungere funzionalità
+
+**Due schermate complete non si raggiungono cliccando.** `03` e `05` esistono e
+sono verdi, ma manca la riga in `src/ui/catalogoDomande.ts` che porta la domanda
+da `in-arrivo` a `con-schermata`:
+- `area1Altra1` → la pagina della `03`
+- `area1Domanda` → la pagina della `05`
+
+Costa due righe **più l'aggiornamento di cinque test** in `tests/catalogo.test.ts`,
+`02-catalogo-domande-errori`, `02-catalogo-domande-limite`, che assumono «costo
+della vita» come area senza schermate. Quei test non sono sbagliati: descrivono
+lo stato di ieri.
+
+Lo stesso vale per `09`, `10`, `12`, che hanno la rotta registrata ma nessuna
+domanda che ci porta.
+
+## I tre test rossi, tutti voluti
+
+1. **C-07**: il percorso mostra due gradini, la spec `03` ne promette tre. Non è
+   una regressione della `14` — verificato: il breadcrumb è sempre stato a due.
+2. **e 3.** Le due «scoperte» del `tester` sulla `03`: la domanda non è un link.
+
+Sono test che **documentano un difetto invece di nasconderlo**.
+
+## Che cosa è stato tagliato per una scadenza, e va recuperato
+
+- **la rilettura di `guardrail-officer`** su `05`, `09`, `10`, `12`
+- **le fasi 2** (documentazione riconciliata e referti) sulle stesse
+
+Non è formalità: in questa sessione quei due passi hanno trovato il paragone che
+ripeteva il numero, la frase vietata dentro il file del guardrail, il buco
+dell'arrotondamento nella `08` e i 49 centesimi della `11`.
+
+## Sette debiti registrati sopra, in ordine di gravità
+
+1. **`fiscoDichiarato.ts` è un secondo registro parallelo** — la `13` esisteva per
+   impedirlo, e l'ha causato la regola di perimetro del PM
+2. **`04` e `08` si contendono un ponte che nessuno possiede**
+3. **`08`**: la convenzione di arrotondamento era dichiarata solo al passo 6;
+   `core-engine` ha scelto `Math.round` su tutti e tre e l'ha commentato
+4. **`11`**: la ricorsione lascia **49 centesimi** non rimborsati su 300 rate,
+   la formula chiusa della spec differisce esattamente di quelli. Nessuna
+   conciliazione applicata: la spec non la dichiara
+5. **`12`**: un solo messaggio d'errore per due casi opposti (troppo alta / negativa)
+6. **otto specifiche** indicano ancora `rotte.ts` come punto di estensione:
+   **istruzione superata dalla `14`**
+7. **il periodo del tasso** della `07` è ancora non dichiarato
+
+## Due cose sulla configurazione
+
+`app/.claude/settings.json` nega `Edit`/`Write` su `types/**` **ma non la
+scrittura da script**. D29 e D30 sono state applicate così, su istruzione
+esplicita dell'architetto. È un buco della configurazione, non un'autorizzazione:
+chi vuole può passare con `sed`.
+
+`develop` locale è deviato (5 commit duplicati di lavoro già in `master`, zero
+contenuto esclusivo, etichetta `develop-locale-deviato`). `origin/develop` è sano.
+
+## Il parallelismo, per chi riprende
+
+Dopo la `14`, aggiungere una schermata significa **creare tre file** — la
+dichiarazione in `src/ui/schermate/`, il componente che importa da sé il proprio
+CSS, il proprio `testiNN.ts` — e **modificarne uno**: la riga di spread in
+`src/ui/testi.ts`, più la riesportazione in `src/core/index.ts` se c'è calcolo.
+
+**Quei due file li applica il PM fuori dalle ondate.** In questa sessione sei
+agenti hanno scritto codice insieme senza perdere una riga.
+
+`pm:piano` calcola ancora per cartella e **sovrastima i conflitti**: lo dichiara
+da sé in un'avvertenza. `src/core/` e `tests/` non sono state dichiarate a file
+esclusivi perché non hanno un test che sorvegli il punto di contatto, come invece
+ha `src/ui/`.
