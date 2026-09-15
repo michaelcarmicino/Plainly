@@ -169,3 +169,28 @@ limite. La prima è migliore per chi usa il sito: sapere in quale area si è.
 Nel frattempo **un test del `tester` resta rosso**, di proposito, con il commento
 «difetto reale del codice, non del test». È la scelta giusta: documenta lo
 scostamento invece di nasconderlo.
+
+## Il secondo registro parallelo, creato dalla mia stessa regola di perimetro
+
+`src/core/registroFonti.ts` (funzionalità 13) **dichiara nel proprio commento di
+anticipare una riga per la 08**. Era il motivo per cui la 13 è stata messa prima
+della 08 nell'ordine: evitare che ciascuna funzionalità si tenesse i propri dati
+con provenienza.
+
+Poi nel mandato della 08 il PM ha scritto «non toccare file esistenti sotto
+`src/core/`», per proteggere il parallelismo. `core-engine` ha **rispettato
+l'istruzione** e ha creato `fiscoDichiarato.ts` **autosufficiente**, non una
+vista sul registro — e l'ha segnalato invece di tacerlo.
+
+**Risultato: due registri di dati con provenienza, che è esattamente il guasto
+che la 13 esisteva per impedire.** Non l'ha causato un agente distratto:
+l'ha causato la regola di perimetro del PM.
+
+È la lezione generale della giornata: **una regola che protegge da un guasto può
+produrne un altro**, e nessuno dei due è visibile a un test. Qui entrambi i file
+sono corretti da soli.
+
+**Da riconciliare**: `fiscoDichiarato.ts` diventa una vista su `registroFonti.ts`,
+aggiungendo le righe dei dati fiscali al registro. Tutto dentro `src/core/`,
+nessun contratto coinvolto. Va fatto quando `src/core/` è libero — e prima di
+dichiarare finita la 08, altrimenti il difetto entra in consegna.
