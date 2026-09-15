@@ -1,5 +1,5 @@
 id: 14-registro-delle-schermate
-stato: da-fare
+stato: fatto
 directory: src/ui/, tests/
 dipende-da:
 note: impronta ricavata da docs/features/14-registro-delle-schermate.md
