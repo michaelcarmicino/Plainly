@@ -75,3 +75,36 @@ a chi guarda invece di nasconderlo. Per chiuderlo serve una persona che recuperi
 il dato con il periodo esatto.
 | 2026-09-15T09:06:20.980Z | 13 chiusa e unita a master: core, schermata, rilettura guardrail, entrambe le fasi 2. 116 test verdi. NOTA: develop locale e' deviato (5 commit duplicati di lavoro gia' in master, zero contenuto esclusivo); etichetta develop-locale-deviato. origin/develop e' antenato di master, il ramo pubblicato e' sano. |
 | 2026-09-15T12:24:17.442Z | 14 chiusa: punti di conflitto da 5 a 1. Le otto rimanenti possono partire insieme; lo spread in testi.ts lo fa il PM in un passaggio unico. |
+
+## Conseguenza della 14 sulle specifiche già scritte
+
+**Otto specifiche indicano `rotte.ts` come il punto dove si aggiunge una
+schermata** — 04, 05, 06, 07, 08, 10, 11, 12. Dopo la 14 quell'istruzione è
+obsoleta: `rotte.ts`, `App.tsx`, `Navigazione.tsx` e `main.tsx` non nominano più
+nessuna schermata e **non vanno toccati**.
+
+L'istruzione giusta, da mettere in ogni mandato di `/implementa` finché le
+specifiche non sono aggiornate:
+
+> Una schermata si dichiara creando `src/ui/schermate/NN-nome.ts`, il proprio
+> componente (che importa da sé il proprio CSS) e il proprio `testiNN.ts`.
+> L'unico file condiviso è `src/ui/testi.ts`, **una riga**, e la applica il PM
+> fuori dall'ondata.
+
+Non è un difetto delle specifiche: erano corrette quando sono state scritte. È
+il costo di un refactor su documenti già approvati, e va pagato dichiarandolo,
+non lasciando che ciascuno lo scopra sbagliando.
+
+## Un ponte che nessuno possiede — fra 04 e 08
+
+La `04` rivendica `area2Altra2` («Sulla busta paga c'è un numero grande...») come
+proprio collegamento e dichiara che «quando 08 sarà pronta, il ponte è una riga
+in `rotte.ts`». Ma le directory dichiarate dalla `08` **non includono né la
+pagina della busta paga né `catalogoDomande.ts`**.
+
+Risultato: `04` promette un collegamento che costruirà qualcun altro, `08` non sa
+di doverlo costruire, e **la riga non è nell'impronta di nessuno dei due**.
+
+Da sciogliere prima di implementare la `08`: o entra nell'impronta della `08`, o
+resta un limite dichiarato di entrambe. Trovato da `doc-funzionale` leggendo le
+due specifiche insieme — nessuna delle due sbaglia da sola.
